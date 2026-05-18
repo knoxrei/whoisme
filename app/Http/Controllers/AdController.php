@@ -106,7 +106,68 @@ class AdController extends Controller
             ['status' => 'active', 'total_budget' => 0, 'daily_budget' => 0]
         );
 
-        $path = $request->file('image')->store('ads', 'public');
+        $file = $request->file('image');
+        $tempPath = $file->getRealPath();
+        $imageInfo = getimagesize($tempPath);
+        $path = null;
+
+        if ($imageInfo) {
+            $width = $imageInfo[0];
+            $height = $imageInfo[1];
+            $mime = $imageInfo['mime'];
+
+            if ($mime === 'image/gif') {
+                // Store animated GIFs directly to preserve animation
+                $filename = 'banner_' . uniqid() . '.gif';
+                $path = $file->storeAs('ads', $filename, 'public');
+            } else {
+                switch ($mime) {
+                    case 'image/jpeg':
+                    case 'image/jpg':
+                        $srcImage = @imagecreatefromjpeg($tempPath);
+                        break;
+                    case 'image/png':
+                        $srcImage = @imagecreatefrompng($tempPath);
+                        break;
+                    case 'image/webp':
+                        $srcImage = @imagecreatefromwebp($tempPath);
+                        break;
+                    default:
+                        $srcImage = null;
+                }
+
+                if ($srcImage) {
+                    $targetWidth = 670;
+                    $targetHeight = 76;
+
+                    $dstImage = imagecreatetruecolor($targetWidth, $targetHeight);
+
+                    // Preserve transparency
+                    imagealphablending($dstImage, false);
+                    imagesavealpha($dstImage, true);
+
+                    imagecopyresampled($dstImage, $srcImage, 0, 0, 0, 0, $targetWidth, $targetHeight, $width, $height);
+
+                    $filename = 'ads/banner_' . uniqid() . '.webp';
+                    $storagePath = storage_path('app/public/' . $filename);
+
+                    if (!file_exists(dirname($storagePath))) {
+                        mkdir(dirname($storagePath), 0755, true);
+                    }
+
+                    imagewebp($dstImage, $storagePath, 85);
+
+                    imagedestroy($srcImage);
+                    imagedestroy($dstImage);
+
+                    $path = $filename;
+                }
+            }
+        }
+
+        if (!$path) {
+            $path = $request->file('image')->store('ads', 'public');
+        }
 
         $ad = Ad::create([
             'title' => $request->title,
@@ -128,6 +189,17 @@ class AdController extends Controller
         } else {
             return back()->with('success', 'Your anonymous ad request has been successfully submitted and is pending moderator approval.');
         }
+    }
+
+    public function trackClick(Ad $ad)
+    {
+        $stats = \App\Models\AdStatistic::firstOrCreate(
+            ['ad_id' => $ad->id, 'date' => now()->toDateString()],
+            ['impressions' => 0, 'clicks' => 0, 'spent' => 0]
+        );
+        $stats->increment('clicks');
+
+        return redirect()->away($ad->target_url);
     }
 
     public function show(Ad $ad) {}

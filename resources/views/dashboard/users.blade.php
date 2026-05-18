@@ -35,6 +35,12 @@
                         Reset
                     </a>
                 @endif
+
+                @if($role === \App\Enum\Role::OWNER)
+                    <button type="button" onclick="openCreateAdvertiserModal()" class="px-3 py-1.5 bg-red-700 hover:bg-red-800 text-white font-black uppercase tracking-widest rounded-sm transition-colors duration-150">
+                        + Add Advertiser
+                    </button>
+                @endif
             </form>
         </div>
 
@@ -241,6 +247,62 @@
         </div>
     </div>
 
+    <!-- Create Advertiser Modal -->
+    <div id="create-advertiser-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black/80 backdrop-blur-md p-4">
+        <div class="border border-red-900/40 bg-gradient-to-b from-red-950/10 to-[#0a0a0a] rounded-sm max-w-lg w-full p-6 space-y-6 relative">
+            <div class="flex justify-between items-center border-b border-red-900/10 pb-4">
+                <h3 class="text-sm font-black text-white uppercase tracking-widest">Register New Advertiser</h3>
+                <button type="button" onclick="closeCreateAdvertiserModal()" class="text-red-500 hover:text-white font-black text-xs font-mono">✕ CLOSE</button>
+            </div>
+
+            <form method="POST" action="{{ route('dashboard.users.create-advertiser') }}">
+                @csrf
+                <div class="space-y-4 text-xs font-mono">
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="space-y-2">
+                            <label class="text-gray-500 uppercase font-black text-[9px] tracking-widest block">Username</label>
+                            <input type="text" name="username" required placeholder="e.g. cyber_sponsor"
+                                class="w-full bg-black border border-red-900/20 focus:border-red-600 rounded-sm px-3 py-2 text-white text-xs">
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-gray-500 uppercase font-black text-[9px] tracking-widest block">Email Address</label>
+                            <input type="email" name="email" required placeholder="e.g. ads@sponsor.com"
+                                class="w-full bg-black border border-red-900/20 focus:border-red-600 rounded-sm px-3 py-2 text-white text-xs">
+                        </div>
+                    </div>
+
+                    <div class="space-y-2">
+                        <label class="text-gray-500 uppercase font-black text-[9px] tracking-widest block">Secure Password</label>
+                        <input type="password" name="password" required minlength="8" placeholder="••••••••••••"
+                            class="w-full bg-black border border-red-900/20 focus:border-red-600 rounded-sm px-3 py-2 text-white text-xs">
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="space-y-2">
+                            <label class="text-gray-500 uppercase font-black text-[9px] tracking-widest block">Company Name</label>
+                            <input type="text" name="company_name" placeholder="e.g. Syndicate Sponsor"
+                                class="w-full bg-black border border-red-900/20 focus:border-red-600 rounded-sm px-3 py-2 text-white text-xs">
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-gray-500 uppercase font-black text-[9px] tracking-widest block">Starting Balance ($)</label>
+                            <input type="number" name="balance" step="0.01" min="0" placeholder="0.00"
+                                class="w-full bg-black border border-red-900/20 focus:border-red-600 rounded-sm px-3 py-2 text-white text-xs">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex justify-end gap-3 border-t border-red-900/10 pt-4 mt-6">
+                    <button type="button" onclick="closeCreateAdvertiserModal()" class="px-4 py-2 border border-red-900/20 text-gray-500 hover:text-white rounded-sm text-[10px] uppercase tracking-widest">
+                        Cancel
+                    </button>
+                    <button type="submit" class="px-4 py-2 bg-red-700 hover:bg-red-800 text-white rounded-sm text-[10px] uppercase tracking-widest font-black">
+                        Create Account
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <script>
         function openEditModal(button) {
             const id = button.getAttribute('data-id');
@@ -272,6 +334,14 @@
         function closeEditModal() {
             const modal = document.getElementById('edit-user-modal');
             modal.classList.add('hidden');
+        }
+
+        function openCreateAdvertiserModal() {
+            document.getElementById('create-advertiser-modal').classList.remove('hidden');
+        }
+
+        function closeCreateAdvertiserModal() {
+            document.getElementById('create-advertiser-modal').classList.add('hidden');
         }
     </script>
 </x-layouts.dashboard>

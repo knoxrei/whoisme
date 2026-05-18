@@ -221,6 +221,26 @@
                         </footer>
                     </div>
 
+                    <!-- Sponsor Banners Section -->
+                    @php
+                        $showBanners = \App\Helper\AdTracker::getBanners(4, 2);
+                    @endphp
+
+                    @if($showBanners->isNotEmpty())
+                        <div class="bg-[#050505] border border-red-900/30 p-5 rounded-sm">
+                            <p class="text-[9px] text-gray-600 uppercase tracking-widest text-center mb-3">SPONSORED BANNERS</p>
+                            <div class="flex flex-wrap justify-center gap-4">
+                                @foreach($showBanners as $banner)
+                                    <a href="{{ route('ads.click', $banner->id) }}" target="_blank" 
+                                       class="block w-full max-w-[466px] h-[58px] border border-red-950/40 hover:border-red-600/70 overflow-hidden rounded-sm bg-black transition-colors duration-150 relative group">
+                                        <img src="{{ asset($banner->media_url) }}" alt="{{ $banner->title }}" 
+                                             class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity duration-150">
+                                    </a>
+                                @endforeach
+                            </div>
+                        </div>
+                    @endif
+
                     <!-- Comments Section -->
                     <div class="bg-[#0a0a0a] border border-red-900/30 p-6 rounded-sm flex flex-col gap-6">
                         <h3 class="text-xs font-black text-red-500 uppercase tracking-[0.2em] flex items-center gap-3">

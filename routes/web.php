@@ -104,6 +104,9 @@ Route::middleware('auth')->group(function () {
     Route::post('/user/{user}/unban', [ProfileController::class, 'unban'])->name('profile.unban');
 });
 
+// Public Ad Routes
+Route::get('/ads/{ad}/click', [App\Http\Controllers\AdController::class, 'trackClick'])->name('ads.click');
+
 // Advertiser Routes
 Route::middleware('auth')->prefix('advertiser')->name('advertiser.')->group(function () {
     Route::get('/dashboard', [AdvertiserDashboardController::class, 'index'])->name('dashboard');

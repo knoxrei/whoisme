@@ -109,6 +109,67 @@
                 </div>
             </div>
 
+            <!-- Banners Inventory list -->
+            <div class="p-6 border border-red-900/20 bg-[#050505] rounded-sm mt-6">
+                <div class="flex items-center justify-between mb-5">
+                    <h2 class="text-xs font-black text-red-500 uppercase tracking-widest flex items-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                        Your Banners Inventory
+                    </h2>
+                </div>
+
+                <div class="space-y-4">
+                    @php
+                        $allAds = $campaigns->pluck('ads')->flatten();
+                    @endphp
+                    @forelse($allAds as $ad)
+                        @php
+                            $adImpressions = $ad->statistics()->sum('impressions');
+                            $adClicks = $ad->statistics()->sum('clicks');
+                        @endphp
+                        <div class="p-4 bg-[#0a0a0a] border border-red-900/10 hover:border-red-900/30 transition-colors duration-150 rounded-sm flex flex-col md:flex-row gap-4 items-start md:items-center justify-between">
+                            <div class="flex items-center gap-4">
+                                <div class="w-32 h-[36px] bg-black border border-red-900/20 overflow-hidden flex-shrink-0">
+                                    <img src="{{ asset($ad->media_url) }}" alt="{{ $ad->title }}" class="w-full h-full object-cover">
+                                </div>
+                                <div class="font-mono">
+                                    <h4 class="text-xs font-bold text-gray-200 uppercase">{{ $ad->title }}</h4>
+                                    <p class="text-[8px] text-gray-500 mt-1 truncate max-w-[200px]" title="{{ $ad->target_url }}">
+                                        Target: {{ $ad->target_url }}
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-6 text-xs font-mono">
+                                <div class="text-center">
+                                    <p class="text-gray-500 text-[8px] uppercase tracking-widest">Views</p>
+                                    <p class="text-white font-black mt-0.5">{{ number_format($adImpressions) }}</p>
+                                </div>
+                                <div class="text-center">
+                                    <p class="text-gray-500 text-[8px] uppercase tracking-widest">Clicks</p>
+                                    <p class="text-red-500 font-black mt-0.5">{{ number_format($adClicks) }}</p>
+                                </div>
+                                <div class="text-center">
+                                    <p class="text-gray-500 text-[8px] uppercase tracking-widest">CTR</p>
+                                    <p class="text-gray-400 font-bold mt-0.5">
+                                        {{ $adImpressions > 0 ? number_format(($adClicks / $adImpressions) * 100, 2) : '0.00' }}%
+                                    </p>
+                                </div>
+                                <div class="text-right">
+                                    <span class="inline-flex items-center px-1.5 py-0.5 rounded-sm text-[8px] font-black uppercase tracking-widest bg-{{ $ad->status === 'active' ? 'green' : ($ad->status === 'pending' ? 'yellow' : 'red') }}-950/40 text-{{ $ad->status === 'active' ? 'green' : ($ad->status === 'pending' ? 'yellow' : 'red') }}-500 border border-{{ $ad->status === 'active' ? 'green' : ($ad->status === 'pending' ? 'yellow' : 'red') }}-900/50">
+                                        {{ $ad->status }}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    @empty
+                        <div class="text-[10px] text-gray-500 font-mono p-4 bg-[#050505] border border-red-900/10 text-center rounded-sm">
+                            No banners submitted under your account yet.
+                        </div>
+                    @endforelse
+                </div>
+            </div>
+        </div>
+
             <!-- Right Column: Chart -->
             <div class="space-y-6">
                 <div class="p-6 border border-red-900/20 bg-[#050505] rounded-sm">
@@ -130,7 +191,10 @@
             var options = {
                 series: [{
                     name: 'Impressions',
-                    data: [31, 40, 28, 51, 42, 109, 100]
+                    data: {!! json_encode($chartImpressions) !!}
+                }, {
+                    name: 'Clicks',
+                    data: {!! json_encode($chartClicks) !!}
                 }],
                 chart: {
                     height: 200,
@@ -142,7 +206,7 @@
                 theme: {
                     mode: 'dark'
                 },
-                colors: ['#ef4444'],
+                colors: ['#ef4444', '#f59e0b'],
                 fill: {
                     type: 'gradient',
                     gradient: {
@@ -155,7 +219,7 @@
                 dataLabels: { enabled: false },
                 stroke: { curve: 'smooth', width: 2 },
                 xaxis: {
-                    categories: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                    categories: {!! json_encode($chartLabels) !!},
                     axisBorder: { show: false },
                     axisTicks: { show: false },
                     labels: { style: { colors: '#4b5563', fontSize: '10px' } }

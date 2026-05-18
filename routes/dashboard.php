@@ -19,6 +19,7 @@ Route::middleware(['auth'])->group(function () {
 
     // User Management Control Panel
     Route::get('/dashboard/users', [DashboardController::class, 'users'])->name('dashboard.users');
+    Route::post('/dashboard/users/create-advertiser', [DashboardController::class, 'createAdvertiser'])->name('dashboard.users.create-advertiser');
     Route::post('/dashboard/users/{user}/update', [DashboardController::class, 'updateUser'])->name('dashboard.users.update');
     Route::post('/dashboard/users/{user}/toggle-ban', [DashboardController::class, 'toggleBan'])->name('dashboard.users.toggle-ban');
     Route::delete('/dashboard/users/{user}/delete', [DashboardController::class, 'deleteUser'])->name('dashboard.users.delete');

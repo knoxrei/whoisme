@@ -105,7 +105,25 @@
             </div>
             @endif
 
-        
+            <!-- Sponsor Banners Section -->
+            @php
+                $banners = \App\Helper\AdTracker::getBanners(4, 2);
+            @endphp
+
+            @if($banners->isNotEmpty())
+                <div class="w-full mt-6 space-y-4">
+                    <p class="text-[9px] text-gray-600 uppercase tracking-widest text-center">SPONSORED LINKS</p>
+                    <div class="flex flex-col items-center gap-3">
+                        @foreach($banners as $banner)
+                            <a href="{{ route('ads.click', $banner->id) }}" target="_blank" 
+                               class="block w-full max-w-[566px] h-[90px] border border-red-950/40 hover:border-red-600/70 overflow-hidden rounded-sm bg-[#050505] transition-colors duration-150 relative group">
+                                <img src="{{ asset($banner->media_url) }}" alt="{{ $banner->title }}" 
+                                     class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity duration-150">
+                            </a>
+                        @endforeach
+                    </div>
+                </div>
+            @endif
         </main>
     </div>
 

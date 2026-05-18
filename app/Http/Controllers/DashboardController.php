@@ -382,6 +382,13 @@ class DashboardController extends Controller
             ]
         );
 
+        if ($requestedRole === Role::ADVERTISER) {
+            \App\Models\Advertiser::firstOrCreate(
+                ['user_id' => $user->id],
+                ['company_name' => $user->username . ' Ads', 'balance' => 0.00]
+            );
+        }
+
         return back()->with('success', "Account profile for @{$user->username} has been updated successfully.");
     }
 
@@ -435,5 +442,43 @@ class DashboardController extends Controller
         $user->delete();
 
         return back()->with('success', "User account for @{$user->username} has been permanently purged from the system.");
+    }
+
+    public function createAdvertiser(Request $request)
+    {
+        $role = auth()->user()->identification->role;
+        if ($role !== Role::OWNER) {
+            abort(403, 'Unauthorized.');
+        }
+
+        $request->validate([
+            'username' => 'required|string|max:255|unique:users,username',
+            'email' => 'required|email|max:255|unique:users,email',
+            'password' => 'required|string|min:8',
+            'company_name' => 'nullable|string|max:255',
+            'balance' => 'nullable|numeric|min:0',
+        ]);
+
+        $user = User::create([
+            'username' => $request->username,
+            'email' => $request->email,
+            'password' => bcrypt($request->password),
+        ]);
+
+        $user->identification()->create([
+            'user_id' => $user->id,
+            'role' => Role::ADVERTISER,
+            'avatar_path' => 'upload/defaultAvatar.png',
+            'website' => 'N/A',
+            'bio' => 'Advertiser manually added by Owner',
+        ]);
+
+        \App\Models\Advertiser::create([
+            'user_id' => $user->id,
+            'company_name' => $request->company_name ?: $user->username . ' Ads',
+            'balance' => $request->balance ?: 0.00,
+        ]);
+
+        return back()->with('success', "Advertiser @{$user->username} has been manually registered and activated successfully.");
     }
 }
