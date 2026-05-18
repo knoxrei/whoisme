@@ -1,9 +1,7 @@
 <x-layouts.app :title="$title">
-    <div class="min-h-screen  text-gray-200 font-mono py-12 px-4">
+    <div class="min-h-screen text-gray-200 font-mono py-12 px-4">
         
-        <!-- Main Box Container -->
-        <div class="max-w-7xl mx-auto border border-red-950/20  p-6 relative">
-            
+        <div class="max-w-7xl mx-auto border border-red-950/20 p-6 relative">
 
             <!-- Page Title -->
             <div class="mb-6 flex flex-col md:flex-row items-start md:items-center justify-between border-b border-red-950/30 pb-4 gap-4">
@@ -35,38 +33,9 @@
                             <th class="py-3 px-4 text-right">Published At</th>
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-red-950/10 text-[10px]">
+                    <tbody id="recent-feed" class="divide-y divide-red-950/10 text-[10px]">
                         @forelse($pastes as $paste)
-                            <tr class="hover:bg-red-950/5 transition-colors duration-100">
-                                <!-- Title -->
-                                <td class="py-3.5 px-4 font-bold text-gray-200 max-w-sm truncate">
-                                    <a href="{{ route('pastebin.show', $paste->slug) }}" class="hover:text-red-500 hover:underline">
-                                        {{ $paste->title }}
-                                    </a>
-                                </td>
-                                <!-- Author -->
-                                <td class="py-3.5 px-4 text-gray-400 font-bold">
-                                    @if($paste->user_id)
-                                    <a href="{{ route('profile.show', $paste->author_name) }}" class="hover:text-red-500 hover:underline">
-                                        {!!  $paste->user->identification->role->userStyle($paste->author_name) !!}
-                                    </a>
-                                    @else
-                                    {{ $paste->author_name }}
-                                    @endif
-                                </td>
-                                <!-- Views -->
-                                <td class="py-3.5 px-4 text-center font-bold text-gray-300">
-                                    {{ number_format($paste->views_count) }}
-                                </td>
-                                <!-- Downloads -->
-                                <td class="py-3.5 px-4 text-center font-bold text-gray-300">
-                                    {{ number_format($paste->download_count) }}
-                                </td>
-                                <!-- Created Date -->
-                                <td class="py-3.5 px-4 text-right text-gray-500 font-mono">
-                                    {{ $paste->created_at->format('Y-m-d H:i:s') }} ({{ $paste->created_at->diffForHumans() }})
-                                </td>
-                            </tr>
+                            @include('search.partials.recent-rows', ['pastes' => collect([$paste])])
                         @empty
                             <tr>
                                 <td colspan="5" class="py-8 px-4 text-center text-gray-600 uppercase tracking-widest select-none">
@@ -78,16 +47,28 @@
                 </table>
             </div>
 
-            <!-- Page Load More Navigation -->
-            @if($nextCursor)
-                <div class="flex justify-center">
-                    <a href="{{ route('search.recent', ['cursor' => $nextCursor]) }}"
-                        class="bg-[#0f0f0f] border border-red-950/50 hover:border-red-600 text-gray-300 hover:text-white px-6 py-2.5 rounded text-[10px] font-bold uppercase tracking-widest transition-all">
-                        Stream Next Records &gt;&gt;
-                    </a>
-                </div>
-            @endif
+            <!-- Load More Button -->
+            <div id="load-more-wrap" class="flex flex-col items-center gap-3 {{ $nextCursor ? '' : 'hidden' }}">
+                <button
+                    id="load-more-btn"
+                    data-cursor="{{ $nextCursor }}"
+                    data-url="{{ route('search.recent') }}"
+                    data-target="recent-feed"
+                    data-type="table"
+                    class="load-more-btn bg-[#0f0f0f] border border-red-950/50 hover:border-red-600 text-gray-300 hover:text-white px-6 py-2.5 rounded text-[10px] font-bold uppercase tracking-widest transition-all flex items-center gap-2">
+                    <span class="btn-label">Stream Next Records &gt;&gt;</span>
+                    <span class="btn-spinner hidden">
+                        <svg class="animate-spin h-3 w-3 text-red-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+                        </svg>
+                        Loading...
+                    </span>
+                </button>
+            </div>
 
         </div>
     </div>
+
+    @include('search.partials.load-more-script')
 </x-layouts.app>

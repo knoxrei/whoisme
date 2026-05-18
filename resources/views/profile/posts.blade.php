@@ -12,49 +12,44 @@
                 </h1>
             </div>
             <div class="bg-[#0a0a0a] border border-red-900/30 px-4 py-2 rounded-sm text-xs">
-                Total Found: <span class="text-red-500 font-black">{{ $comments->total() }}</span>
+                Total Found: <span class="text-red-500 font-black">{{ $total }}</span>
             </div>
         </div>
 
         <!-- Comments Feed Container -->
-        <div class="space-y-4 mb-6">
+        <div id="posts-feed" class="space-y-4 mb-6">
             @if($comments->isEmpty())
                 <div class="bg-[#0a0a0a] border border-red-900/30 rounded-sm p-8 text-center text-gray-500 text-xs">
                     No active posts found for this user.
                 </div>
             @else
                 @foreach($comments as $comment)
-                    <div class="bg-[#0a0a0a] border border-red-900/30 rounded-sm overflow-hidden hover:border-red-500/20 transition-all duration-150">
-                        <!-- Comment Header Info -->
-                        <div class="bg-[#111] px-4 py-2.5 border-b border-red-900/40 flex items-center justify-between text-[10px]">
-                            <div class="flex items-center gap-2">
-                                <span class="text-gray-500 uppercase">On Thread:</span>
-                                @if($comment->pastebin)
-                                    <a href="{{ route('pastebin.show', $comment->pastebin->slug) }}" class="text-red-500 hover:text-red-400 font-bold uppercase transition-colors">
-                                        {{ $comment->pastebin->title }}
-                                    </a>
-                                @else
-                                    <span class="text-gray-600 font-bold uppercase italic">[Deleted Thread]</span>
-                                @endif
-                            </div>
-                            <div class="text-gray-500 font-mono">
-                                {{ $comment->created_at->diffForHumans() }}
-                            </div>
-                        </div>
-
-                        <!-- Comment Body -->
-                        <div class="p-4 text-xs text-gray-300 leading-relaxed font-mono whitespace-pre-wrap">
-                            {{ $comment->content }}
-                        </div>
-                    </div>
+                    @include('profile.partials.post-rows', ['comments' => collect([$comment])])
                 @endforeach
             @endif
         </div>
 
-        <!-- Custom Dark Pagination -->
-        <div class="mt-6">
-            {{ $comments->links() }}
+        <!-- Load More Button -->
+        <div id="load-more-wrap" class="flex flex-col items-center gap-3 {{ $nextCursor ? '' : 'hidden' }}">
+            <button
+                id="load-more-btn"
+                data-cursor="{{ $nextCursor }}"
+                data-url="{{ route('profile.posts', $user->username) }}"
+                data-target="posts-feed"
+                data-type="div"
+                class="load-more-btn bg-[#0f0f0f] border border-red-900/30 hover:border-red-600 text-gray-400 hover:text-white px-6 py-2.5 rounded-sm text-[10px] font-bold uppercase tracking-widest transition-all flex items-center gap-2">
+                <span class="btn-label">Load More Posts &gt;&gt;</span>
+                <span class="btn-spinner hidden">
+                    <svg class="animate-spin h-3 w-3 text-red-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+                    </svg>
+                    Loading...
+                </span>
+            </button>
         </div>
 
     </div>
+
+    @include('search.partials.load-more-script')
 </x-layouts.app>

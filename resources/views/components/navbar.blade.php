@@ -11,9 +11,10 @@
                 <!-- Desktop Nav (Primary) -->
                 <div class="hidden lg:flex items-center gap-6">
                     <a href="{{ route('welcome') }}"
-                        class="text-[11px] {{ request()->routeIs('welcome') ? 'text-red-600' : 'text-gray-500' }} font-bold uppercase tracking-[0.2em] hover:text-red-500 transition-colors flex items-center gap-2">
+                        class="text-[11px] {{ request()->routeIs('welcome') || request()->routeIs('search.index') ? 'text-red-600' : 'text-gray-500' }} font-bold uppercase tracking-[0.2em] hover:text-red-500 transition-colors flex items-center gap-2">
                         Search
                     </a>
+                
                     @auth
                         <a href="{{ route('dashboard') }}"
                             class="text-[11px] {{ request()->routeIs('dashboard') ? 'text-red-600' : 'text-gray-500' }} font-bold uppercase tracking-[0.2em] hover:text-red-500 transition-colors flex items-center gap-2">
@@ -30,16 +31,7 @@
             <!-- Right Menu -->
             <div class="flex items-center gap-5 md:gap-8">
                 <!-- Online Status -->
-                <div
-                    class="hidden sm:flex items-center gap-3 px-4 py-1.5 bg-white/[0.02] border border-white/5 rounded-full cursor-default">
-                    <div class="relative flex h-2 w-2">
-                        <span
-                            class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-500/40 opacity-75"></span>
-                        <span class="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
-                    </div>
-                    <span class="text-[10px] font-mono font-bold text-gray-400 tracking-tight uppercase">
-                        <span class="text-green-500">1,248</span> Active
-                    </span>
+      
                 </div>
 
                 <!-- Vertical Divider -->
@@ -135,6 +127,11 @@
                 class="text-[10px] {{ request()->routeIs('terms') ? 'text-red-600' : 'text-gray-500' }} font-bold uppercase tracking-widest hover:text-red-500 transition-colors">
                 Terms
             </a>
+            <a href="{{ route('profile.users-list') }}"
+                class="text-[10px] {{ request()->routeIs('profile.users-list') ? 'text-red-600' : 'text-gray-500' }} font-bold uppercase tracking-widest hover:text-red-500 transition-colors">
+                Users
+            </a>
+         
         </div>
     </div>
 </nav>

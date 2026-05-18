@@ -6,6 +6,16 @@
                     {{ session('success') }}
                 </div>
             @endif
+            @if(session('info'))
+                <div class="mb-4 p-4 bg-blue-950/20 border border-blue-900/30 text-blue-400 text-xs font-mono font-bold rounded-sm">
+                    {{ session('info') }}
+                </div>
+            @endif
+            @if(session('error'))
+                <div class="mb-4 p-4 bg-red-950/20 border border-red-900/30 text-red-500 text-xs font-mono font-bold rounded-sm">
+                    {{ session('error') }}
+                </div>
+            @endif
             
             <!-- Breadcrumb/Header Bar -->
             <div class="bg-[#0a0a0a] border border-red-900/40 px-5 py-4 mb-2 flex items-center justify-between rounded-sm">
@@ -43,7 +53,7 @@
 
                     <!-- Avatar -->
                     <div class="mb-5 flex justify-center">
-                        <div class="w-32 h-32 border border-red-900/20 overflow-hidden bg-[#050505]">
+                        <div class="w-32 h-32 overflow-hidden ">
                             @if($pastebin->user && $pastebin->user->identification->avatar_path)
                                 <img src="{{ asset('storage/' . $pastebin->user->identification->avatar_path) }}" class="w-full h-full object-cover" alt="avatar">
                             @else
@@ -72,18 +82,20 @@
 
                     <!-- User Stats -->
                     <div class="text-[10px] space-y-2 text-left px-1 border-t border-red-900/10 pt-5">
-                        <div class="flex justify-between items-center">
-                            <span class="text-gray-500 font-bold uppercase tracking-tighter">Posts:</span>
-                            <span class="text-white font-black">{{ $pastebin->user ? $pastebin->user->pastebins()->count() : 0 }}</span>
-                        </div>
-                        <div class="flex justify-between items-center">
-                            <span class="text-gray-500 font-bold uppercase tracking-tighter">Followers:</span>
-                            <span class="text-white font-black">{{ $pastebin->user ? $pastebin->user->followers()->count() : 0 }}</span>
-                        </div>
-                        <div class="flex justify-between items-center">
-                            <span class="text-gray-500 font-bold uppercase tracking-tighter">Joined:</span>
-                            <span class="text-white font-mono">{{ $pastebin->user ? $pastebin->user->created_at->format('M Y') : 'N/A' }}</span>
-                        </div>
+                        @if($pastebin->user)
+                            <div class="flex justify-between items-center">
+                                <span class="text-gray-500 font-bold uppercase tracking-tighter">Posts:</span>
+                                <span class="text-white font-black">{{ $pastebin->user->pastebins()->count() }}</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-gray-500 font-bold uppercase tracking-tighter">Followers:</span>
+                                <span class="text-white font-black">{{ $pastebin->user->followers()->count() }}</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-gray-500 font-bold uppercase tracking-tighter">Joined:</span>
+                                <span class="text-white font-mono">{{ $pastebin->user->created_at->format('M Y') }}</span>
+                            </div>
+                        @endif
                         <div class="flex justify-between items-center">
                             <span class="text-gray-500 font-bold uppercase tracking-tighter">Views:</span>
                             <span class="text-red-500 font-black">{{ number_format($pastebin->views_count) }}</span>

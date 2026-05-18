@@ -12,7 +12,7 @@
                 </h1>
             </div>
             <div class="bg-[#0a0a0a] border border-red-900/30 px-4 py-2 rounded-sm text-xs">
-                Total Found: <span class="text-red-500 font-black">{{ $pastebins->total() }}</span>
+                Total Found: <span class="text-red-500 font-black">{{ $total }}</span>
             </div>
         </div>
 
@@ -22,7 +22,7 @@
                 Index of Pastebins
             </div>
 
-            @if($pastebins->isEmpty())
+            @if($pastes->isEmpty())
                 <div class="p-8 text-center text-gray-500 text-xs">
                     No active pastebins found for this user.
                 </div>
@@ -38,48 +38,9 @@
                                 <th class="p-4 text-right">Published</th>
                             </tr>
                         </thead>
-                        <tbody class="divide-y divide-red-950/20">
-                            @foreach($pastebins as $paste)
-                                <tr class="hover:bg-red-950/5 transition-colors duration-150">
-                                    <td class="p-4">
-                                        <a href="{{ route('pastebin.show', $paste->slug) }}" class="text-white hover:text-red-500 font-bold block truncate max-w-xs md:max-w-md transition-colors duration-150">
-                                            {{ $paste->title }}
-                                        </a>
-                                        @if($paste->description)
-                                            <span class="text-[10px] text-gray-500 block truncate max-w-xs md:max-w-md mt-0.5">
-                                                {{ $paste->description }}
-                                            </span>
-                                        @endif
-                                    </td>
-                                    <td class="p-4 text-center">
-                                        @if($paste->password)
-                                            <span class="inline-block px-2 py-0.5 bg-red-950/20 border border-red-900/40 text-[9px] uppercase font-black text-red-500 tracking-wider">
-                                                🔒 Passworded
-                                            </span>
-                                        @elseif($paste->visibility->value === 'private')
-                                            <span class="inline-block px-2 py-0.5 bg-red-950/20 border border-red-900/20 text-[9px] uppercase font-black text-red-500 tracking-wider">
-                                                Private
-                                            </span>
-                                        @elseif($paste->visibility->value === 'unlisted')
-                                            <span class="inline-block px-2 py-0.5 bg-yellow-950/20 border border-yellow-900/20 text-[9px] uppercase font-black text-yellow-500 tracking-wider">
-                                                Unlisted
-                                            </span>
-                                        @else
-                                            <span class="inline-block px-2 py-0.5 bg-green-950/20 border border-green-900/20 text-[9px] uppercase font-black text-green-500 tracking-wider">
-                                                Public
-                                            </span>
-                                        @endif
-                                    </td>
-                                    <td class="p-4 text-center text-gray-300 font-bold">
-                                        {{ number_format($paste->views_count) }}
-                                    </td>
-                                    <td class="p-4 text-center text-gray-300 font-bold">
-                                        {{ number_format($paste->download_count ?? 0) }}
-                                    </td>
-                                    <td class="p-4 text-right text-gray-400 font-mono">
-                                        {{ $paste->created_at->diffForHumans() }}
-                                    </td>
-                                </tr>
+                        <tbody id="pastebins-feed" class="divide-y divide-red-950/20">
+                            @foreach($pastes as $paste)
+                                @include('profile.partials.pastebin-rows', ['pastes' => collect([$paste])])
                             @endforeach
                         </tbody>
                     </table>
@@ -87,10 +48,27 @@
             @endif
         </div>
 
-        <!-- Custom Dark Pagination -->
-        <div class="mt-6">
-            {{ $pastebins->links() }}
+        <!-- Load More Button -->
+        <div id="load-more-wrap" class="flex flex-col items-center gap-3 {{ $nextCursor ? '' : 'hidden' }}">
+            <button
+                id="load-more-btn"
+                data-cursor="{{ $nextCursor }}"
+                data-url="{{ route('profile.pastebins', $user->username) }}"
+                data-target="pastebins-feed"
+                data-type="table"
+                class="load-more-btn bg-[#0f0f0f] border border-red-900/30 hover:border-red-600 text-gray-400 hover:text-white px-6 py-2.5 rounded-sm text-[10px] font-bold uppercase tracking-widest transition-all flex items-center gap-2">
+                <span class="btn-label">Load More Pastebins &gt;&gt;</span>
+                <span class="btn-spinner hidden">
+                    <svg class="animate-spin h-3 w-3 text-red-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+                    </svg>
+                    Loading...
+                </span>
+            </button>
         </div>
 
     </div>
+
+    @include('search.partials.load-more-script')
 </x-layouts.app>

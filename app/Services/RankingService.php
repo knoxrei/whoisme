@@ -8,7 +8,14 @@ use Illuminate\Support\Collection;
 class RankingService
 {
     /**
-     * Score and sort matching pastebins using content relevance, popularity, and freshness.
+     * Score and sort matching pastebins using a multi-signal ranking formula.
+     *
+     * Signals:
+     *  1. DB FULLTEXT relevance (already weighted in SQL: title×5, desc×2, content×1)
+     *  2. Title exact / phrase boost
+     *  3. Popularity (logarithmic views + downloads)
+     *  4. Freshness decay (1 / (1 + days_old))
+     *  5. Comment activity signal
      */
     public function rank(Collection $pastebins, ?string $query): Collection
     {
@@ -17,36 +24,51 @@ class RankingService
         }
 
         $queryLower = $query ? mb_strtolower(trim($query)) : '';
+        // Extract individual terms for partial matching
+        $terms = $queryLower
+            ? array_filter(
+                preg_split('/\s+/', preg_replace('/"([^"]+)"/', '$1', $queryLower)),
+                fn ($t) => mb_strlen($t) > 2
+              )
+            : [];
 
-        return $pastebins->map(function (Pastebin $paste) use ($queryLower) {
-            $score = floatval($paste->db_relevance);
+        return $pastebins->map(function (Pastebin $paste) use ($queryLower, $terms) {
+            // Base: weighted DB relevance score (already boosted in SQL)
+            $score = floatval($paste->db_relevance ?? 0);
 
-            // 1. Exact Match Boost: if title is exactly the query
-            $titleLower = mb_strtolower($paste->title);
-            if ($queryLower && $titleLower === $queryLower) {
-                $score += 150.0; // Mega boost for exact title matches
-            } elseif ($queryLower && mb_strpos($titleLower, $queryLower) !== false) {
-                $score += 50.0; // Partial title match boost
+            if ($queryLower) {
+                $titleLower = mb_strtolower($paste->title);
+
+                // Exact title match — strongest possible signal
+                if ($titleLower === $queryLower) {
+                    $score += 200.0;
+                } elseif (mb_strpos($titleLower, $queryLower) !== false) {
+                    // Full phrase found in title
+                    $score += 80.0;
+                } else {
+                    // Count how many individual terms appear in title
+                    $termHits = 0;
+                    foreach ($terms as $term) {
+                        if (mb_strpos($titleLower, $term) !== false) {
+                            $termHits++;
+                        }
+                    }
+                    if ($termHits > 0) {
+                        $score += $termHits * 15.0;
+                    }
+                }
             }
 
-            // 2. Popularity Score: logarithmic growth to prevent views from dominating
-            // log(views + 1) * 2.0
-            $viewsBoost = log($paste->views_count + 1) * 2.0;
-            // log(downloads + 1) * 3.0
-            $downloadsBoost = log($paste->download_count + 1) * 3.0;
-            
-            $score += $viewsBoost + $downloadsBoost;
+            // Popularity: log-dampened to prevent viral posts dominating completely
+            $score += log($paste->views_count + 1) * 2.5;
+            $score += log($paste->download_count + 1) * 4.0;
 
-            // 3. Freshness Score: decay based on days old
-            // Formula: 50 / (1 + days_old)
-            $daysOld = max(0, $paste->created_at->diffInDays(now()));
-            $freshnessScore = 40.0 / (1.0 + $daysOld);
-            
-            $score += $freshnessScore;
+            // Freshness decay: value = 60 / (1 + days_old^0.7)
+            // Smoother than integer days — uses fractional hours for recent posts
+            $hoursOld = max(0, $paste->created_at->diffInMinutes(now()) / 60.0);
+            $score += 60.0 / (1.0 + pow($hoursOld / 24.0, 0.7));
 
-            // Assign computed rank score to model temporary property
             $paste->rank_score = round($score, 2);
-
             return $paste;
         })->sortByDesc('rank_score')->values();
     }

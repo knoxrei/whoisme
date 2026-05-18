@@ -180,7 +180,7 @@ class ProfileController extends Controller
     /**
      * Find and view all pastebins of a user with privacy controls.
      */
-    public function allPastebins($username)
+    public function allPastebins($username, Request $request)
     {
         $user = User::where('username', $username)->firstOrFail();
         
@@ -192,17 +192,44 @@ class ProfileController extends Controller
                   ->whereNull('password')
                   ->where('is_self_destruct', false);
         }
-        
-        $pastebins = $query->paginate(15);
+
+        // Cursor-based for load-more speed
+        $cursor = $request->input('cursor');
+        if ($cursor) {
+            $query->where('id', '<', $cursor);
+        }
+
+        $pastes = $query->limit(15)->get();
+
+        $nextCursor = null;
+        if ($pastes->count() === 15) {
+            $nextCursor = $pastes->last()->id;
+        }
+
         $title = "@{$user->username}'s Pastebins";
-        
-        return view('profile.pastebins', compact('user', 'pastebins', 'title'));
+
+        // AJAX Load More
+        if ($request->ajax() || $request->input('ajax')) {
+            $html = view('profile.partials.pastebin-rows', compact('pastes'))->render();
+            return response()->json([
+                'html'        => $html,
+                'next_cursor' => $nextCursor,
+            ]);
+        }
+
+        // Total count for header (only on first load)
+        $total = $user->pastebins()
+            ->when(!Auth::check() || Auth::id() !== $user->id, fn($q) =>
+                $q->where('visibility', 'public')->whereNull('password')->where('is_self_destruct', false)
+            )->count();
+
+        return view('profile.pastebins', compact('user', 'pastes', 'title', 'nextCursor', 'total'));
     }
 
     /**
      * Find and view all posts (comments) of a user with privacy controls.
      */
-    public function allPosts($username)
+    public function allPosts($username, Request $request)
     {
         $user = User::where('username', $username)->firstOrFail();
         
@@ -218,10 +245,99 @@ class ProfileController extends Controller
                   ->where('is_self_destruct', false);
             });
         }
-        
-        $comments = $query->paginate(15);
+
+        // Cursor-based for load-more speed
+        $cursor = $request->input('cursor');
+        if ($cursor) {
+            $query->where('id', '<', $cursor);
+        }
+
+        $comments = $query->limit(15)->get();
+
+        $nextCursor = null;
+        if ($comments->count() === 15) {
+            $nextCursor = $comments->last()->id;
+        }
+
         $title = "@{$user->username}'s Posts";
-        
-        return view('profile.posts', compact('user', 'comments', 'title'));
+
+        // AJAX Load More
+        if ($request->ajax() || $request->input('ajax')) {
+            $html = view('profile.partials.post-rows', compact('comments'))->render();
+            return response()->json([
+                'html'        => $html,
+                'next_cursor' => $nextCursor,
+            ]);
+        }
+
+        // Total count for header (only on first load)
+        $total = \App\Models\Comment::where('user_id', $user->id)
+            ->when(!Auth::check() || Auth::id() !== $user->id, fn($q) =>
+                $q->whereHas('pastebin', fn($p) =>
+                    $p->where('visibility', 'public')->whereNull('password')->where('is_self_destruct', false)
+                )
+            )->count();
+
+        return view('profile.posts', compact('user', 'comments', 'title', 'nextCursor', 'total'));
+    }
+
+    /**
+     * Display a public categorized list of community users.
+     */
+    public function usersList()
+    {
+        $title = 'User';
+
+        // Retrieve all users eager loaded with identification, ordered by reputation descending
+        $users = User::with(['identification'])
+            ->leftJoin('identifications', 'users.id', '=', 'identifications.user_id')
+            ->select('users.*')
+            ->orderBy('identifications.reputation', 'desc')
+            ->get();
+
+        // Initialize groups
+        $staff = [];
+        $premium = [];
+        $advertisers = [];
+        $members = [];
+
+        foreach ($users as $u) {
+            $role = $u->identification->role ?? \App\Enum\Role::MEMBER;
+
+            // Skip banned users from the public list for clean visual
+            if ($role === \App\Enum\Role::BANNED) {
+                continue;
+            }
+
+            // Add helper attributes for display style
+            $u->avatar_url = $u->identification && $u->identification->avatar_path
+                ? asset('storage/' . $u->identification->avatar_path)
+                : asset('storage/avatars/default.png');
+                
+            $u->display_style = $u->identification && $u->identification->role
+                ? $u->identification->role->userStyleWithBanner($u->username, $u->identification->color_username ?? '#ffffff')
+                : $u->username;
+
+            // Grouping logic with maximum 10 entries per group for lightweight loading
+            if ($role === \App\Enum\Role::OWNER || $role === \App\Enum\Role::MODERATOR) {
+                if (count($staff) < 10) {
+                    $staff[] = $u;
+                }
+            } elseif ($role === \App\Enum\Role::RICH || $role === \App\Enum\Role::PRIME || $role === \App\Enum\Role::VIP) {
+                if (count($premium) < 10) {
+                    $premium[] = $u;
+                }
+            } elseif ($role === \App\Enum\Role::ADVERTISER) {
+                if (count($advertisers) < 10) {
+                    $advertisers[] = $u;
+                }
+            } else {
+                if (count($members) < 10) {
+                    $members[] = $u;
+                }
+            }
+        }
+
+        return view('profile.users-list', compact('title', 'staff', 'premium', 'advertisers', 'members'));
     }
 }

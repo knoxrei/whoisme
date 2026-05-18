@@ -74,31 +74,8 @@
                 </table>
             </div>
 
-            <!-- Pagination Block -->
-            @if($pastebins->hasPages())
-                <div class="mt-6 pt-6 border-t border-red-900/10 flex justify-between items-center text-[10px] font-mono">
-                    <div>
-                        <span class="text-gray-600 uppercase tracking-widest">Showing</span> 
-                        <span class="text-gray-300 font-bold">{{ $pastebins->firstItem() }}-{{ $pastebins->lastItem() }}</span> 
-                        <span class="text-gray-600 uppercase tracking-widest">of</span> 
-                        <span class="text-gray-300 font-bold">{{ $pastebins->total() }}</span>
-                    </div>
-                    
-                    <div class="flex gap-2">
-                        @if($pastebins->onFirstPage())
-                            <span class="px-3 py-1 border border-red-900/10 text-gray-700 uppercase tracking-widest rounded-sm cursor-not-allowed">Prev</span>
-                        @else
-                            <a href="{{ $pastebins->previousPageUrl() }}" class="px-3 py-1 border border-red-900/30 text-gray-400 hover:text-white uppercase tracking-widest rounded-sm transition-colors duration-150">Prev</a>
-                        @endif
-
-                        @if($pastebins->hasMorePages())
-                            <a href="{{ $pastebins->nextPageUrl() }}" class="px-3 py-1 border border-red-900/30 text-gray-400 hover:text-white uppercase tracking-widest rounded-sm transition-colors duration-150">Next</a>
-                        @else
-                            <span class="px-3 py-1 border border-red-900/10 text-gray-700 uppercase tracking-widest rounded-sm cursor-not-allowed">Next</span>
-                        @endif
-                    </div>
-                </div>
-            @endif
+            <!-- Pagination -->
+            {{ $pastebins->links() }}
         </div>
     </div>
 </x-layouts.dashboard>

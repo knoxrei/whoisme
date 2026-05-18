@@ -22,6 +22,7 @@ class Identification extends Model
         'website',
         'bio',
         'username_changes',
+        'reputation',
     ];
 
     protected $casts = [

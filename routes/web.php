@@ -36,6 +36,9 @@ Route::get('/search', [SearchController::class, 'index'])->name('search.index');
 Route::get('/advanced-search', [SearchController::class, 'advanced'])->name('search.advanced');
 Route::get('/trending', [SearchController::class, 'trending'])->name('search.trending');
 Route::get('/recent', [SearchController::class, 'recent'])->name('search.recent');
+Route::get('/search/suggest', [SearchController::class, 'suggest'])->name('search.suggest');
+Route::get('/search/stats', [SearchController::class, 'stats'])->name('search.stats');
+
 
 Route::get('/support', function () {
     return view('support');
@@ -82,9 +85,11 @@ Route::prefix('upgrade')->name('upgrade.')->group(function () {
 
 
 // Profile Routes
+Route::get('/users', [ProfileController::class, 'usersList'])->middleware('auth')->name('profile.users-list');
 Route::get('/user-{username}', [ProfileController::class, 'show'])->name('profile.show');
 Route::get('/user-{username}/pastebins', [ProfileController::class, 'allPastebins'])->name('profile.pastebins');
 Route::get('/user-{username}/posts', [ProfileController::class, 'allPosts'])->name('profile.posts');
+
 
 Route::middleware('auth')->group(function () {
     Route::get('/settings/profile', [ProfileController::class, 'edit'])->name('profile.edit');

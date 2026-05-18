@@ -275,20 +275,14 @@
                         Additional Info
                     </div>
                     <div class="p-5 space-y-4">
-                        <div>
-                            <div class="text-[10px] font-bold text-gray-500 uppercase mb-1">Location</div>
-                            <div class="text-sm text-gray-200">{{ $user->identification->location ?? 'N/A' }}</div>
-                        </div>
+                       
                         <div>
                             <div class="text-[10px] font-bold text-gray-500 uppercase mb-1">Bio</div>
                             <div class="text-xs text-gray-300 italic leading-relaxed">
                                 {{ $user->identification->bio ?? 'No bio provided.' }}
                             </div>
                         </div>
-                        <div>
-                            <div class="text-[10px] font-bold text-gray-500 uppercase mb-1">Gender</div>
-                            <div class="text-sm text-gray-200">{{ $user->identification->gender ?? 'Not Specified' }}</div>
-                        </div>
+                    
                     </div>
                 </div>
                 <div class="bg-[#0a0a0a] border border-red-900/30 overflow-hidden rounded-sm">
@@ -325,15 +319,10 @@
                                 <div>
                                     <div class="text-[10px] font-bold text-gray-500 uppercase mb-2">Reputation</div>
                                     <div class="flex items-center justify-between">
-                                        <span class="text-2xl font-black text-red-600">0</span>
-                                        <a href="#" class="text-[10px] border border-red-800 bg-[#111] px-3 py-1 rounded-sm text-red-500 hover:text-red-400 font-bold uppercase">Details</a>
+                                        <span class="text-2xl font-black text-red-600">{{ $user->identification->reputation ?? 0 }}</span>
                                     </div>
                                 </div>
-                                <div class="p-3 bg-[#050505] border border-red-900/20 rounded-sm text-center">
-                                    <div class="text-[9px] text-gray-500 font-bold uppercase">Member Ranking</div>
-                                    <div class="text-xs text-white font-black mt-1">#0 UNRANKED</div>
-                                </div>
-
+                       
                                 @auth
                                     @if(auth()->id() !== $user->id)
                                         <div class="mt-4">
@@ -374,8 +363,8 @@
             </div>
             <div class="p-4 max-h-[60vh] overflow-y-auto space-y-3">
                 @forelse($user->followers as $follower)
-                    <a href="{{ route('profile.show', $follower->username) }}" class="flex items-center gap-3 p-2 border border-red-900/10 hover:bg-red-900/5 transition-all">
-                        <div class="w-10 h-10 border border-red-900/20 bg-black overflow-hidden flex-shrink-0">
+                    <a href="{{ route('profile.show', $follower->username) }}" class="flex items-center gap-3 p-2 hover:bg-red-900/5 transition-all">
+                        <div class="w-10 h-10 overflow-hidden flex-shrink-0">
                             @if($follower->identification->avatar_path)
                                 <img src="{{ Storage::url($follower->identification->avatar_path) }}" class="w-full h-full object-cover">
                             @else
@@ -405,7 +394,7 @@
             <div class="p-4 max-h-[60vh] overflow-y-auto space-y-3">
                 @forelse($user->following as $following)
                     <a href="{{ route('profile.show', $following->username) }}" class="flex items-center gap-3 p-2 border border-red-900/10 hover:bg-red-900/5 transition-all">
-                        <div class="w-10 h-10 border border-red-900/20 bg-black overflow-hidden flex-shrink-0">
+                        <div class="w-10 h-10 border border-red-900/20 overflow-hidden flex-shrink-0">
                             @if($following->identification->avatar_path)
                                 <img src="{{ Storage::url($following->identification->avatar_path) }}" class="w-full h-full object-cover">
                             @else

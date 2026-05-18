@@ -83,6 +83,10 @@ class PastebinPost
             'is_self_destruct' => $validateData['is_self_destruct'] ?? false,
         ]);
 
+        if ($pastebin->visibility === 'public') {
+            $user->identification()->increment('reputation', 1);
+        }
+
         // if has picture  ( arrray )
         if (isset($validateData['image'])) {
             foreach ($validateData['image'] as $image) {

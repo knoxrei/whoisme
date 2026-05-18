@@ -45,6 +45,14 @@ class PastebinController extends Controller
         if ($pastebin->is_self_destruct) {
             $isBurned = true;
 
+            // Decrement user reputation if public
+            if ($pastebin->visibility === 'public' && $pastebin->user_id) {
+                $authorIdentification = \App\Models\Identification::where('user_id', $pastebin->user_id)->first();
+                if ($authorIdentification) {
+                    $authorIdentification->decrement('reputation', 1);
+                }
+            }
+
             // Purge gallery files
             foreach ($pastebin->images as $image) {
                 \Illuminate\Support\Facades\Storage::disk('public')->delete($image->image_path);
@@ -82,6 +90,19 @@ class PastebinController extends Controller
     public function store(PastebinRequest $request)
     {
         $validate = $request->validated();
+
+        $title = $validate['title'];
+        $generatedSlug = \Illuminate\Support\Str::slug($title);
+
+        $existing = Pastebin::where('title', $title)
+            ->orWhere('slug', $generatedSlug)
+            ->first();
+
+        if ($existing) {
+            return redirect()->route('pastebin.show', $existing->slug)
+                ->with('info', 'Someone has already submitted/posted this target. Redirecting to the existing record.');
+        }
+
         // check if user is logged or not
         if (!auth()->check()) {
             $slug = PastebinPost::pastebinAnonymoust($validate);
@@ -129,6 +150,14 @@ class PastebinController extends Controller
     public function destroy(Pastebin $pastebin)
     {
         $this->authorize('delete', $pastebin);
+
+        // Decrement user reputation if public
+        if ($pastebin->visibility === 'public' && $pastebin->user_id) {
+            $authorIdentification = \App\Models\Identification::where('user_id', $pastebin->user_id)->first();
+            if ($authorIdentification) {
+                $authorIdentification->decrement('reputation', 1);
+            }
+        }
 
         // Delete associated image gallery files from storage
         foreach ($pastebin->images as $image) {

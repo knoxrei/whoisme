@@ -159,31 +159,8 @@
                 </table>
             </div>
 
-            <!-- Pagination Block -->
-            @if($users->hasPages())
-                <div class="mt-6 pt-6 border-t border-red-900/10 flex justify-between items-center text-[10px] font-mono">
-                    <div>
-                        <span class="text-gray-600 uppercase tracking-widest">Showing</span> 
-                        <span class="text-gray-300 font-bold">{{ $users->firstItem() }}-{{ $users->lastItem() }}</span> 
-                        <span class="text-gray-600 uppercase tracking-widest">of</span> 
-                        <span class="text-gray-300 font-bold">{{ $users->total() }}</span>
-                    </div>
-                    
-                    <div class="flex gap-2">
-                        @if($users->onFirstPage())
-                            <span class="px-3 py-1 border border-red-900/10 text-gray-700 uppercase tracking-widest rounded-sm cursor-not-allowed">Prev</span>
-                        @else
-                            <a href="{{ $users->previousPageUrl() }}" class="px-3 py-1 border border-red-900/30 text-gray-400 hover:text-white uppercase tracking-widest rounded-sm transition-colors duration-150">Prev</a>
-                        @endif
-
-                        @if($users->hasMorePages())
-                            <a href="{{ $users->nextPageUrl() }}" class="px-3 py-1 border border-red-900/30 text-gray-400 hover:text-white uppercase tracking-widest rounded-sm transition-colors duration-150">Next</a>
-                        @else
-                            <span class="px-3 py-1 border border-red-900/10 text-gray-700 uppercase tracking-widest rounded-sm cursor-not-allowed">Next</span>
-                        @endif
-                    </div>
-                </div>
-            @endif
+            <!-- Pagination -->
+            {{ $users->links() }}
         </div>
     </div>
 
