@@ -1,0 +1,447 @@
+<x-layouts.app :title="$user->username . ' Profile'">
+    <div class="w-full max-w-5xl mx-auto py-8 px-4 sm:px-6 lg:px-8 font-sans text-gray-200">
+        <!-- Header Banner - High Contrast for Tor -->
+        <div class="bg-[#0a0a0a] border border-red-900/40 p-4 md:p-6 flex items-center gap-6 mb-8 rounded-sm">
+            <div class="w-20 h-20 md:w-24 md:h-24 overflow-hidden flex-shrink-0 border border-red-900/30">
+                @if($user->identification->avatar_path)
+                    <img src="{{ Storage::url($user->identification->avatar_path) }}" alt="{{ $user->username }}" class="w-full h-full object-cover">
+                @else
+                    <div class="w-full h-full flex items-center justify-center text-4xl font-bold text-white bg-[#111]">
+                        {{ strtoupper(substr($user->username, 0, 1)) }}
+                    </div>
+                @endif
+            </div>
+            <div class="flex-1">
+                <h1 class="text-2xl md:text-3xl font-black text-white tracking-tight">
+                  {!! $user->identification->role->userStyle($user->username) !!}
+                </h1>
+                <div class="text-xs md:text-sm text-red-500 font-bold uppercase tracking-widest mt-1">
+                    {{ $user->identification->role->label() }} 
+                </div>
+                
+                <div class="flex flex-wrap items-center gap-x-6 gap-y-2 mt-3">
+                    <!-- Status -->
+                    <div class="text-[11px] md:text-xs text-gray-300 flex items-center gap-x-2">
+                        <span class="font-bold text-gray-500 uppercase tracking-tighter">Status:</span> 
+                        @if($user->last_active && $user->last_active->diffInMinutes(now()) < 5)
+                            <span class="text-green-500 font-black">ONLINE</span> 
+                        @else
+                            <span class="text-gray-500 font-bold uppercase tracking-tighter">OFFLINE</span> 
+                        @endif
+                    </div>
+
+                    <!-- Followers / Following (Clickable) -->
+                    <div class="flex items-center gap-4 text-[11px] md:text-xs">
+                        <button onclick="toggleModal('followersModal')" class="flex items-center gap-1.5 hover:text-red-500 transition-colors">
+                            <span class="text-gray-500 font-bold uppercase tracking-tighter">Followers:</span>
+                            <span class="text-white font-black">{{ $user->followers_count }}</span>
+                        </button>
+                        <div class="w-[1px] h-3 bg-red-900/40"></div>
+                        <button onclick="toggleModal('followingModal')" class="flex items-center gap-1.5 hover:text-red-500 transition-colors">
+                            <span class="text-gray-500 font-bold uppercase tracking-tighter">Following:</span>
+                            <span class="text-white font-black">{{ $user->following_count }}</span>
+                        </button>
+                    </div>
+                </div>
+
+                @if(!($user->last_active && $user->last_active->diffInMinutes(now()) < 5))
+                    <div class="text-[10px] text-gray-600 mt-1 uppercase font-bold tracking-tighter">
+                        Last Visit: {{ $user->last_active ? $user->last_active->diffForHumans() : 'Never' }}
+                    </div>
+                @endif
+            </div>
+            
+            <div class="hidden sm:flex items-center gap-3 ml-auto">
+                @auth
+                    @if(auth()->id() !== $user->id)
+                        @if(auth()->user()->following()->where('following_id', $user->id)->exists())
+                            <form action="{{ route('user.unfollow', $user->id) }}" method="POST" class="inline">
+                                @csrf
+                                <button type="submit" class="px-5 py-2 border border-gray-700 bg-gray-900 hover:bg-gray-800 text-gray-400 text-xs font-black uppercase tracking-widest transition-all rounded-sm">
+                                    Unfollow
+                                </button>
+                            </form>
+                        @else
+                            <form action="{{ route('user.follow', $user->id) }}" method="POST" class="inline">
+                                @csrf
+                                <button type="submit" class="px-5 py-2 border border-red-600 bg-red-600/10 hover:bg-red-600/20 text-red-500 text-xs font-black uppercase tracking-widest transition-all rounded-sm">
+                                    Follow
+                                </button>
+                            </form>
+                        @endif
+
+                        <!-- Administrative Moderation Operations -->
+                        @if(in_array(auth()->user()->identification->role->value, ['owner', 'moderator']))
+                            @if($user->identification->role->value === 'banned')
+                                <form id="unban-user-form" action="{{ route('profile.unban', $user->id) }}" method="POST" class="inline">
+                                    @csrf
+                                    <button type="button" onclick="confirmUnban()" class="px-5 py-2 border border-green-600 bg-green-600/10 hover:bg-green-600/20 text-green-500 text-xs font-black uppercase tracking-widest transition-all rounded-sm">
+                                        Unban
+                                    </button>
+                                </form>
+                                <script>
+                                    function confirmUnban() {
+                                        window.doxmeModal({
+                                            title: 'RESTORE SIGNATURE',
+                                            content: 'Confirm restoration of terminal access privileges for signature <strong>{{ $user->username }}</strong>. They will be permitted to post new data entries.',
+                                            confirmText: 'Unban User',
+                                            cancelText: 'Abort',
+                                            type: 'success',
+                                            onConfirm: () => {
+                                                document.getElementById('unban-user-form').submit();
+                                            }
+                                        });
+                                    }
+                                </script>
+                            @else
+                                <form id="ban-user-form" action="{{ route('profile.ban', $user->id) }}" method="POST" class="inline">
+                                    @csrf
+                                    <button type="button" onclick="confirmBan()" class="px-5 py-2 border border-red-600 bg-red-600/10 hover:bg-red-600/20 text-red-500 text-xs font-black uppercase tracking-widest transition-all rounded-sm">
+                                        Ban
+                                    </button>
+                                </form>
+                                <script>
+                                    function confirmBan() {
+                                        window.doxmeModal({
+                                            title: 'TERMINAL DEPRIVATION',
+                                            content: 'WARNING: You are restricting write/post permissions for signature <strong>{{ $user->username }}</strong> in the terminal database.<br><br>They will retain read and authentication options.',
+                                            confirmText: 'Execute Ban',
+                                            cancelText: 'Abort',
+                                            type: 'danger',
+                                            onConfirm: () => {
+                                                document.getElementById('ban-user-form').submit();
+                                            }
+                                        });
+                                    }
+                                </script>
+                            @endif
+                        @endif
+                    @else
+                        <a href="{{ route('profile.edit') }}" class="px-4 py-2 border border-red-800 bg-[#0a0a0a] hover:bg-red-950/30 text-white text-xs font-bold uppercase tracking-widest transition-all rounded-sm">
+                            Edit Profile
+                        </a>
+                    @endif
+                @endauth
+            </div>
+        </div>
+
+        @if(session('success'))
+            <div class="mb-6 p-4 bg-green-900/20 border border-green-900/40 text-green-500 text-sm font-bold rounded-sm">
+                {{ session('success') }}
+            </div>
+        @endif
+
+        @if(session('error'))
+            <div class="mb-6 p-4 bg-gray-900/20 border border-gray-700 text-gray-500 text-sm font-bold rounded-sm">
+                {{ session('error') }}
+            </div>
+        @endif
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            <!-- Left Sidebar: Forum Info -->
+            <div class="lg:col-span-3 space-y-6">
+                <div class="bg-[#0a0a0a] border border-red-900/30 overflow-hidden rounded-sm">
+                    <div class="bg-[#111] px-4 py-2.5 border-b border-red-900/40 text-[11px] font-black text-red-500 uppercase tracking-wider">
+                        {{ $user->username }}'s Forum Info
+                    </div>
+                    <div class="p-5">
+                        <div class="w-full mb-6 py-2 border border-red-600/50 bg-red-950/10 text-red-500 text-center font-black uppercase tracking-[0.2em] text-xs">
+                            {{ $user->identification->role->label() }}
+                        </div>
+
+                        <div class="space-y-4">
+                            <div class="border-b border-white/10 pb-2">
+                                <div class="text-[10px] font-bold text-gray-500 uppercase mb-1">Joined</div>
+                                <div class="text-sm text-white font-mono">{{ $user->created_at->format('y-m-d') }}</div>
+                            </div>
+
+                            <div class="border-b border-white/10 pb-2">
+                                <div class="text-[10px] font-bold text-gray-500 uppercase mb-1">Time Spent Online</div>
+                                <div class="text-sm text-white font-mono">
+                                    {{ $user->created_at->diffForHumans(null, true) }}
+                                </div>
+                            </div>
+
+                            <div class="pb-2">
+                                <div class="text-[10px] font-bold text-gray-500 uppercase mb-1">User Identifier</div>
+                                <div class="text-sm text-white font-mono">{{ $user->id }}</div>
+                            </div>
+
+                            <div class="pb-2">
+                                <div class="text-[10px] font-bold text-gray-500 uppercase mb-1">Changes / Refs</div>
+                                <div class="text-sm text-white font-mono">{{ $user->edits()->where('status', 'approved')->count() }} / 0</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Posts Block -->
+                <div class="bg-[#0a0a0a] border border-red-900/30 overflow-hidden rounded-sm">
+                    <div class="bg-[#111] px-4 py-2.5 border-b border-red-900/40 text-[11px] font-black text-red-500 uppercase tracking-wider">
+                        Recent Posts
+                    </div>
+                    <div class="p-0">
+                        @forelse($recentPosts as $post)
+                            <div class="border-b border-red-900/10 p-3 hover:bg-red-950/5 transition-all flex flex-col gap-1">
+                                <a href="{{ route('pastebin.show', $post->slug) }}" class="text-[11px] font-black text-white hover:text-red-500 transition-colors">
+                                    {{ Str::limit($post->title, 40) }}
+                                </a>
+                                <div class="text-[9px] text-gray-600 font-mono">{{ $post->created_at->diffForHumans() }}</div>
+                            </div>
+                        @empty
+                            <div class="p-5 text-center text-xs text-gray-600 italic">No posts yet.</div>
+                        @endforelse
+                    </div>
+                </div>
+
+                <!-- Recent Comments Block -->
+                <div class="bg-[#0a0a0a] border border-red-900/30 overflow-hidden rounded-sm">
+                    <div class="bg-[#111] px-4 py-2.5 border-b border-red-900/40 text-[11px] font-black text-red-500 uppercase tracking-wider">
+                        Recent Comments
+                    </div>
+                    <div class="p-0">
+                        @forelse($recentComments as $comment)
+                            <div class="border-b border-red-900/10 p-3 hover:bg-red-950/5 transition-all flex flex-col gap-1">
+                                <a href="{{ route('pastebin.show', $comment->pastebin->slug ?? '#') }}" class="text-[11px] font-black text-gray-300 hover:text-red-500 transition-colors italic">
+                                    "{{ Str::limit($comment->clean_content, 50) }}"
+                                </a>
+                                <div class="text-[9px] text-gray-500 mt-1">
+                                    on <a href="{{ route('pastebin.show', $comment->pastebin->slug ?? '#') }}" class="text-white hover:underline">{{ Str::limit($comment->pastebin->title ?? 'Unknown', 30) }}</a>
+                                    • <span class="font-mono text-gray-600">{{ $comment->created_at->diffForHumans() }}</span>
+                                </div>
+                            </div>
+                        @empty
+                            <div class="p-5 text-center text-xs text-gray-600 italic">No comments yet.</div>
+                        @endforelse
+                    </div>
+                </div>
+            </div>
+
+            <!-- Middle Column: Details & Stats -->
+            <div class="lg:col-span-9 space-y-6">
+                <!-- Recent Contributions Block -->
+                <div class="bg-[#0a0a0a] border border-red-900/30 overflow-hidden rounded-sm">
+                    <div class="bg-[#111] px-4 py-2.5 border-b border-red-900/40 text-[11px] font-black text-red-500 uppercase tracking-wider flex items-center justify-between">
+                        Recent Approved Contributions
+                       
+                    </div>
+                    <div class="p-0">
+                        @forelse($recentContributions as $contribution)
+                            <div class="border-b border-red-900/10 p-4 hover:bg-red-950/5 transition-all flex items-center justify-between group">
+                                <div class="flex flex-col gap-1">
+                                    <a href="{{ route('pastebin.show', $contribution->pastebin->slug) }}" class="text-xs font-black text-white hover:text-red-500 transition-colors">
+                                        {{ $contribution->pastebin->title }}
+                                    </a>
+                                    <div class="text-[10px] text-gray-500 font-mono italic">
+                                        "{{ Str::limit($contribution->title, 50) }}"
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <div class="text-[9px] font-black text-green-500 uppercase tracking-widest">Approved</div>
+                                    <div class="text-[9px] text-gray-600 font-mono">{{ $contribution->created_at->diffForHumans() }}</div>
+                                </div>
+                            </div>
+                        @empty
+                            <div class="p-10 text-center text-xs text-gray-600 italic">No approved contributions yet.</div>
+                        @endforelse
+                    </div>
+                </div>
+
+                <div class="bg-[#0a0a0a] border border-red-900/30 overflow-hidden rounded-sm">
+                    <div class="bg-[#111] px-4 py-2.5 border-b border-red-900/40 text-[11px] font-black text-red-500 uppercase tracking-wider">
+                        Contact Details
+                    </div>
+                    <div class="p-5">
+                        <div class="grid grid-cols-3 gap-4 text-sm">
+                            <div class="text-gray-400 font-bold">HomePage</div>
+                            <div class="col-span-2 text-red-400 font-medium">
+                                @if($user->identification->website && $user->identification->website !== 'N/A')
+                                    <a href="{{ $user->identification->website }}" target="_blank" class="hover:underline transition-all">{{ $user->identification->website }}</a>
+                                @else
+                                    <span class="text-gray-700">N/A</span>
+                                @endif
+                            </div>
+
+                            <div class="text-gray-400 font-bold">Email</div>
+                            <div class="col-span-2">
+
+<span>{{ $user->email }}</span>
+                        </div>
+                        </div>
+                    </div>
+                </div>
+ <div class="bg-[#0a0a0a] border border-red-900/30 overflow-hidden rounded-sm">
+                    <div class="bg-[#111] px-4 py-2.5 border-b border-red-900/40 text-[11px] font-black text-red-500 uppercase tracking-wider">
+                        Additional Info
+                    </div>
+                    <div class="p-5 space-y-4">
+                        <div>
+                            <div class="text-[10px] font-bold text-gray-500 uppercase mb-1">Location</div>
+                            <div class="text-sm text-gray-200">{{ $user->identification->location ?? 'N/A' }}</div>
+                        </div>
+                        <div>
+                            <div class="text-[10px] font-bold text-gray-500 uppercase mb-1">Bio</div>
+                            <div class="text-xs text-gray-300 italic leading-relaxed">
+                                {{ $user->identification->bio ?? 'No bio provided.' }}
+                            </div>
+                        </div>
+                        <div>
+                            <div class="text-[10px] font-bold text-gray-500 uppercase mb-1">Gender</div>
+                            <div class="text-sm text-gray-200">{{ $user->identification->gender ?? 'Not Specified' }}</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-[#0a0a0a] border border-red-900/30 overflow-hidden rounded-sm">
+                    <div class="bg-[#111] px-4 py-2.5 border-b border-red-900/40 text-[11px] font-black text-red-500 uppercase tracking-wider">
+                        Forum Statistics
+                    </div>
+                    <div class="p-6">
+                        <div class="border-b border-red-900/30 pb-3 mb-6">
+                            <h3 class="text-sm font-black text-red-500 uppercase tracking-widest">Main Stats</h3>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                            <div class="space-y-6">
+                                <div>
+                                    <div class="text-[10px] font-bold text-gray-500 uppercase mb-2">Total Pastebin</div>
+                                    <div class="flex items-baseline gap-3">
+                                        <span class="text-2xl font-black text-white">{{ $user->pastebins_count }}</span>
+                                        <span class="text-[10px] text-gray-500">({{ number_format($user->pastebins_count / max(1, $user->created_at->diffInDays(now())), 2) }} / day)</span>
+                                    </div>
+                                    <a href="{{ route('profile.pastebins', $user->username) }}" class="text-[9px] text-red-500 hover:text-red-400 font-bold uppercase mt-1 block">Find All Pastebin</a>
+                                </div>
+
+                                <div>
+                                    <div class="text-[10px] font-bold text-gray-500 uppercase mb-2">Total Posts</div>
+                                    <div class="flex items-baseline gap-3">
+                                        <span class="text-2xl font-black text-white">{{ $user->comments_count }}</span>
+                                        <span class="text-[10px] text-gray-500">({{ number_format($user->comments_count / max(1, $user->created_at->diffInDays(now())), 2) }} / day)</span>
+                                    </div>
+                                    <a href="{{ route('profile.posts', $user->username) }}" class="text-[9px] text-red-500 hover:text-red-400 font-bold uppercase mt-1 block">Find All Posts</a>
+                                </div>
+                            </div>
+
+                            <div class="space-y-6">
+                                <div>
+                                    <div class="text-[10px] font-bold text-gray-500 uppercase mb-2">Reputation</div>
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-2xl font-black text-red-600">0</span>
+                                        <a href="#" class="text-[10px] border border-red-800 bg-[#111] px-3 py-1 rounded-sm text-red-500 hover:text-red-400 font-bold uppercase">Details</a>
+                                    </div>
+                                </div>
+                                <div class="p-3 bg-[#050505] border border-red-900/20 rounded-sm text-center">
+                                    <div class="text-[9px] text-gray-500 font-bold uppercase">Member Ranking</div>
+                                    <div class="text-xs text-white font-black mt-1">#0 UNRANKED</div>
+                                </div>
+
+                                @auth
+                                    @if(auth()->id() !== $user->id)
+                                        <div class="mt-4">
+                                            @if(auth()->user()->following()->where('following_id', $user->id)->exists())
+                                                <form action="{{ route('user.unfollow', $user->id) }}" method="POST">
+                                                    @csrf
+                                                    <button type="submit" class="w-full py-2 border border-gray-700 bg-gray-900 hover:bg-gray-800 text-gray-400 text-[10px] font-black uppercase tracking-widest transition-all rounded-sm">
+                                                        Unfollow User
+                                                    </button>
+                                                </form>
+                                            @else
+                                                <form action="{{ route('user.follow', $user->id) }}" method="POST">
+                                                    @csrf
+                                                    <button type="submit" class="w-full py-2 border border-red-600 bg-red-600/10 hover:bg-red-600/20 text-red-500 text-[10px] font-black uppercase tracking-widest transition-all rounded-sm">
+                                                        Follow User
+                                                    </button>
+                                                </form>
+                                            @endif
+                                        </div>
+                                    @endif
+                                @endauth
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modals Section -->
+    <div id="followersModal" class="fixed inset-0 z-[100] hidden items-center justify-center bg-black/80 backdrop-blur-sm p-4">
+        <div class="bg-[#0a0a0a] border border-red-900/40 w-full max-w-md rounded-sm overflow-hidden shadow-2xl">
+            <div class="bg-[#111] px-5 py-3 border-b border-red-900/40 flex justify-between items-center">
+                <span class="text-xs font-black text-red-500 uppercase tracking-widest">Followers</span>
+                <button onclick="toggleModal('followersModal')" class="text-gray-500 hover:text-white transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                </button>
+            </div>
+            <div class="p-4 max-h-[60vh] overflow-y-auto space-y-3">
+                @forelse($user->followers as $follower)
+                    <a href="{{ route('profile.show', $follower->username) }}" class="flex items-center gap-3 p-2 border border-red-900/10 hover:bg-red-900/5 transition-all">
+                        <div class="w-10 h-10 border border-red-900/20 bg-black overflow-hidden flex-shrink-0">
+                            @if($follower->identification->avatar_path)
+                                <img src="{{ Storage::url($follower->identification->avatar_path) }}" class="w-full h-full object-cover">
+                            @else
+                                <div class="w-full h-full flex items-center justify-center text-gray-700 font-bold bg-[#050505]">{{ substr($follower->username, 0, 1) }}</div>
+                            @endif
+                        </div>
+                        <div>
+                            <div class="text-sm font-bold text-white">{{ $follower->username }}</div>
+                            <div class="text-[10px] text-gray-500 uppercase">{{ $follower->identification->role->label() }}</div>
+                        </div>
+                    </a>
+                @empty
+                    <div class="py-10 text-center text-xs text-gray-600 italic">No followers yet.</div>
+                @endforelse
+            </div>
+        </div>
+    </div>
+
+    <div id="followingModal" class="fixed inset-0 z-[100] hidden items-center justify-center bg-black/80 backdrop-blur-sm p-4">
+        <div class="bg-[#0a0a0a] border border-red-900/40 w-full max-w-md rounded-sm overflow-hidden shadow-2xl">
+            <div class="bg-[#111] px-5 py-3 border-b border-red-900/40 flex justify-between items-center">
+                <span class="text-xs font-black text-red-500 uppercase tracking-widest">Following</span>
+                <button onclick="toggleModal('followingModal')" class="text-gray-500 hover:text-white transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                </button>
+            </div>
+            <div class="p-4 max-h-[60vh] overflow-y-auto space-y-3">
+                @forelse($user->following as $following)
+                    <a href="{{ route('profile.show', $following->username) }}" class="flex items-center gap-3 p-2 border border-red-900/10 hover:bg-red-900/5 transition-all">
+                        <div class="w-10 h-10 border border-red-900/20 bg-black overflow-hidden flex-shrink-0">
+                            @if($following->identification->avatar_path)
+                                <img src="{{ Storage::url($following->identification->avatar_path) }}" class="w-full h-full object-cover">
+                            @else
+                                <div class="w-full h-full flex items-center justify-center text-gray-700 font-bold bg-[#050505]">{{ substr($following->username, 0, 1) }}</div>
+                            @endif
+                        </div>
+                        <div>
+                            <div class="text-sm font-bold text-white">{{ $following->username }}</div>
+                            <div class="text-[10px] text-gray-500 uppercase">{{ $following->identification->role->label() }}</div>
+                        </div>
+                    </a>
+                @empty
+                    <div class="py-10 text-center text-xs text-gray-600 italic">Not following anyone yet.</div>
+                @endforelse
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function toggleModal(id) {
+            const modal = document.getElementById(id);
+            if (modal.classList.contains('hidden')) {
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+                document.body.style.overflow = 'hidden';
+            } else {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+                document.body.style.overflow = 'auto';
+            }
+        }
+
+        // Close on clicking outside
+        window.onclick = function(event) {
+            if (event.target.id === 'followersModal') toggleModal('followersModal');
+            if (event.target.id === 'followingModal') toggleModal('followingModal');
+        }
+    </script>
+</x-layouts.app>

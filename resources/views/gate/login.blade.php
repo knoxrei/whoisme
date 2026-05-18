@@ -1,0 +1,61 @@
+<x-layouts.app :title="$title">
+    <div class="min-h-screen flex flex-col items-center justify-center  px-4">
+
+
+
+
+
+
+
+        <div class="w-full max-w-md  rounded-lg p-10 shadow-xl">
+            <div class="mb-8 text-center">
+                <h1 class="text-3xl font-semibold text-white tracking-tight">Login</h1>
+                <p class="text-gray-500 mt-2 text-sm">Please enter your credentials to continue.</p>
+            </div>
+            @if(session('success'))
+                <div
+                    class="sticky top-0 z-50 bg-green-900/15 text-white text-center py-3 px-4 shadow-md font-medium text-sm">
+                    {{ session('success') }}
+                </div>
+            @endif
+
+            @if(session('error'))
+                <div class="sticky top-0 z-50 bg-red-600/15 text-white text-center py-3 px-4 shadow-md font-medium text-sm">
+                    {{ session('error') }}
+                </div>
+            @endif
+            <form action="{{ route('login.store') }}" method="POST" class="space-y-5">
+                @csrf
+                <div class="space-y-1.5">
+                    <label for="username"
+                        class="text-xs font-medium text-gray-400 uppercase tracking-wider ml-1">Username</label>
+                    <input type="text" name="username" id="username" required
+                        class="w-full bg-black border border-gray-800 rounded-md px-4 py-3 text-white focus:outline-none focus:ring-1 focus:ring-red-600 focus:border-red-600 transition-all placeholder:text-gray-600"
+                        placeholder="Your username">
+                </div>
+
+                <div class="space-y-1.5">
+                    <label for="password"
+                        class="text-xs font-medium text-gray-400 uppercase tracking-wider ml-1">Password</label>
+                    <input type="password" name="password" id="password" required
+                        class="w-full bg-black border border-gray-800 rounded-md px-4 py-3 text-white focus:outline-none focus:ring-1 focus:ring-red-600 focus:border-red-600 transition-all placeholder:text-gray-600"
+                        placeholder="••••••••">
+                </div>
+
+                <div class="pt-2">
+                    <button type="submit"
+                        class="w-full bg-red-600 hover:bg-red-700 text-white font-medium py-3 rounded-md transition-colors shadow-lg shadow-red-900/10">
+                        Sign In
+                    </button>
+                </div>
+
+                <div class="text-center pt-2">
+                    <span class="text-gray-500 text-sm">Don't have an account?</span>
+                    <a href="{{ route('register.index') }}"
+                        class="text-red-500 hover:text-red-400 text-sm font-medium ml-1">Register here</a>
+                </div>
+            </form>
+        </div>
+
+    </div>
+</x-layouts.app>
