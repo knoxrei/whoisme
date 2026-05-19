@@ -14,14 +14,24 @@ class ValidateGate extends Controller
 {
     public function register(Request $request)
     {
-        if ($request->has('ref')) {
-            $referrer = User::where('username', $request->query('ref'))->first();
+        $ref = $request->query('ref');
+        
+        if (!$ref && session()->has('referrer_id')) {
+            $referrer = User::find(session()->get('referrer_id'));
+            if ($referrer) {
+                $ref = $referrer->username;
+            }
+        }
+
+        if ($ref) {
+            $referrer = User::where('username', $ref)->first();
             if ($referrer) {
                 session()->put('referrer_id', $referrer->id);
             }
         }
+
         $title = 'Register';
-        return view('gate.register', compact('title'));
+        return view('gate.register', compact('title', 'ref'));
     }
 
     public function registerStore(RegisterRequest $request)
@@ -30,6 +40,19 @@ class ValidateGate extends Controller
 
         $otpCode = sprintf("%06d", mt_rand(1, 999999));
 
+        // Determine referrer from request or session
+        $referrerId = null;
+        if (!empty($validateData['ref'])) {
+            $referrer = User::where('username', $validateData['ref'])->first();
+            if ($referrer) {
+                $referrerId = $referrer->id;
+            }
+        }
+        
+        if (!$referrerId) {
+            $referrerId = session()->get('referrer_id');
+        }
+
         // Store registration info in session instead of database
         session()->put('pending_registration', [
             'username' => $validateData['username'],
@@ -37,7 +60,7 @@ class ValidateGate extends Controller
             'password' => $validateData['password'],
             'verification_code' => $otpCode,
             'verification_expires_at' => now()->addMinutes(15)->toIso8601String(),
-            'referrer_id' => session()->get('referrer_id'),
+            'referrer_id' => $referrerId,
         ]);
 
         try {

@@ -36,6 +36,15 @@
                     <span class="text-[10px] text-red-500">{{ $errors->first('password') }}</span>
                 </div>
 
+                <div class="space-y-1.5">
+                    <label for="ref"
+                        class="text-xs font-medium text-gray-400 uppercase tracking-wider ml-1">Referral Code (Optional)</label>
+                    <input type="text" name="ref" id="ref" value="{{ old('ref', $ref ?? '') }}"
+                        class="w-full bg-black border border-gray-800 rounded-md px-4 py-3 text-white focus:outline-none focus:ring-1 focus:ring-red-600 focus:border-red-600 transition-all placeholder:text-gray-600"
+                        placeholder="Enter referral code">
+                    <span class="text-[10px] text-red-500">{{ $errors->first('ref') }}</span>
+                </div>
+
                 <div class="pt-2">
                     <button type="submit"
                         class="w-full bg-red-600 hover:bg-red-700 text-white font-medium py-3 rounded-md transition-colors shadow-lg shadow-red-900/10">

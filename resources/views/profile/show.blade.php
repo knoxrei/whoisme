@@ -247,22 +247,19 @@
                     </div>
                 </div>
 
-                @auth
-                    @if(auth()->id() === $user->id)
                         <!-- Referral System Card -->
                         <div class="bg-[#0a0a0a] border border-red-900/30 overflow-hidden rounded-sm">
                             <div class="bg-[#111] px-4 py-2.5 border-b border-red-900/40 text-[11px] font-black text-red-500 uppercase tracking-wider flex items-center justify-between">
-                                <span>Your Referral Program</span>
-                                <span class="bg-red-950 text-red-500 border border-red-900/50 px-2 py-0.5 text-[9px] font-bold rounded-sm">ACTIVE</span>
+                                <span>{{ auth()->check() && auth()->id() === $user->id ? 'Your Referral Program' : $user->username . "'s Referral Program" }}</span>
                             </div>
                             <div class="p-5 space-y-4">
                                 <p class="text-xs text-gray-400 leading-relaxed">
-                                    Invite other users to join our terminal database. You will receive <strong class="text-red-500">+10 Reputation</strong> for each user that registers, and an additional <strong class="text-red-500">+1 Reputation</strong> every time they publish a public pastebin.
+                                    Invite other users to join to DoxMe and get benefits
                                 </p>
                                 
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div class="flex flex-col gap-2">
-                                        <label class="text-[10px] font-bold text-gray-500 uppercase">Your Referral Link</label>
+                                        <label class="text-[10px] font-bold text-gray-500 uppercase">{{ auth()->check() && auth()->id() === $user->id ? 'Your Referral Link' : $user->username . "'s Referral Link" }}</label>
                                         <div class="flex items-center gap-2 bg-[#050505] border border-red-900/20 p-2 rounded-sm">
                                             <input type="text" readonly id="referral-link" value="{{ route('register.index', ['ref' => $user->username]) }}" 
                                                    class="bg-transparent text-xs text-gray-300 font-mono focus:outline-none flex-1 select-all cursor-text" />
@@ -272,21 +269,12 @@
                                         </div>
                                     </div>
 
-                                    <div class="flex flex-col gap-2">
-                                        <label class="text-[10px] font-bold text-gray-500 uppercase">Your Referral Code</label>
-                                        <div class="flex items-center gap-2 bg-[#050505] border border-red-900/20 p-2 rounded-sm">
-                                            <input type="text" readonly id="referral-code" value="{{ $user->username }}" 
-                                                   class="bg-transparent text-xs text-gray-300 font-mono focus:outline-none flex-1 select-all cursor-text" />
-                                            <button onclick="copyReferralCode()" class="px-3 py-1 border border-red-600 bg-red-600/10 hover:bg-red-600/20 text-red-500 text-[10px] font-black uppercase tracking-widest transition-all rounded-sm flex items-center gap-1 active:scale-95">
-                                                <span id="copy-code-btn-text">Copy</span>
-                                            </button>
-                                        </div>
-                                    </div>
+                                 
                                 </div>
 
                                 <div class="flex items-center justify-between border-t border-red-900/10 pt-4 mt-2">
                                     <div class="flex flex-col">
-                                        <span class="text-[10px] font-bold text-gray-500 uppercase">Total Referred Users</span>
+                                        <span class="text-[10px] font-bold text-gray-500 uppercase">{{ auth()->check() && auth()->id() === $user->id ? 'Total Referred Users' : 'Total Referred by ' . $user->username }}</span>
                                         <span class="text-[9px] text-gray-600">Calculated in real-time</span>
                                     </div>
                                     <span class="text-xs text-red-500 font-black font-mono bg-red-950/20 border border-red-900/40 px-3 py-1 rounded-sm">
@@ -297,12 +285,49 @@
                         </div>
 
                         <script>
+                            function fallbackCopyText(text, successCallback) {
+                                const textArea = document.createElement("textarea");
+                                textArea.value = text;
+                                textArea.style.position = "fixed";
+                                textArea.style.top = "0";
+                                textArea.style.left = "0";
+                                textArea.style.width = "2em";
+                                textArea.style.height = "2em";
+                                textArea.style.padding = "0";
+                                textArea.style.border = "none";
+                                textArea.style.outline = "none";
+                                textArea.style.boxShadow = "none";
+                                textArea.style.background = "transparent";
+                                document.body.appendChild(textArea);
+                                textArea.focus();
+                                textArea.select();
+                                try {
+                                    const successful = document.execCommand('copy');
+                                    if (successful && successCallback) {
+                                        successCallback();
+                                    }
+                                } catch (err) {
+                                    console.error('Fallback copy failed', err);
+                                }
+                                document.body.removeChild(textArea);
+                            }
+
+                            function copyTextToClipboard(text, successCallback) {
+                                if (!navigator.clipboard) {
+                                    fallbackCopyText(text, successCallback);
+                                    return;
+                                }
+                                navigator.clipboard.writeText(text).then(successCallback, function(err) {
+                                    fallbackCopyText(text, successCallback);
+                                });
+                            }
+
                             function copyReferralLink() {
                                 const copyText = document.getElementById("referral-link");
                                 copyText.select();
                                 copyText.setSelectionRange(0, 99999); // For mobile devices
                                 
-                                navigator.clipboard.writeText(copyText.value).then(() => {
+                                copyTextToClipboard(copyText.value, function() {
                                     const btnText = document.getElementById("copy-btn-text");
                                     btnText.innerText = "Copied!";
                                     btnText.style.color = '#22c55e'; // Tailwind green-500
@@ -311,8 +336,6 @@
                                         btnText.innerText = "Copy";
                                         btnText.style.color = '';
                                     }, 2000);
-                                }).catch((err) => {
-                                    console.error('Failed to copy text: ', err);
                                 });
                             }
 
@@ -321,7 +344,7 @@
                                 copyText.select();
                                 copyText.setSelectionRange(0, 99999); // For mobile devices
                                 
-                                navigator.clipboard.writeText(copyText.value).then(() => {
+                                copyTextToClipboard(copyText.value, function() {
                                     const btnText = document.getElementById("copy-code-btn-text");
                                     btnText.innerText = "Copied!";
                                     btnText.style.color = '#22c55e'; // Tailwind green-500
@@ -330,13 +353,9 @@
                                         btnText.innerText = "Copy";
                                         btnText.style.color = '';
                                     }, 2000);
-                                }).catch((err) => {
-                                    console.error('Failed to copy text: ', err);
                                 });
                             }
                         </script>
-                    @endif
-                @endauth
 
                 <div class="bg-[#0a0a0a] border border-red-900/30 overflow-hidden rounded-sm">
                     <div class="bg-[#111] px-4 py-2.5 border-b border-red-900/40 text-[11px] font-black text-red-500 uppercase tracking-wider">

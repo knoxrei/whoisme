@@ -26,6 +26,17 @@ class RegisterRequest extends FormRequest
             'username' => 'required|min:4|max:12|unique:users,username',
             'email' => 'required|email|unique:users,email',
             'password' => 'required|min:6',
+            'ref' => 'nullable|string|exists:users,username',
+        ];
+    }
+
+    /**
+     * Get the custom validation messages.
+     */
+    public function messages(): array
+    {
+        return [
+            'ref.exists' => 'The entered referral code is invalid or does not exist.',
         ];
     }
 }
