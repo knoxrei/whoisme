@@ -168,27 +168,6 @@
                             </p>
                         </div>
                     </div>
-                </div>
-
-                <!-- Sponsor Banners Section -->
-                @php
-                    $dashboardBanners = \App\Helper\AdTracker::getBanners(2, 0);
-                @endphp
-
-                @if($dashboardBanners->isNotEmpty())
-                    <div class="p-6 border border-red-900/20 bg-[#050505] rounded-sm">
-                        <p class="text-[9px] text-gray-600 uppercase tracking-widest text-center mb-3">SPONSORED LINKS</p>
-                        <div class="flex flex-col gap-3 items-center">
-                            @foreach($dashboardBanners as $banner)
-                                <a href="{{ route('ads.click', $banner->id) }}" target="_blank" 
-                                   class="block w-full max-w-[466px] h-[58px] border border-red-950/40 hover:border-red-600/70 overflow-hidden rounded-sm bg-black transition-colors duration-150 relative group">
-                                    <img src="{{ asset($banner->media_url) }}" alt="{{ $banner->title }}" 
-                                         class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity duration-150">
-                                </a>
-                            @endforeach
-                        </div>
-                    </div>
-                @endif
             </div>
 
             <!-- Right Column: System Intel -->
