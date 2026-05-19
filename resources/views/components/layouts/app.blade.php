@@ -19,6 +19,29 @@
         $seoKeywords = $keywords ?? 'doxme, doxbin, pastebin, leaks, cyber security, threat intelligence';
         $seoImage = $ogImage ?? asset('storage/avatars/default.png');
         $seoUrl = $canonicalUrl ?? request()->url();
+
+        // Retrieve active internal ads (up to 6)
+        $internalAds = \App\Helper\AdTracker::getBanners(6, 0);
+        $internalCount = $internalAds->count();
+        $externalCount = max(0, 6 - $internalCount);
+        
+        $slots = [];
+        $externalIndex = 1;
+        
+        // Fill slots with internal ads first
+        foreach ($internalAds as $ad) {
+            $slots[] = ['type' => 'internal', 'data' => $ad];
+        }
+        
+        // Fill the rest with external placeholders
+        for ($i = $internalCount; $i < 6; $i++) {
+            $slots[] = ['type' => 'external', 'id' => 'banner-place-468-' . $externalIndex];
+            $externalIndex++;
+        }
+        
+        // Split slots for top (slots 1-3) and bottom (slots 4-6)
+        $topSlots = array_slice($slots, 0, 3);
+        $bottomSlots = array_slice($slots, 3, 3);
     @endphp
 
     <!-- SEO Meta Tags -->
@@ -58,19 +81,87 @@
 <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
 <link rel="manifest" href="/site.webmanifest">
     @fonts
+    @if($externalCount > 0)
+        <script src="http://admate3tczgp6digew7jpzcosq52rs7anru53imwqimron27emq7dbqd.onion/js/get-banners.js"></script>
+    @endif
 
     <!-- Styles / Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <style>
+        div[id^="banner-place-468-"] {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            transition: all 0.2s ease-in-out;
+        }
+        div[id^="banner-place-468-"] > a,
+        div[id^="banner-place-468-"] > img,
+        div[id^="banner-place-468-"] > iframe {
+            max-width: 100% !important;
+            height: auto !important;
+            display: block;
+            margin: 0 auto;
+        }
+    </style>
 </head>
 
 <body class="bg-[#050505]">
     <x-navbar />
+
+    <!-- Top Sponsored Ad Banners -->
+    <div class="w-full max-w-7xl mx-auto px-4 py-3 flex flex-col items-center gap-2">
+        <div class="w-full flex items-center justify-center gap-4">
+            <div class="h-[1px] bg-red-950/20 flex-grow"></div>
+            <span class="text-[8px] font-black text-red-500/70 uppercase tracking-[0.2em] whitespace-nowrap select-none">
+                SPONSORED NETWORK LINKS
+            </span>
+            <div class="h-[1px] bg-red-950/20 flex-grow"></div>
+        </div>
+        <div class="flex flex-wrap justify-center items-center gap-4 w-full">
+            @foreach($topSlots as $slot)
+                @if($slot['type'] === 'internal')
+                    <a href="{{ route('ads.click', $slot['data']->id) }}" target="_blank" class="block w-full max-w-[468px] h-[60px] border border-red-950/30 hover:border-red-650/40 overflow-hidden rounded bg-[#0a0a0a]/30 transition-all duration-150 relative group">
+                        <img src="{{ asset($slot['data']->media_url) }}" alt="{{ $slot['data']->title }}" class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity duration-150">
+                    </a>
+                @else
+                    <div id="{{ $slot['id'] }}" class="w-full max-w-[468px] min-h-[60px] flex items-center justify-center border border-red-950/30 hover:border-red-600/50 bg-[#0a0a0a]/30 rounded transition-all duration-150"></div>
+                @endif
+            @endforeach
+        </div>
+    </div>
+
     <main class="flex-grow flex flex-col min-h-screen">
         {{ $slot }}
+
+        <!-- Bottom Sponsored Ad Banners -->
+        <div class="w-full max-w-7xl mx-auto px-4 py-4 mt-auto flex flex-col items-center gap-2">
+            <div class="w-full flex items-center justify-center gap-4">
+                <div class="h-[1px] bg-red-950/20 flex-grow"></div>
+                <span class="text-[8px] font-black text-red-500/70 uppercase tracking-[0.2em] whitespace-nowrap select-none">
+                    RECOMMENDED SPONSORS
+                </span>
+                <div class="h-[1px] bg-red-950/20 flex-grow"></div>
+            </div>
+            <div class="flex flex-wrap justify-center items-center gap-4 w-full">
+                @foreach($bottomSlots as $slot)
+                    @if($slot['type'] === 'internal')
+                        <a href="{{ route('ads.click', $slot['data']->id) }}" target="_blank" class="block w-full max-w-[468px] h-[60px] border border-red-950/30 hover:border-red-650/40 overflow-hidden rounded bg-[#0a0a0a]/30 transition-all duration-150 relative group">
+                            <img src="{{ asset($slot['data']->media_url) }}" alt="{{ $slot['data']->title }}" class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity duration-150">
+                        </a>
+                    @else
+                        <div id="{{ $slot['id'] }}" class="w-full max-w-[468px] min-h-[60px] flex items-center justify-center border border-red-950/30 hover:border-red-600/50 bg-[#0a0a0a]/30 rounded transition-all duration-150"></div>
+                    @endif
+                @endforeach
+            </div>
+        </div>
+
          <x-footer />
     </main>
 
-   
+    @if($externalCount > 0)
+        <script>getBanners("http://admate3tczgp6digew7jpzcosq52rs7anru53imwqimron27emq7dbqd.onion/api/get-banner/vKB0LLEKzrqhxGoA/type/468-60/count/{{ $externalCount }}");</script>
+    @endif
 
     <!-- Global Cyberpunk Modal Container -->
     <div id="global-action-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 opacity-0 transition-opacity duration-200" style="backdrop-filter: blur(8px); background-color: rgba(0, 0, 0, 0.85);" data-modal-container>
