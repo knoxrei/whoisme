@@ -78,8 +78,7 @@
                 $internalAds = \App\Helper\AdTracker::getBanners(2, 0);
             @endphp
             @if($internalAds->isNotEmpty())
-                <div class="w-full mt-8 space-y-4">
-                 
+                <div class="w-full mb-4 mt-5 space-y-4">
                     <div class="flex flex-col items-center gap-3 w-full">
                         @foreach($internalAds as $ad)
                             <a href="{{ route('ads.click', $ad->id) }}" target="_blank" class="block w-full max-w-[566px] h-[72px] border border-red-950/30 hover:border-red-500/80 overflow-hidden rounded bg-[#0a0a0a]/30 transition-all duration-150 relative group">
@@ -133,7 +132,7 @@
                 <p class="text-[9px] text-gray-600 uppercase tracking-widest mb-2.5 text-center">Latest Registered Operative</p>
                 <div class="inline-flex items-center gap-2 px-4 py-2 bg-[#0a0a0a] border border-red-950/40 rounded-sm">
                     <span class="w-1.5 h-1.5 rounded-full bg-red-600"></span>
-                    <span class="text-[10px] font-bold text-gray-200 font-mono">@ {{ $latestUser->username }}</span>
+                    <span class="text-[10px] font-bold text-gray-200 font-mono">@ <a href="{{ route('profile.show', $latestUser->username) }}">{{ $latestUser->username }}</a></span>
                     <span class="text-[8px] text-gray-500 font-mono">joined {{ $latestUser->created_at->diffForHumans() }}</span>
                 </div>
             </div>
