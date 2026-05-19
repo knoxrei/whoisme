@@ -235,7 +235,10 @@
 
                     @if($showBanners->isNotEmpty())
                         <div class="bg-[#050505] border border-red-900/30 p-5 rounded-sm">
-                            <p class="text-[9px] text-gray-600 uppercase tracking-widest text-center mb-3">SPONSORED BANNERS</p>
+                            <p class="text-[9px] text-red-500 font-black uppercase tracking-[0.2em] text-center mb-3 flex items-center justify-center gap-1.5 font-mono select-none">
+                                <span class="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse"></span>
+                                OFFICIAL PLATFORM SPONSORS
+                            </p>
                             <div class="flex flex-wrap justify-center gap-4">
                                 @foreach($showBanners as $banner)
                                     <a href="{{ route('ads.click', $banner->id) }}" target="_blank" 

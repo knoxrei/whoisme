@@ -20,9 +20,6 @@
         $seoImage = $ogImage ?? asset('storage/avatars/default.png');
         $seoUrl = $canonicalUrl ?? request()->url();
 
-        // Retrieve active internal ads (up to 6)
-        $internalAds = \App\Helper\AdTracker::getBanners(6, 0);
-        
         // Cap external Admate ads to a maximum of 4
         $externalCount = 4;
     @endphp
@@ -92,26 +89,7 @@
 <body class="bg-[#050505]">
     <x-navbar />
 
-    <!-- Top Official Sponsors (Internal Only) -->
-    @if($internalAds->isNotEmpty())
-    <div class="w-full max-w-7xl mx-auto px-4 py-3 flex flex-col items-center gap-2">
-        <div class="w-full flex items-center justify-center gap-4">
-            <div class="h-[1px] bg-red-600/30 flex-grow"></div>
-            <span class="text-[8px] font-black text-red-500 uppercase tracking-[0.2em] whitespace-nowrap select-none flex items-center gap-1.5 font-mono">
-                <span class="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse"></span>
-                OFFICIAL PLATFORM SPONSORS
-            </span>
-            <div class="h-[1px] bg-red-600/30 flex-grow"></div>
-        </div>
-        <div class="flex flex-wrap justify-center items-center gap-4 w-full">
-            @foreach($internalAds as $ad)
-                <a href="{{ route('ads.click', $ad->id) }}" target="_blank" class="block w-full max-w-[468px] h-[60px] border border-red-950/40 hover:border-red-500/80 overflow-hidden rounded bg-[#0a0a0a]/30 transition-all duration-150 relative group">
-                    <img src="{{ asset($ad->media_url) }}" alt="{{ $ad->title }}" class="w-full h-full object-cover opacity-90 group-hover:opacity-100 transition-opacity duration-150">
-                </a>
-            @endforeach
-        </div>
-    </div>
-    @endif
+
 
     <main class="flex-grow flex flex-col min-h-screen">
         {{ $slot }}
