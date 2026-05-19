@@ -134,6 +134,18 @@ class PastebinController extends Controller
 
         $pastebin->update($validated);
 
+        // Handle deletion of existing images
+        if ($request->has('delete_images')) {
+            $imagesToDelete = \App\Models\ImagePastebin::whereIn('id', $request->delete_images)
+                ->where('pastebin_id', $pastebin->id)
+                ->get();
+
+            foreach ($imagesToDelete as $image) {
+                \Illuminate\Support\Facades\Storage::disk('public')->delete($image->image_path);
+                $image->delete();
+            }
+        }
+
         if ($request->hasFile('image')) {
             foreach ($request->file('image') as $image) {
                 $imagePath = $image->store('uploadImages', 'public');

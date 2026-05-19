@@ -37,6 +37,8 @@ class PastebinRequest extends FormRequest
             'image' => 'nullable|array|max:5',
             'image.*' => 'nullable',
             'is_self_destruct' => 'nullable|boolean',
+            'delete_images' => 'nullable|array',
+            'delete_images.*' => 'exists:image_pastebins,id',
         ];
 
         // Check if user has permission for password

@@ -416,10 +416,31 @@
                         <input type="file" name="cover_path" id="cover_path" class="w-full bg-[#050505] border border-red-900/20 px-4 py-2 text-xs text-gray-300 focus:outline-none focus:border-red-600 rounded-sm file:mr-4 file:py-1 file:px-3 file:rounded file:border-0 file:text-xs file:font-semibold file:bg-red-600 file:text-white hover:file:bg-red-700 cursor-pointer">
                     </div>
                     <div class="space-y-2">
-                        <label for="image" class="text-[10px] font-black text-gray-600 uppercase tracking-widest">Gallery Images (Max 5) <span class="text-[8px] font-normal text-red-500 normal-case">(Optional - Appends to gallery)</span></label>
-                        <input type="file" name="image[]" id="image" multiple class="w-full bg-[#050505] border border-red-900/20 px-4 py-2 text-xs text-gray-300 focus:outline-none focus:border-red-600 rounded-sm file:mr-4 file:py-1 file:px-3 file:rounded file:border-0 file:text-xs file:font-semibold file:bg-gray-800 file:text-white hover:file:bg-gray-700 cursor-pointer">
+                        <label for="edit_image" class="text-[10px] font-black text-gray-600 uppercase tracking-widest">Gallery Images (Max 5) <span class="text-[8px] font-normal text-red-500 normal-case">(Optional - Appends to gallery)</span></label>
+                        <input type="file" name="image[]" id="edit_image" multiple class="w-full bg-[#050505] border border-red-900/20 px-4 py-2 text-xs text-gray-300 focus:outline-none focus:border-red-600 rounded-sm file:mr-4 file:py-1 file:px-3 file:rounded file:border-0 file:text-xs file:font-semibold file:bg-gray-800 file:text-white hover:file:bg-gray-700 cursor-pointer">
                     </div>
                 </div>
+
+                @if($pastebin->images && $pastebin->images->count() > 0)
+                <div class="space-y-2 mt-6">
+                    <label class="text-[10px] font-black text-gray-600 uppercase tracking-widest">Manage Existing Gallery Images</label>
+                    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 p-4 border border-red-900/20 bg-[#050505] rounded-sm">
+                        @foreach($pastebin->images as $image)
+                            <div class="relative aspect-square border border-red-900/20 p-1 group transition-all duration-150 image-to-delete-container">
+                                <img src="{{ asset('storage/' . $image->image_path) }}" class="w-full h-full object-cover rounded-sm image-preview" alt="existing evidence">
+                                <!-- Overlay with checkbox -->
+                                <div class="absolute inset-0 bg-black/40 group-hover:bg-black/70 flex items-center justify-center transition-all duration-150 overlay-delete opacity-0 group-hover:opacity-100">
+                                    <label class="flex flex-col items-center justify-center cursor-pointer text-gray-400 hover:text-red-500 text-[9px] font-black uppercase tracking-wider gap-2 select-none w-full h-full">
+                                        <input type="checkbox" name="delete_images[]" value="{{ $image->id }}" onchange="toggleImageDeleteState(this)" class="form-checkbox text-red-600 focus:ring-red-600 h-4 w-4 bg-black border-red-900/40 rounded-sm cursor-pointer">
+                                        <span class="delete-label">Delete</span>
+                                    </label>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                    <p class="text-[9px] text-gray-500 font-mono italic">Check "Delete" on any existing images you wish to remove upon saving changes.</p>
+                </div>
+                @endif
                 @else
                 <input type="hidden" name="title" value="{{ $pastebin->title }}">
                 <input type="hidden" name="description" value="{{ $pastebin->description }}">
@@ -523,6 +544,45 @@
     </div>
 
     <script>
+        // Gallery selection limit for edit modal
+        document.addEventListener('DOMContentLoaded', function () {
+            const editImageInput = document.getElementById('edit_image');
+            if (editImageInput) {
+                editImageInput.addEventListener('change', function () {
+                    if (this.files.length > 5) {
+                        alert("You can only upload a maximum of 5 images");
+                        this.value = '';
+                    }
+                });
+            }
+        });
+
+        function toggleImageDeleteState(checkbox) {
+            const container = checkbox.closest('.image-to-delete-container');
+            const img = container.querySelector('.image-preview');
+            const label = container.querySelector('.delete-label');
+            const overlay = container.querySelector('.overlay-delete');
+            if (checkbox.checked) {
+                container.classList.add('border-red-600');
+                container.classList.remove('border-red-900/20');
+                img.style.filter = 'grayscale(100%) brightness(40%)';
+                label.innerText = 'To Delete';
+                label.classList.add('text-red-500');
+                label.classList.remove('text-gray-400');
+                overlay.style.opacity = '1';
+                overlay.style.pointerEvents = 'auto';
+            } else {
+                container.classList.remove('border-red-600');
+                container.classList.add('border-red-900/20');
+                img.style.filter = '';
+                label.innerText = 'Delete';
+                label.classList.remove('text-red-500');
+                label.classList.add('text-gray-400');
+                overlay.style.opacity = '';
+                overlay.style.pointerEvents = '';
+            }
+        }
+
         function openShareModal() {
             const modal = document.getElementById('share-modal');
             modal.classList.remove('hidden');
