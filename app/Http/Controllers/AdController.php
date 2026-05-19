@@ -13,8 +13,21 @@ class AdController extends Controller
     // Moderation Index
     public function moderationIndex()
     {
+        // Pending ad requests
         $pendingAds = AdRequest::where('status', 'pending')->with('ad.campaign.advertiser')->get();
-        return view('admin.ads.moderation', compact('pendingAds'));
+        
+        // Retrieve all ads with relationships in descending order of creation
+        $allAds = Ad::with(['campaign.advertiser', 'statistics'])->orderBy('created_at', 'desc')->get();
+        
+        // Aggregate statistics
+        $stats = [
+            'active_count' => Ad::where('status', 'active')->count(),
+            'pending_count' => Ad::where('status', 'pending')->count(),
+            'total_clicks' => \App\Models\AdStatistic::sum('clicks'),
+            'total_impressions' => \App\Models\AdStatistic::sum('impressions')
+        ];
+        
+        return view('admin.ads.moderation', compact('pendingAds', 'allAds', 'stats'));
     }
 
     public function approve(Ad $ad)
@@ -54,6 +67,36 @@ class AdController extends Controller
             ]);
         }
         return back()->with('success', 'Revision requested.');
+    }
+
+    // Direct Administrative Actions
+    public function activateAd(Ad $ad)
+    {
+        $ad->update(['status' => 'active']);
+        
+        // Update corresponding request to approved
+        AdRequest::where('ad_id', $ad->id)->update([
+            'status' => 'approved',
+            'moderator_id' => Auth::id()
+        ]);
+        
+        return back()->with('success', 'Advertisement activated successfully.');
+    }
+
+    public function suspendAd(Ad $ad)
+    {
+        $ad->update(['status' => 'suspended']);
+        return back()->with('success', 'Advertisement suspended.');
+    }
+
+    public function deleteAd(Ad $ad)
+    {
+        // Delete related requests and statistics first to preserve foreign key constraints
+        AdRequest::where('ad_id', $ad->id)->delete();
+        \App\Models\AdStatistic::where('ad_id', $ad->id)->delete();
+        
+        $ad->delete();
+        return back()->with('success', 'Advertisement permanently deleted.');
     }
 
     // Other standard resource methods...

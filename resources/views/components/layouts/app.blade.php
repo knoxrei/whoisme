@@ -114,7 +114,7 @@
 
     <!-- Top Sponsored Ad Banners -->
     @if(count($topSlots) > 0)
-    <div class="w-full max-w-7xl mx-auto px-4 py-3 flex flex-col items-center gap-2">
+    <div class="ad-banners-container w-full max-w-7xl mx-auto px-4 py-3 flex flex-col items-center gap-2">
         <div class="w-full flex items-center justify-center gap-4">
             <div class="h-[1px] bg-red-950/20 flex-grow"></div>
             <span class="text-[8px] font-black text-red-500/70 uppercase tracking-[0.2em] whitespace-nowrap select-none">
@@ -129,7 +129,7 @@
                         <img src="{{ asset($adSlot['data']->media_url) }}" alt="{{ $adSlot['data']->title }}" class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity duration-150">
                     </a>
                 @else
-                    <div id="{{ $adSlot['id'] }}" class="w-full max-w-[468px] min-h-[60px] flex items-center justify-center border border-red-950/30 hover:border-red-600/50 bg-[#0a0a0a]/30 rounded transition-all duration-150"></div>
+                    <div id="{{ $adSlot['id'] }}" class="admate-placeholder w-full max-w-[468px] min-h-[60px] flex items-center justify-center border border-red-950/30 hover:border-red-600/50 bg-[#0a0a0a]/30 rounded transition-all duration-150"></div>
                 @endif
             @endforeach
         </div>
@@ -141,7 +141,7 @@
 
         <!-- Bottom Sponsored Ad Banners -->
         @if(count($bottomSlots) > 0)
-        <div class="w-full max-w-7xl mx-auto px-4 py-4 mt-auto flex flex-col items-center gap-2">
+        <div class="ad-banners-container w-full max-w-7xl mx-auto px-4 py-4 mt-auto flex flex-col items-center gap-2">
             <div class="w-full flex items-center justify-center gap-4">
                 <div class="h-[1px] bg-red-950/20 flex-grow"></div>
                 <span class="text-[8px] font-black text-red-500/70 uppercase tracking-[0.2em] whitespace-nowrap select-none">
@@ -156,7 +156,7 @@
                             <img src="{{ asset($adSlot['data']->media_url) }}" alt="{{ $adSlot['data']->title }}" class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity duration-150">
                         </a>
                     @else
-                        <div id="{{ $adSlot['id'] }}" class="w-full max-w-[468px] min-h-[60px] flex items-center justify-center border border-red-950/30 hover:border-red-600/50 bg-[#0a0a0a]/30 rounded transition-all duration-150"></div>
+                        <div id="{{ $adSlot['id'] }}" class="admate-placeholder w-full max-w-[468px] min-h-[60px] flex items-center justify-center border border-red-950/30 hover:border-red-600/50 bg-[#0a0a0a]/30 rounded transition-all duration-150"></div>
                     @endif
                 @endforeach
             </div>
@@ -169,6 +169,27 @@
     @if($externalCount > 0)
         <script>getBanners("http://admate3tczgp6digew7jpzcosq52rs7anru53imwqimron27emq7dbqd.onion/api/get-banner/vKB0LLEKzrqhxGoA/type/468-60/count/{{ $externalCount }}");</script>
     @endif
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            // Check after 2.5 seconds if Admate successfully populated the placeholders
+            setTimeout(function() {
+                document.querySelectorAll('.admate-placeholder').forEach(function(el) {
+                    if (typeof getBanners === 'undefined' || !el.innerHTML || el.innerHTML.trim() === "") {
+                        el.style.display = 'none';
+                    }
+                });
+                
+                // If a parent row now has zero visible elements, hide the parent row completely
+                document.querySelectorAll('.ad-banners-container').forEach(function(container) {
+                    const hasVisibleAds = Array.from(container.querySelectorAll('.flex-wrap > *')).some(el => el.style.display !== 'none');
+                    if (!hasVisibleAds) {
+                        container.style.display = 'none';
+                    }
+                });
+            }, 2500);
+        });
+    </script>
 
     <!-- Global Cyberpunk Modal Container -->
     <div id="global-action-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 opacity-0 transition-opacity duration-200" style="backdrop-filter: blur(8px); background-color: rgba(0, 0, 0, 0.85);" data-modal-container>

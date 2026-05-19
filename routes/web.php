@@ -140,6 +140,12 @@ Route::middleware(['auth', 'role:owner'])->prefix('admin/ads')->name('admin.ads.
     Route::post('/{ad}/approve', [AdController::class, 'approve'])->name('approve');
     Route::post('/{ad}/reject', [AdController::class, 'reject'])->name('reject');
     Route::post('/{ad}/request-revision', [AdController::class, 'requestRevision'])->name('request_revision');
+    
+    // Administrative direct controls
+    Route::post('/{ad}/activate', [AdController::class, 'activateAd'])->name('activate');
+    Route::post('/{ad}/suspend', [AdController::class, 'suspendAd'])->name('suspend');
+    Route::delete('/{ad}/delete', [AdController::class, 'deleteAd'])->name('delete');
+    
     Route::post('/campaign/{campaign}/suspend', [AdCampaignController::class, 'suspend'])->name('campaigns.suspend');
 });
 
