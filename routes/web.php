@@ -11,10 +11,16 @@ use App\Http\Controllers\AdvertiserDashboardController;
 use App\Http\Controllers\AdCampaignController;
 use App\Http\Controllers\AdController;
 use App\Http\Controllers\SearchController;
+use App\Http\Controllers\GateController;
 use Illuminate\Support\Facades\Route;
 
 
 
+
+// GATE PORTAL AND CONNECTION REDIRECTS
+Route::get('/gate', [GateController::class, 'index'])->name('gate.index');
+Route::get('/gate/tor', [GateController::class, 'tor'])->name('gate.tor');
+Route::get('/gate/clearnet', [GateController::class, 'clearnet'])->name('gate.clearnet');
 
 // GATE LOGIN AND REGISTER FUNCTION
 Route::prefix('register')->middleware('guest')->name('register.')->group(function () {

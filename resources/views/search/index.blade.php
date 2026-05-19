@@ -16,6 +16,14 @@
                 <p class="text-[11px] text-gray-500 font-bold uppercase tracking-[0.15em] mt-3 max-w-lg leading-relaxed">
                     Find anyone's identity here anonymously without worrying about any limitations. <span class="text-red-500 font-black">We do not track you, all data is fully encrypted.</span>
                 </p>
+                <div class="flex items-center gap-3 mt-4">
+                    <a href="{{ route('gate.tor') }}" class="flex items-center gap-1.5 text-[9px] font-black uppercase tracking-widest text-red-500 bg-red-950/20 border border-red-900/40 hover:bg-red-650 hover:text-white px-4 py-1.5 rounded transition-all duration-150 active:scale-95">
+                        <span>Secure Tor Node</span>
+                    </a>
+                    <a href="{{ route('gate.clearnet') }}" class="flex items-center gap-1.5 text-[9px] font-black uppercase tracking-widest text-gray-400 bg-gray-950 border border-gray-800 hover:border-red-950 hover:bg-[#111] px-4 py-1.5 rounded transition-all duration-150 active:scale-95">
+                        <span>Clearnet Node</span>
+                    </a>
+                </div>
             </div>
 
             <!-- Search Form with Autocomplete -->
