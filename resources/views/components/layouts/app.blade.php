@@ -43,7 +43,7 @@
         }
         
         // Split slots for top (slots 1-3) and bottom (slots 4-6)
-        $topSlots = array_slice($slots, 0, 3);
+        $topSlots = array_slice($slots, 0, 2);
         $bottomSlots = array_slice($slots, 3, 3);
     @endphp
 
