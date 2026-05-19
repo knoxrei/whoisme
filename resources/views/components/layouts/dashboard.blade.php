@@ -3,6 +3,9 @@
 @php
     $resolvedRole = $role ?? (auth()->check() ? auth()->user()->identification->role : null);
     $roleValue = is_string($resolvedRole) ? $resolvedRole : ($resolvedRole->value ?? null);
+
+    // Fetch internal ads for dashboard sidebar
+    $sidebarBanners = \App\Helper\AdTracker::getBanners(2, 0);
 @endphp
 
 <!DOCTYPE html>
@@ -182,6 +185,19 @@
                     @endif
                 </nav>
 
+                @if($sidebarBanners->isNotEmpty())
+                    <div class="px-6 py-4 border-t border-white/5 space-y-3">
+                        <span class="text-[8px] font-black text-red-500/70 uppercase tracking-widest block select-none">SPONSORS</span>
+                        <div class="flex flex-col gap-2">
+                            @foreach($sidebarBanners as $banner)
+                                <a href="{{ route('ads.click', $banner->id) }}" target="_blank" class="block w-full border border-red-950/30 hover:border-red-600/50 rounded bg-[#0a0a0a]/30 overflow-hidden transition-all duration-150 relative group">
+                                    <img src="{{ asset($banner->media_url) }}" alt="{{ $banner->title }}" class="w-full object-cover max-h-[45px] opacity-80 group-hover:opacity-100 transition-opacity duration-150">
+                                </a>
+                            @endforeach
+                        </div>
+                    </div>
+                @endif
+
                 <!-- Sidebar Footer -->
                 <div class="p-4 border-t border-white/5">
                     <form method="POST" action="{{ route('logout') }}">
@@ -201,8 +217,27 @@
 
         <!-- Main Content Area -->
         <main class="flex-1 flex flex-col min-w-0 overflow-hidden bg-[#050505]">
-            <div class="flex-1 overflow-y-auto p-8 custom-scrollbar">
-                {{ $slot }}
+            <div class="flex-1 overflow-y-auto p-8 custom-scrollbar flex flex-col justify-between">
+                <div>
+                    {{ $slot }}
+                </div>
+
+                <!-- Bottom Internal Ads for Dashboard Content -->
+                @php
+                    $dashboardBottomBanners = \App\Helper\AdTracker::getBanners(2, 0);
+                @endphp
+                @if($dashboardBottomBanners->isNotEmpty())
+                    <div class="mt-8 pt-6 border-t border-red-950/20 flex flex-col items-center gap-2">
+                        <span class="text-[8px] font-black text-red-500/70 uppercase tracking-[0.2em] select-none">RECOMMENDED ADVERTISERS</span>
+                        <div class="flex flex-wrap justify-center gap-4 w-full">
+                            @foreach($dashboardBottomBanners as $banner)
+                                <a href="{{ route('ads.click', $banner->id) }}" target="_blank" class="block w-full max-w-[468px] h-[60px] border border-red-950/30 hover:border-red-650/40 overflow-hidden rounded bg-[#0a0a0a]/30 transition-all duration-150 relative group">
+                                    <img src="{{ asset($banner->media_url) }}" alt="{{ $banner->title }}" class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity duration-150">
+                                </a>
+                            @endforeach
+                        </div>
+                    </div>
+                @endif
             </div>
         </main>
     </div>

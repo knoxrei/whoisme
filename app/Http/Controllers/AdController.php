@@ -191,6 +191,107 @@ class AdController extends Controller
         }
     }
 
+    public function storeManual(Request $request)
+    {
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'target_url' => 'required|url',
+            'contact' => 'nullable|string|max:255',
+            'image' => 'required|image|max:5120' // max 5MB
+        ]);
+
+        $user = Auth::user();
+        
+        $advertiser = \App\Models\Advertiser::firstOrCreate(
+            ['user_id' => $user->id],
+            ['company_name' => 'Owner Ads Service', 'balance' => 0.00]
+        );
+
+        $campaign = \App\Models\AdCampaign::firstOrCreate(
+            ['advertiser_id' => $advertiser->id, 'name' => 'Admin Direct Campaigns'],
+            ['status' => 'active', 'total_budget' => 0, 'daily_budget' => 0]
+        );
+
+        $file = $request->file('image');
+        $tempPath = $file->getRealPath();
+        $imageInfo = getimagesize($tempPath);
+        $path = null;
+
+        if ($imageInfo) {
+            $width = $imageInfo[0];
+            $height = $imageInfo[1];
+            $mime = $imageInfo['mime'];
+
+            if ($mime === 'image/gif') {
+                $filename = 'banner_' . uniqid() . '.gif';
+                $path = $file->storeAs('ads', $filename, 'public');
+            } else {
+                switch ($mime) {
+                    case 'image/jpeg':
+                    case 'image/jpg':
+                        $srcImage = @imagecreatefromjpeg($tempPath);
+                        break;
+                    case 'image/png':
+                        $srcImage = @imagecreatefrompng($tempPath);
+                        break;
+                    case 'image/webp':
+                        $srcImage = @imagecreatefromwebp($tempPath);
+                        break;
+                    default:
+                        $srcImage = null;
+                }
+
+                if ($srcImage) {
+                    $targetWidth = 670;
+                    $targetHeight = 76;
+
+                    $dstImage = imagecreatetruecolor($targetWidth, $targetHeight);
+                    imagealphablending($dstImage, false);
+                    imagesavealpha($dstImage, true);
+
+                    imagecopyresampled($dstImage, $srcImage, 0, 0, 0, 0, $targetWidth, $targetHeight, $width, $height);
+
+                    $filename = 'ads/banner_' . uniqid() . '.webp';
+                    $storagePath = storage_path('app/public/' . $filename);
+
+                    if (!file_exists(dirname($storagePath))) {
+                        mkdir(dirname($storagePath), 0755, true);
+                    }
+
+                    imagewebp($dstImage, $storagePath, 85);
+
+                    imagedestroy($srcImage);
+                    imagedestroy($dstImage);
+
+                    $path = $filename;
+                }
+            }
+        }
+
+        if (!$path) {
+            $path = $request->file('image')->store('ads', 'public');
+        }
+
+        $ad = Ad::create([
+            'title' => $request->title,
+            'ad_campaign_id' => $campaign->id,
+            'target_url' => $request->target_url,
+            'contact' => $request->contact ?? 'Admin',
+            'media_url' => '/storage/' . $path,
+            'type' => 'banner',
+            'status' => 'active' // Directly active for Owner!
+        ]);
+
+        // Create approved ad request automatically
+        AdRequest::create([
+            'ad_id' => $ad->id,
+            'status' => 'approved',
+            'moderator_id' => $user->id
+        ]);
+
+        return back()->with('success', 'Internal Ad created and published directly.');
+    }
+
     public function trackClick(Ad $ad)
     {
         $stats = \App\Models\AdStatistic::firstOrCreate(

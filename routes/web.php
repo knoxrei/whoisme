@@ -136,6 +136,7 @@ Route::middleware('auth')->prefix('advertiser')->name('advertiser.')->group(func
 // Admin Ad Moderation
 Route::middleware(['auth', 'role:owner'])->prefix('admin/ads')->name('admin.ads.')->group(function () {
     Route::get('/moderation', [AdController::class, 'moderationIndex'])->name('moderation.index');
+    Route::post('/create-manual', [AdController::class, 'storeManual'])->name('store_manual');
     Route::post('/{ad}/approve', [AdController::class, 'approve'])->name('approve');
     Route::post('/{ad}/reject', [AdController::class, 'reject'])->name('reject');
     Route::post('/{ad}/request-revision', [AdController::class, 'requestRevision'])->name('request_revision');

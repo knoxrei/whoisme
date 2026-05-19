@@ -26,6 +26,50 @@
             </div>
         @endif
 
+        <!-- Direct Manual Ad Creation Form -->
+        <div class="p-6 border border-red-900/30 bg-[#0a0a0a] rounded-sm relative overflow-hidden">
+            <div class="absolute right-0 top-0 w-24 h-24 bg-red-950/5 rounded-full blur-2xl pointer-events-none"></div>
+            
+            <h2 class="text-xs font-black text-red-500 uppercase tracking-[0.2em] mb-4 flex items-center gap-2 select-none">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                Direct Manual Ad Creation Terminal
+            </h2>
+            
+            <form action="{{ route('admin.ads.store_manual') }}" method="POST" enctype="multipart/form-data" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                @csrf
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-[8px] font-black text-gray-500 uppercase tracking-widest mb-1.5 font-mono select-none">Ad Title / Campaign Name</label>
+                        <input type="text" name="title" required class="w-full bg-black border border-red-900/20 focus:border-red-500 focus:ring-0 text-white rounded-sm px-3 py-2 text-xs font-mono transition-colors" placeholder="e.g. Premium VPN Service">
+                    </div>
+                    <div>
+                        <label class="block text-[8px] font-black text-gray-500 uppercase tracking-widest mb-1.5 font-mono select-none">Target Redirect URL</label>
+                        <input type="url" name="target_url" required class="w-full bg-black border border-red-900/20 focus:border-red-500 focus:ring-0 text-white rounded-sm px-3 py-2 text-xs font-mono transition-colors" placeholder="http://example.onion or https://example.com">
+                    </div>
+                </div>
+                
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-[8px] font-black text-gray-500 uppercase tracking-widest mb-1.5 font-mono select-none">Contact / Telegram / Jabber (Optional)</label>
+                        <input type="text" name="contact" class="w-full bg-black border border-red-900/20 focus:border-red-500 focus:ring-0 text-white rounded-sm px-3 py-2 text-xs font-mono transition-colors" placeholder="e.g. @admin_contact (Defaults to Admin)">
+                    </div>
+                    <div>
+                        <label class="block text-[8px] font-black text-gray-500 uppercase tracking-widest mb-1.5 font-mono select-none">Banner Image File (GIF, PNG, JPG - max 5MB)</label>
+                        <div class="relative flex items-center">
+                            <input type="file" name="image" required class="w-full text-xs text-gray-400 font-mono file:mr-4 file:py-1.5 file:px-3 file:rounded-sm file:border file:border-red-900/30 file:text-[9px] file:font-black file:uppercase file:tracking-widest file:bg-red-950/20 file:text-red-500 hover:file:bg-red-900 hover:file:text-white file:transition-colors file:duration-150">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="md:col-span-2 pt-2 flex justify-end">
+                    <button type="submit" class="px-5 py-2.5 bg-red-700 hover:bg-red-800 text-white font-black text-[9px] tracking-widest uppercase rounded-sm transition-colors duration-150 flex items-center gap-2">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                        Broadcast Ad Instantly
+                    </button>
+                </div>
+            </form>
+        </div>
+
         <div class="space-y-4">
             @forelse($pendingAds as $request)
                 <div class="p-6 border border-red-900/20 bg-[#050505] rounded-sm flex flex-col lg:flex-row lg:items-center justify-between gap-6 hover:border-red-900/40 transition-colors">

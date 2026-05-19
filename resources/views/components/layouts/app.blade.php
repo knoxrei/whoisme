@@ -23,7 +23,10 @@
         // Retrieve active internal ads (up to 6)
         $internalAds = \App\Helper\AdTracker::getBanners(6, 0);
         $internalCount = $internalAds->count();
-        $externalCount = max(0, 6 - $internalCount);
+        
+        // Cap external Admate ads to a maximum of 4
+        $externalCount = min(4, max(0, 6 - $internalCount));
+        $totalSlotsCount = $internalCount + $externalCount;
         
         $slots = [];
         $externalIndex = 1;
@@ -34,7 +37,7 @@
         }
         
         // Fill the rest with external placeholders
-        for ($i = $internalCount; $i < 6; $i++) {
+        for ($i = $internalCount; $i < $totalSlotsCount; $i++) {
             $slots[] = ['type' => 'external', 'id' => 'banner-place-468-' . $externalIndex];
             $externalIndex++;
         }
@@ -110,6 +113,7 @@
     <x-navbar />
 
     <!-- Top Sponsored Ad Banners -->
+    @if(count($topSlots) > 0)
     <div class="w-full max-w-7xl mx-auto px-4 py-3 flex flex-col items-center gap-2">
         <div class="w-full flex items-center justify-center gap-4">
             <div class="h-[1px] bg-red-950/20 flex-grow"></div>
@@ -130,11 +134,13 @@
             @endforeach
         </div>
     </div>
+    @endif
 
     <main class="flex-grow flex flex-col min-h-screen">
         {{ $slot }}
 
         <!-- Bottom Sponsored Ad Banners -->
+        @if(count($bottomSlots) > 0)
         <div class="w-full max-w-7xl mx-auto px-4 py-4 mt-auto flex flex-col items-center gap-2">
             <div class="w-full flex items-center justify-center gap-4">
                 <div class="h-[1px] bg-red-950/20 flex-grow"></div>
@@ -155,6 +161,7 @@
                 @endforeach
             </div>
         </div>
+        @endif
 
          <x-footer />
     </main>
