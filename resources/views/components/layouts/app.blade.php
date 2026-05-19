@@ -1,3 +1,10 @@
+@props([
+    'title' => null,
+    'description' => null,
+    'ogImage' => null,
+    'canonicalUrl' => null,
+    'keywords' => null
+])
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 
@@ -6,6 +13,43 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <title> {{ $title ?? 'No have title' }} - {{ config('app.name') }}</title>
+
+    @php
+        $seoDescription = $description ?? 'doxme - leak database, threat intelligence search engine, and secure pastebin terminal.';
+        $seoKeywords = $keywords ?? 'doxme, doxbin, pastebin, leaks, cyber security, threat intelligence';
+        $seoImage = $ogImage ?? asset('storage/avatars/default.png');
+        $seoUrl = $canonicalUrl ?? request()->url();
+    @endphp
+
+    <!-- SEO Meta Tags -->
+    @if($seoDescription)
+        <meta name="description" content="{{ $seoDescription }}">
+    @endif
+    <meta name="keywords" content="{{ $seoKeywords }}">
+    <link rel="canonical" href="{{ $seoUrl }}">
+
+    <!-- Open Graph / Facebook / Discord / Telegram -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{ $seoUrl }}">
+    <meta property="og:title" content="{{ $title ?? 'No have title' }} - {{ config('app.name') }}">
+    @if($seoDescription)
+        <meta property="og:description" content="{{ $seoDescription }}">
+    @endif
+    @if($seoImage)
+        <meta property="og:image" content="{{ $seoImage }}">
+    @endif
+    <meta property="og:site_name" content="{{ config('app.name') }}">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="{{ $seoUrl }}">
+    <meta name="twitter:title" content="{{ $title ?? 'No have title' }} - {{ config('app.name') }}">
+    @if($seoDescription)
+        <meta name="twitter:description" content="{{ $seoDescription }}">
+    @endif
+    @if($seoImage)
+        <meta name="twitter:image" content="{{ $seoImage }}">
+    @endif
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>

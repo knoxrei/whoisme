@@ -1,4 +1,8 @@
-<x-layouts.app :title="$title">
+<x-layouts.app 
+    :title="$title" 
+    :description="$pastebin->description" 
+    :ogImage="$pastebin->cover_path && $pastebin->cover_path !== 'defaultCover.png' ? asset('storage/' . $pastebin->cover_path) : ($pastebin->images->count() > 0 ? asset('storage/' . $pastebin->images->first()->image_path) : null)"
+>
     <div class="min-h-screen text-gray-300 font-sans">
         <div class="max-w-[1400px] mx-auto px-2 py-4 md:py-8">
             @if(session('success'))
