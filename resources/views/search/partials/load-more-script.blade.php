@@ -26,8 +26,17 @@
             
             btn.querySelector('.btn-spinner').classList.remove('hidden');
 
+            // Ensure we use a relative path to support both Tor (.onion) and HTTPS clearnet without scheme/host mismatch
+            var relativeUrl = baseUrl;
+            try {
+                var urlObj = new URL(baseUrl);
+                relativeUrl = urlObj.pathname + urlObj.search;
+            } catch (e) {
+                // Keep baseUrl as is if URL constructor fails (e.g. it's already a relative path)
+            }
+
             // Build URL with cursor + any extra query params
-            var url = baseUrl + '?cursor=' + encodeURIComponent(cursor) + '&ajax=1';
+            var url = relativeUrl + (relativeUrl.indexOf('?') === -1 ? '?' : '&') + 'cursor=' + encodeURIComponent(cursor) + '&ajax=1';
             if (extraParams) {
                 url += '&' + extraParams;
             }

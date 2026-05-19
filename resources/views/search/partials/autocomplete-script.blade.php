@@ -6,6 +6,12 @@
     var boxId    = @json($boxId ?? 'autocomplete-box');
     var listId   = @json($listId ?? 'autocomplete-list');
     var suggestUrl = '{{ route("search.suggest") }}';
+    try {
+        var urlObj = new URL(suggestUrl);
+        suggestUrl = urlObj.pathname + urlObj.search;
+    } catch (e) {
+        // Keep suggestUrl as is if URL constructor fails
+    }
 
     var input = document.getElementById(inputId);
     var box   = document.getElementById(boxId);
