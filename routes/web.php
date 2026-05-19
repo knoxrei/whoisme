@@ -29,6 +29,11 @@ Route::prefix('login')->middleware('guest')->group(function () {
 
 Route::post('/logout', [ValidateGate::class, 'logout'])->name('logout')->middleware('auth');
 
+// EMAIL VERIFICATION ROUTES FOR PENDING REGISTRATION
+Route::get('/verify-registration', [ValidateGate::class, 'verifyRegistrationShow'])->name('verify.registration.show');
+Route::post('/verify-registration', [ValidateGate::class, 'verifyRegistrationPost'])->name('verify.registration.post');
+Route::post('/verify-registration/resend', [ValidateGate::class, 'verifyRegistrationResend'])->name('verify.registration.resend');
+
 
 // Search Engine Routes
 Route::get('/', [SearchController::class, 'index'])->name('welcome');
