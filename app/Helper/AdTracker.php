@@ -22,12 +22,7 @@ class AdTracker
             return collect();
         }
 
-        $result = collect();
-        while ($result->count() < $min && $ads->isNotEmpty()) {
-            $result = $result->concat($ads);
-        }
-
-        $finalAds = $result->take($limit);
+        $finalAds = $ads->take($limit);
 
         // Track impressions
         $today = now()->toDateString();
