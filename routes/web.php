@@ -27,6 +27,13 @@ Route::prefix('login')->middleware('guest')->group(function () {
     Route::post('/', [ValidateGate::class, 'loginStore'])->name('login.store');
 });
 
+Route::middleware('guest')->group(function () {
+    Route::get('/forgot-password', [ValidateGate::class, 'forgotPassword'])->name('password.request');
+    Route::post('/forgot-password', [ValidateGate::class, 'forgotPasswordStore'])->name('password.email');
+    Route::get('/reset-password', [ValidateGate::class, 'resetPassword'])->name('password.reset');
+    Route::post('/reset-password', [ValidateGate::class, 'resetPasswordStore'])->name('password.update');
+});
+
 Route::post('/logout', [ValidateGate::class, 'logout'])->name('logout')->middleware('auth');
 
 // EMAIL VERIFICATION ROUTES FOR PENDING REGISTRATION

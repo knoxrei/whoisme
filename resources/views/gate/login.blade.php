@@ -49,10 +49,16 @@
                     </button>
                 </div>
 
-                <div class="text-center pt-2">
-                    <span class="text-gray-500 text-sm">Don't have an account?</span>
-                    <a href="{{ route('register.index') }}"
-                        class="text-red-500 hover:text-red-400 text-sm font-medium ml-1">Register here</a>
+                <div class="flex items-center justify-between pt-2">
+                    <div>
+                        <span class="text-gray-500 text-sm">New member?</span>
+                        <a href="{{ route('register.index') }}"
+                            class="text-red-500 hover:text-red-400 text-sm font-medium ml-1">Register</a>
+                    </div>
+                    <div>
+                        <a href="{{ route('password.request') }}"
+                            class="text-gray-400 hover:text-red-400 text-sm font-medium">Forgot Password?</a>
+                    </div>
                 </div>
             </form>
         </div>

@@ -85,6 +85,14 @@ class PastebinPost
 
         if ($pastebin->visibility === 'public') {
             $user->identification()->increment('reputation', 1);
+
+            // If user has a referrer, award 1 reputation to the referrer too!
+            if ($user->referred_by) {
+                $referrer = \App\Models\User::find($user->referred_by);
+                if ($referrer && $referrer->identification) {
+                    $referrer->identification->increment('reputation', 1);
+                }
+            }
         }
 
         // if has picture  ( arrray )

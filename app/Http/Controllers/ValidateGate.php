@@ -12,8 +12,14 @@ use Illuminate\Support\Facades\Auth;
 
 class ValidateGate extends Controller
 {
-    public function register()
+    public function register(Request $request)
     {
+        if ($request->has('ref')) {
+            $referrer = User::where('username', $request->query('ref'))->first();
+            if ($referrer) {
+                session()->put('referrer_id', $referrer->id);
+            }
+        }
         $title = 'Register';
         return view('gate.register', compact('title'));
     }
@@ -31,6 +37,7 @@ class ValidateGate extends Controller
             'password' => $validateData['password'],
             'verification_code' => $otpCode,
             'verification_expires_at' => now()->addMinutes(15)->toIso8601String(),
+            'referrer_id' => session()->get('referrer_id'),
         ]);
 
         try {
@@ -81,13 +88,25 @@ class ValidateGate extends Controller
             'last_active' => now(),
             'email_verified_at' => now(),
             'verification_code' => null,
-            'verification_expires_at' => null
+            'verification_expires_at' => null,
+            'referred_by' => $pending['referrer_id'] ?? null,
         ]);
 
         // Create identification record automatically
         $user->identification()->create([
             'role' => Role::MEMBER, // Default role
+            'reputation' => isset($pending['referrer_id']) ? 10 : 0, // 10 reputation if referred!
         ]);
+
+        // Award 10 reputation points to the referrer
+        if (isset($pending['referrer_id'])) {
+            $referrer = User::find($pending['referrer_id']);
+            if ($referrer && $referrer->identification) {
+                $referrer->identification->increment('reputation', 10);
+            }
+            // Clear the session referrer after usage
+            session()->forget('referrer_id');
+        }
 
         // Clear session data
         session()->forget('pending_registration');
@@ -144,5 +163,97 @@ class ValidateGate extends Controller
         $request->session()->regenerateToken();
         session()->flash('success', "You have been logged out!");
         return redirect()->route('login');
+    }
+
+    public function forgotPassword()
+    {
+        $title = 'Forgot Password';
+        return view('gate.forgot-password', compact('title'));
+    }
+
+    public function forgotPasswordStore(Request $request)
+    {
+        $request->validate([
+            'identity' => 'required|string',
+        ]);
+
+        $identity = $request->input('identity');
+
+        // Look up by username or email
+        $user = User::where('email', $identity)
+            ->orWhere('username', $identity)
+            ->first();
+
+        if (!$user) {
+            return back()->with('error', 'No matching account was found with those credentials.');
+        }
+
+        // Generate 6-digit password reset OTP code
+        $otpCode = sprintf("%06d", mt_rand(1, 999999));
+
+        // Store reset details in session
+        session()->put('pending_password_reset', [
+            'user_id' => $user->id,
+            'email' => $user->email,
+            'verification_code' => $otpCode,
+            'verification_expires_at' => now()->addMinutes(15)->toIso8601String(),
+        ]);
+
+        try {
+            \Illuminate\Support\Facades\Mail::to($user->email)->queue(new \App\Mail\ResetPasswordMail($user->username, $otpCode));
+            return redirect()->route('password.reset')->with('success', 'Clearance key has been routed to the associated email.');
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error('Password reset SMTP failure: ' . $e->getMessage());
+            return redirect()->route('password.reset')->with('warning', 'Mail routing failed. Code logged internally: ' . $otpCode);
+        }
+    }
+
+    public function resetPassword()
+    {
+        $pending = session()->get('pending_password_reset');
+        if (!$pending) {
+            return redirect()->route('password.request')->with('error', 'No active password reset session was found.');
+        }
+
+        $title = 'Reset Password';
+        $email = $pending['email'];
+        return view('gate.reset-password', compact('title', 'email'));
+    }
+
+    public function resetPasswordStore(Request $request)
+    {
+        $request->validate([
+            'code' => 'required|string|size:6',
+            'password' => 'required|string|min:8|confirmed',
+        ]);
+
+        $pending = session()->get('pending_password_reset');
+        if (!$pending) {
+            return redirect()->route('password.request')->with('error', 'No active password reset session was found.');
+        }
+
+        if ($pending['verification_code'] !== $request->code) {
+            return back()->with('error', 'Clearance OTP code is incorrect or invalid.');
+        }
+
+        $expiry = \Carbon\Carbon::parse($pending['verification_expires_at']);
+        if (now()->gt($expiry)) {
+            return back()->with('error', 'Clearance OTP code has expired. Please request a new code.');
+        }
+
+        // Retrieve the user and update password
+        $user = User::find($pending['user_id']);
+        if (!$user) {
+            return redirect()->route('password.request')->with('error', 'User account could not be found.');
+        }
+
+        $user->update([
+            'password' => \Illuminate\Support\Facades\Hash::make($request->password),
+        ]);
+
+        // Clear password reset session
+        session()->forget('pending_password_reset');
+
+        return redirect()->route('login')->with('success', 'Password reset successfully! You may now login with your new credentials.');
     }
 }

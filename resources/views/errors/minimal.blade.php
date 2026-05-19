@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>@yield('title') - Enfileup</title>
+    <title>@yield('title') - {{config('app.name')}}</title>
     <style>
         :root {
             --bg: #050505;
@@ -82,7 +82,7 @@
         <div class="code">@yield('code')</div>
         <div class="title">@yield('title')</div>
         <div class="message">@yield('message')</div>
-        <a href="{{ route('upload') }}" class="btn">Return to Home page</a>
+        <a href="/" class="btn">Return to Home page</a>
 
     </div>
 </body>
