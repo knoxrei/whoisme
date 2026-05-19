@@ -74,7 +74,21 @@
                 <span class="text-red-950/50 select-none">|</span>
                 <a href="{{ route('pastebin.create') }}" class="text-gray-500 hover:text-red-500 transition-colors">Publish Paste</a>
             </div>
-
+     @php
+                $internalAds = \App\Helper\AdTracker::getBanners(2, 0);
+            @endphp
+            @if($internalAds->isNotEmpty())
+                <div class="w-full mt-8 space-y-4">
+                 
+                    <div class="flex flex-col items-center gap-3 w-full">
+                        @foreach($internalAds as $ad)
+                            <a href="{{ route('ads.click', $ad->id) }}" target="_blank" class="block w-full max-w-[566px] h-[72px] border border-red-950/30 hover:border-red-500/80 overflow-hidden rounded bg-[#0a0a0a]/30 transition-all duration-150 relative group">
+                                <img src="{{ asset($ad->media_url) }}" alt="{{ $ad->title }}" class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity duration-150">
+                            </a>
+                        @endforeach
+                    </div>
+                </div>
+            @endif
             <!-- Live Site Stats -->
             <div class="w-full grid grid-cols-3 gap-3 mb-8">
                 <div class="bg-[#0a0a0a] border border-red-950/20 rounded-sm p-3 text-center">
@@ -113,28 +127,19 @@
             </div>
             @endif
 
-            @php
-                $internalAds = \App\Helper\AdTracker::getBanners(2, 0);
-            @endphp
-            @if($internalAds->isNotEmpty())
-                <div class="w-full mt-8 space-y-4">
-                    <div class="w-full flex items-center justify-center gap-3">
-                        <div class="h-[1px] bg-red-950/40 flex-grow"></div>
-                        <span class="text-[8px] font-black text-red-500 uppercase tracking-[0.2em] whitespace-nowrap select-none flex items-center gap-1.5 font-mono">
-                            <span class="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse"></span>
-                            OFFICIAL PLATFORM SPONSORS
-                        </span>
-                        <div class="h-[1px] bg-red-950/40 flex-grow"></div>
-                    </div>
-                    <div class="flex flex-col items-center gap-3 w-full">
-                        @foreach($internalAds as $ad)
-                            <a href="{{ route('ads.click', $ad->id) }}" target="_blank" class="block w-full max-w-[566px] h-[72px] border border-red-950/30 hover:border-red-500/80 overflow-hidden rounded bg-[#0a0a0a]/30 transition-all duration-150 relative group">
-                                <img src="{{ asset($ad->media_url) }}" alt="{{ $ad->title }}" class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity duration-150">
-                            </a>
-                        @endforeach
-                    </div>
+            <!-- Latest Registered User -->
+            @if(isset($latestUser))
+            <div class="w-full mb-8 flex flex-col items-center">
+                <p class="text-[9px] text-gray-600 uppercase tracking-widest mb-2.5 text-center">Latest Registered Operative</p>
+                <div class="inline-flex items-center gap-2 px-4 py-2 bg-[#0a0a0a] border border-red-950/40 rounded-sm">
+                    <span class="w-1.5 h-1.5 rounded-full bg-red-600"></span>
+                    <span class="text-[10px] font-bold text-gray-200 font-mono">@ {{ $latestUser->username }}</span>
+                    <span class="text-[8px] text-gray-500 font-mono">joined {{ $latestUser->created_at->diffForHumans() }}</span>
                 </div>
+            </div>
             @endif
+
+       
         </main>
     </div>
 

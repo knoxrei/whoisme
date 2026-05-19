@@ -25,8 +25,11 @@ class SearchController extends Controller
             $title   = 'Doxme Search';
             $trending = $this->searchService->getTrendingPastes(5);
             $stats   = $this->searchService->getSiteStats();
+            $latestUser = \App\Models\User::with(['identification'])
+                ->orderBy('created_at', 'desc')
+                ->first();
 
-            return view('search.index', compact('title', 'trending', 'stats'));
+            return view('search.index', compact('title', 'trending', 'stats', 'latestUser'));
         }
 
         $dto      = SearchQueryDTO::fromRequest($request);

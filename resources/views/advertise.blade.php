@@ -239,7 +239,7 @@
                     <div class="w-full flex items-center justify-center gap-3 mb-4">
                         <div class="h-[1px] bg-red-950/40 flex-grow"></div>
                         <span class="text-[8px] font-black text-red-500 uppercase tracking-[0.2em] whitespace-nowrap select-none flex items-center gap-1.5 font-mono">
-                            <span class="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse"></span>
+                            <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span>
                             OFFICIAL PLATFORM SPONSORS
                         </span>
                         <div class="h-[1px] bg-red-950/40 flex-grow"></div>

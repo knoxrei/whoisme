@@ -213,7 +213,7 @@
                 @if($dashboardBottomBanners->isNotEmpty())
                     <div class="mt-8 pt-6 border-t border-red-950/20 flex flex-col items-center gap-2">
                         <span class="text-[8px] font-black text-red-500 uppercase tracking-[0.2em] select-none flex items-center gap-1.5 font-mono">
-                            <span class="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse"></span>
+                            <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span>
                             OFFICIAL PLATFORM SPONSORS
                         </span>
                         <div class="flex flex-wrap justify-center gap-4 w-full">

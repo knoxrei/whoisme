@@ -123,7 +123,7 @@
                             <!-- Burn-After-Reading Alert -->
                             @if(isset($isBurned) && $isBurned)
                                 <div class="mb-8 p-4 bg-red-950/20 border-2 border-dashed border-red-600 rounded-sm text-red-500 font-mono text-xs flex items-start gap-3">
-                                    <div class="flex-shrink-0 animate-pulse text-lg">⚠️</div>
+                                    <div class="flex-shrink-0 text-lg">⚠️</div>
                                     <div class="space-y-1">
                                         <h4 class="font-black tracking-widest uppercase text-red-600">MAIN CLEARANCE EXPIRED: BURN AFTER READING</h4>
                                         <p class="text-gray-400 text-[10px] leading-relaxed">
@@ -236,7 +236,7 @@
                     @if($showBanners->isNotEmpty())
                         <div class="bg-[#050505] border border-red-900/30 p-5 rounded-sm">
                             <p class="text-[9px] text-red-500 font-black uppercase tracking-[0.2em] text-center mb-3 flex items-center justify-center gap-1.5 font-mono select-none">
-                                <span class="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse"></span>
+                                <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span>
                                 OFFICIAL PLATFORM SPONSORS
                             </p>
                             <div class="flex flex-wrap justify-center gap-4">

@@ -4,7 +4,7 @@
         <!-- Subtle Matrix Background Element -->
         <div class="absolute inset-0 opacity-[0.02] pointer-events-none select-none font-mono text-[10px] text-red-500 overflow-hidden leading-none">
             @for ($i = 0; $i < 30; $i++)
-                <div class="whitespace-nowrap animate-pulse" style="animation-delay: {{ $i * 0.2 }}s; animation-duration: {{ 2 + ($i % 3) }}s">
+                <div class="whitespace-nowrap" style="animation-delay: {{ $i * 0.2 }}s; animation-duration: {{ 2 + ($i % 3) }}s">
                     {{ str_repeat('01101001 10010110 11100100 00101101 01011011 ', 8) }}
                 </div>
             @endfor
@@ -14,7 +14,7 @@
             <!-- Header Section -->
             <div class="text-center space-y-4">
                 <div class="inline-block border border-red-600 bg-red-600/10 px-4 py-1.5 rounded-sm">
-                    <span class="text-red-500 font-mono font-black text-xs uppercase tracking-[0.25em] animate-pulse">
+                    <span class="text-red-500 font-mono font-black text-xs uppercase tracking-[0.25em]">
                         ACCESS PORTAL SECURE NODE
                     </span>
                 </div>
