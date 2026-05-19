@@ -22,29 +22,9 @@
 
         // Retrieve active internal ads (up to 6)
         $internalAds = \App\Helper\AdTracker::getBanners(6, 0);
-        $internalCount = $internalAds->count();
         
         // Cap external Admate ads to a maximum of 4
-        $externalCount = min(4, max(0, 6 - $internalCount));
-        $totalSlotsCount = $internalCount + $externalCount;
-        
-        $slots = [];
-        $externalIndex = 1;
-        
-        // Fill slots with internal ads first
-        foreach ($internalAds as $ad) {
-            $slots[] = ['type' => 'internal', 'data' => $ad];
-        }
-        
-        // Fill the rest with external placeholders
-        for ($i = $internalCount; $i < $totalSlotsCount; $i++) {
-            $slots[] = ['type' => 'external', 'id' => 'banner-place-468-' . $externalIndex];
-            $externalIndex++;
-        }
-        
-        // Split slots for top (slots 1-3) and bottom (slots 4-6)
-        $topSlots = array_slice($slots, 0, 2);
-        $bottomSlots = array_slice($slots, 3, 3);
+        $externalCount = 4;
     @endphp
 
     <!-- SEO Meta Tags -->
@@ -112,25 +92,22 @@
 <body class="bg-[#050505]">
     <x-navbar />
 
-    <!-- Top Sponsored Ad Banners -->
-    @if(count($topSlots) > 0)
-    <div class="ad-banners-container w-full max-w-7xl mx-auto px-4 py-3 flex flex-col items-center gap-2">
+    <!-- Top Official Sponsors (Internal Only) -->
+    @if($internalAds->isNotEmpty())
+    <div class="w-full max-w-7xl mx-auto px-4 py-3 flex flex-col items-center gap-2">
         <div class="w-full flex items-center justify-center gap-4">
-            <div class="h-[1px] bg-red-950/20 flex-grow"></div>
-            <span class="text-[8px] font-black text-red-500/70 uppercase tracking-[0.2em] whitespace-nowrap select-none">
-                SPONSORED NETWORK LINKS
+            <div class="h-[1px] bg-red-600/30 flex-grow"></div>
+            <span class="text-[8px] font-black text-red-500 uppercase tracking-[0.2em] whitespace-nowrap select-none flex items-center gap-1.5 font-mono">
+                <span class="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse"></span>
+                OFFICIAL PLATFORM SPONSORS
             </span>
-            <div class="h-[1px] bg-red-950/20 flex-grow"></div>
+            <div class="h-[1px] bg-red-600/30 flex-grow"></div>
         </div>
         <div class="flex flex-wrap justify-center items-center gap-4 w-full">
-            @foreach($topSlots as $adSlot)
-                @if($adSlot['type'] === 'internal')
-                    <a href="{{ route('ads.click', $adSlot['data']->id) }}" target="_blank" class="block w-full max-w-[468px] h-[60px] border border-red-950/30 hover:border-red-650/40 overflow-hidden rounded bg-[#0a0a0a]/30 transition-all duration-150 relative group">
-                        <img src="{{ asset($adSlot['data']->media_url) }}" alt="{{ $adSlot['data']->title }}" class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity duration-150">
-                    </a>
-                @else
-                    <div id="{{ $adSlot['id'] }}" class="admate-placeholder w-full max-w-[468px] min-h-[60px] flex items-center justify-center border border-red-950/30 hover:border-red-600/50 bg-[#0a0a0a]/30 rounded transition-all duration-150"></div>
-                @endif
+            @foreach($internalAds as $ad)
+                <a href="{{ route('ads.click', $ad->id) }}" target="_blank" class="block w-full max-w-[468px] h-[60px] border border-red-950/40 hover:border-red-500/80 overflow-hidden rounded bg-[#0a0a0a]/30 transition-all duration-150 relative group">
+                    <img src="{{ asset($ad->media_url) }}" alt="{{ $ad->title }}" class="w-full h-full object-cover opacity-90 group-hover:opacity-100 transition-opacity duration-150">
+                </a>
             @endforeach
         </div>
     </div>
@@ -139,26 +116,20 @@
     <main class="flex-grow flex flex-col min-h-screen">
         {{ $slot }}
 
-        <!-- Bottom Sponsored Ad Banners -->
-        @if(count($bottomSlots) > 0)
+        <!-- Bottom Sponsored Network Links (Admate Only) -->
+        @if($externalCount > 0)
         <div class="ad-banners-container w-full max-w-7xl mx-auto px-4 py-4 mt-auto flex flex-col items-center gap-2">
             <div class="w-full flex items-center justify-center gap-4">
                 <div class="h-[1px] bg-red-950/20 flex-grow"></div>
-                <span class="text-[8px] font-black text-red-500/70 uppercase tracking-[0.2em] whitespace-nowrap select-none">
-                    RECOMMENDED SPONSORS
+                <span class="text-[8px] font-black text-red-500/70 uppercase tracking-[0.2em] whitespace-nowrap select-none font-mono">
+                    SPONSORED NETWORK LINKS
                 </span>
                 <div class="h-[1px] bg-red-950/20 flex-grow"></div>
             </div>
             <div class="flex flex-wrap justify-center items-center gap-4 w-full">
-                @foreach($bottomSlots as $adSlot)
-                    @if($adSlot['type'] === 'internal')
-                        <a href="{{ route('ads.click', $adSlot['data']->id) }}" target="_blank" class="block w-full max-w-[468px] h-[60px] border border-red-950/30 hover:border-red-650/40 overflow-hidden rounded bg-[#0a0a0a]/30 transition-all duration-150 relative group">
-                            <img src="{{ asset($adSlot['data']->media_url) }}" alt="{{ $adSlot['data']->title }}" class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity duration-150">
-                        </a>
-                    @else
-                        <div id="{{ $adSlot['id'] }}" class="admate-placeholder w-full max-w-[468px] min-h-[60px] flex items-center justify-center border border-red-950/30 hover:border-red-600/50 bg-[#0a0a0a]/30 rounded transition-all duration-150"></div>
-                    @endif
-                @endforeach
+                @for($i = 1; $i <= $externalCount; $i++)
+                    <div id="banner-place-468-{{ $i }}" class="admate-placeholder w-full max-w-[468px] min-h-[60px] flex items-center justify-center border border-red-950/30 hover:border-red-600/50 bg-[#0a0a0a]/30 rounded transition-all duration-150"></div>
+                @endfor
             </div>
         </div>
         @endif
