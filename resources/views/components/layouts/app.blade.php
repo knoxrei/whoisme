@@ -119,13 +119,13 @@
             <div class="h-[1px] bg-red-950/20 flex-grow"></div>
         </div>
         <div class="flex flex-wrap justify-center items-center gap-4 w-full">
-            @foreach($topSlots as $slot)
-                @if($slot['type'] === 'internal')
-                    <a href="{{ route('ads.click', $slot['data']->id) }}" target="_blank" class="block w-full max-w-[468px] h-[60px] border border-red-950/30 hover:border-red-650/40 overflow-hidden rounded bg-[#0a0a0a]/30 transition-all duration-150 relative group">
-                        <img src="{{ asset($slot['data']->media_url) }}" alt="{{ $slot['data']->title }}" class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity duration-150">
+            @foreach($topSlots as $adSlot)
+                @if($adSlot['type'] === 'internal')
+                    <a href="{{ route('ads.click', $adSlot['data']->id) }}" target="_blank" class="block w-full max-w-[468px] h-[60px] border border-red-950/30 hover:border-red-650/40 overflow-hidden rounded bg-[#0a0a0a]/30 transition-all duration-150 relative group">
+                        <img src="{{ asset($adSlot['data']->media_url) }}" alt="{{ $adSlot['data']->title }}" class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity duration-150">
                     </a>
                 @else
-                    <div id="{{ $slot['id'] }}" class="w-full max-w-[468px] min-h-[60px] flex items-center justify-center border border-red-950/30 hover:border-red-600/50 bg-[#0a0a0a]/30 rounded transition-all duration-150"></div>
+                    <div id="{{ $adSlot['id'] }}" class="w-full max-w-[468px] min-h-[60px] flex items-center justify-center border border-red-950/30 hover:border-red-600/50 bg-[#0a0a0a]/30 rounded transition-all duration-150"></div>
                 @endif
             @endforeach
         </div>
@@ -144,13 +144,13 @@
                 <div class="h-[1px] bg-red-950/20 flex-grow"></div>
             </div>
             <div class="flex flex-wrap justify-center items-center gap-4 w-full">
-                @foreach($bottomSlots as $slot)
-                    @if($slot['type'] === 'internal')
-                        <a href="{{ route('ads.click', $slot['data']->id) }}" target="_blank" class="block w-full max-w-[468px] h-[60px] border border-red-950/30 hover:border-red-650/40 overflow-hidden rounded bg-[#0a0a0a]/30 transition-all duration-150 relative group">
-                            <img src="{{ asset($slot['data']->media_url) }}" alt="{{ $slot['data']->title }}" class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity duration-150">
+                @foreach($bottomSlots as $adSlot)
+                    @if($adSlot['type'] === 'internal')
+                        <a href="{{ route('ads.click', $adSlot['data']->id) }}" target="_blank" class="block w-full max-w-[468px] h-[60px] border border-red-950/30 hover:border-red-650/40 overflow-hidden rounded bg-[#0a0a0a]/30 transition-all duration-150 relative group">
+                            <img src="{{ asset($adSlot['data']->media_url) }}" alt="{{ $adSlot['data']->title }}" class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity duration-150">
                         </a>
                     @else
-                        <div id="{{ $slot['id'] }}" class="w-full max-w-[468px] min-h-[60px] flex items-center justify-center border border-red-950/30 hover:border-red-600/50 bg-[#0a0a0a]/30 rounded transition-all duration-150"></div>
+                        <div id="{{ $adSlot['id'] }}" class="w-full max-w-[468px] min-h-[60px] flex items-center justify-center border border-red-950/30 hover:border-red-600/50 bg-[#0a0a0a]/30 rounded transition-all duration-150"></div>
                     @endif
                 @endforeach
             </div>
