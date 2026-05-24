@@ -8,41 +8,16 @@ use Illuminate\Support\Str;
 class VisitorTracker
 {
     /**
-     * Prefixes for anonymous animal names.
-     */
-    protected static array $prefixes = [
-        'Shadow', 'Ghost', 'Silent', 'Dark', 'Iron', 'Night', 'Void',
-        'Red', 'Blue', 'Black', 'Pale', 'Grim', 'Neon', 'Toxic', 'Steel',
-    ];
-
-    /**
-     * Animal names for anonymous visitors.
-     */
-    protected static array $animals = [
-        'Wolf', 'Fox', 'Bear', 'Eagle', 'Hawk', 'Viper', 'Cobra', 'Tiger',
-        'Panther', 'Raven', 'Falcon', 'Lynx', 'Jaguar', 'Badger', 'Ferret',
-        'Otter', 'Mink', 'Weasel', 'Stoat', 'Coyote', 'Hyena', 'Dingo',
-        'Gecko', 'Mamba', 'Osprey', 'Kestrel', 'Polecat',
-    ];
-
-    /**
      * How many seconds a visitor remains "active".
      */
     protected static int $ttl = 180; // 3 minutes
 
     /**
-     * Get or generate the anonymous visitor name stored in session.
+     * Get the anonymous visitor name stored in session.
      */
     public static function getAnonName(): string
     {
-        if (!session()->has('visitor_name')) {
-            $prefix = self::$prefixes[array_rand(self::$prefixes)];
-            $animal = self::$animals[array_rand(self::$animals)];
-            $number = rand(10, 99);
-            session(['visitor_name' => "{$prefix}{$animal}#{$number}"]);
-        }
-
-        return session('visitor_name');
+        return session('anonuser', 'Anonymous');
     }
 
     /**
