@@ -57,6 +57,10 @@ Route::get('/recent', [SearchController::class, 'recent'])->name('search.recent'
 Route::get('/search/suggest', [SearchController::class, 'suggest'])->name('search.suggest');
 Route::get('/search/stats', [SearchController::class, 'stats'])->name('search.stats');
 
+// Root Page Visitor Tracking
+Route::post('/visitors/root', [SearchController::class, 'trackRootVisit'])->name('visitors.root.track');
+Route::get('/visitors/root', [SearchController::class, 'getRootVisitors'])->name('visitors.root.get');
+
 
 Route::get('/support', function () {
     return view('support');
@@ -84,6 +88,10 @@ Route::prefix('pastebin')->name('pastebin.')->group(function () {
     Route::get('/{slug}/download', [PastebinController::class, 'download'])->name('download');
     Route::post('/{slug}/unlock', [PastebinController::class, 'unlock'])->name('unlock');
     Route::post('/{slug}/report', [PastebinController::class, 'report'])->name('report');
+
+    // Visitor tracking (AJAX)
+    Route::post('/{slug}/visit', [PastebinController::class, 'trackVisit'])->name('visit');
+    Route::get('/{slug}/visitors', [PastebinController::class, 'getVisitors'])->name('visitors');
 
     // Suggested Edits
     Route::middleware('auth')->group(function () {

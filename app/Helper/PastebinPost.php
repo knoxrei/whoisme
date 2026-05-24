@@ -84,13 +84,25 @@ class PastebinPost
         ]);
 
         if ($pastebin->visibility === 'public') {
-            $user->identification()->increment('reputation', 1);
+            // Reload fresh identification to avoid null issues
+            $identification = \App\Models\Identification::firstOrCreate(
+                ['user_id' => $user->id],
+                ['reputation' => 0, 'role' => \App\Enum\Role::MEMBER->value]
+            );
+            $identification->increment('reputation', 1);
+
+            // Flash reputation reward notification
+            session()->flash('reputation_awarded', '+1 Reputation awarded for publishing a public paste!');
 
             // If user has a referrer, award 1 reputation to the referrer too!
             if ($user->referred_by) {
                 $referrer = \App\Models\User::find($user->referred_by);
-                if ($referrer && $referrer->identification) {
-                    $referrer->identification->increment('reputation', 1);
+                if ($referrer) {
+                    $referrerIdentification = \App\Models\Identification::firstOrCreate(
+                        ['user_id' => $referrer->id],
+                        ['reputation' => 0, 'role' => \App\Enum\Role::MEMBER->value]
+                    );
+                    $referrerIdentification->increment('reputation', 1);
                 }
             }
         }

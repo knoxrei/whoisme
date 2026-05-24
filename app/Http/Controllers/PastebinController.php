@@ -3,11 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Helper\PastebinPost;
+use App\Helper\VisitorTracker;
 use App\Http\Requests\PastebinRequest;
 use App\Models\Pastebin;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
 use League\CommonMark\GithubFlavoredMarkdownConverter;
+
 
 class PastebinController extends Controller
 {
@@ -72,7 +74,12 @@ class PastebinController extends Controller
             $pastebin->delete();
         }
 
-        return view('pastebin.show', compact('pastebin', 'title', 'pendingEdits', 'comments', 'contentMarkdown', 'isBurned'));
+        // Track visitor on this pastebin page
+        VisitorTracker::trackPastebin($slug);
+
+        $visitors = VisitorTracker::getPastebinVisitors($slug);
+
+        return view('pastebin.show', compact('pastebin', 'title', 'pendingEdits', 'comments', 'contentMarkdown', 'isBurned', 'visitors'));
     }
 
     public function unlock(Request $request, string $slug)
@@ -85,6 +92,36 @@ class PastebinController extends Controller
         }
 
         return back()->withErrors(['password' => 'Invalid decryption key. Access denied.']);
+    }
+
+    /**
+     * Track visitor heartbeat for a pastebin page (AJAX).
+     */
+    public function trackVisit(Request $request, string $slug): \Illuminate\Http\JsonResponse
+    {
+        Pastebin::where('slug', $slug)->firstOrFail();
+        VisitorTracker::trackPastebin($slug);
+
+        $visitors = VisitorTracker::getPastebinVisitors($slug);
+
+        return response()->json([
+            'visitors' => $visitors,
+            'count'    => count($visitors),
+        ]);
+    }
+
+    /**
+     * Get live visitor list for a pastebin page (AJAX).
+     */
+    public function getVisitors(string $slug): \Illuminate\Http\JsonResponse
+    {
+        Pastebin::where('slug', $slug)->firstOrFail();
+        $visitors = VisitorTracker::getPastebinVisitors($slug);
+
+        return response()->json([
+            'visitors' => $visitors,
+            'count'    => count($visitors),
+        ]);
     }
 
     public function store(PastebinRequest $request)

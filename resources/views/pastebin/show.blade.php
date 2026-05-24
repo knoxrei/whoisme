@@ -10,6 +10,12 @@
                     {{ session('success') }}
                 </div>
             @endif
+            @if(session('reputation_awarded'))
+                <div class="mb-4 p-3 bg-yellow-950/20 border border-yellow-700/40 text-yellow-400 text-xs font-mono font-bold rounded-sm flex items-center gap-2">
+                    <span class="text-yellow-500 text-base">⭐</span>
+                    {{ session('reputation_awarded') }}
+                </div>
+            @endif
             @if(session('info'))
                 <div class="mb-4 p-4 bg-blue-950/20 border border-blue-900/30 text-blue-400 text-xs font-mono font-bold rounded-sm">
                     {{ session('info') }}
@@ -105,6 +111,34 @@
                             <span class="text-red-500 font-black">{{ number_format($pastebin->views_count) }}</span>
                         </div>
                     </div>
+
+                    {{-- Who's Browsing Panel --}}
+                    <div class="mt-5 border-t border-red-900/10 pt-5">
+                        <div class="text-[9px] font-black text-red-500 uppercase tracking-[0.2em] mb-3 flex items-center gap-2">
+                            <span class="relative flex h-2 w-2">
+                                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-500 opacity-75"></span>
+                                <span class="relative inline-flex rounded-full h-2 w-2 bg-red-600"></span>
+                            </span>
+                            Online Now (<span id="visitor-count">{{ count($visitors) }}</span>)
+                        </div>
+                        <div id="visitor-list" class="space-y-1.5">
+                            @forelse($visitors as $visitor)
+                                <div class="flex items-center gap-2 px-2 py-1.5 bg-[#050505] border border-red-900/10 rounded-sm">
+                                    <span class="w-1.5 h-1.5 rounded-full flex-shrink-0" style="background-color: {{ $visitor['role_color'] }}"></span>
+                                    <span class="text-[9px] font-bold truncate" style="color: {{ $visitor['role_color'] }}">
+                                        {{ $visitor['type'] === 'member' ? '@' : '' }}{{ $visitor['name'] }}
+                                    </span>
+                                    @if($visitor['type'] === 'member')
+                                        <span class="ml-auto text-[7px] font-black uppercase tracking-widest opacity-60" style="color: {{ $visitor['role_color'] }}">[{{ $visitor['role_label'] }}]</span>
+                                    @else
+                                        <span class="ml-auto text-[7px] text-gray-600 font-mono uppercase">guest</span>
+                                    @endif
+                                </div>
+                            @empty
+                                <div class="text-[9px] text-gray-700 font-mono italic text-center py-2">No active visitors</div>
+                            @endforelse
+                        </div>
+                    </div>
                 </div>
             </aside>
 
@@ -162,9 +196,28 @@
                                     .markdown-body table { width: 100%; border-collapse: collapse; margin-bottom: 1rem; }
                                     .markdown-body th, .markdown-body td { border: 1px solid rgba(153, 27, 27, 0.3); padding: 0.5rem; text-align: left; }
                                     .markdown-body th { background-color: rgba(153, 27, 27, 0.1); font-weight: bold; }
+
+                                    /* View Full Transition */
+                                    #pastebin-content-wrapper {
+                                        transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+                                        overflow: hidden;
+                                    }
+                                    #pastebin-content-wrapper.collapsed {
+                                        max-height: 800px;
+                                    }
+                                    #pastebin-content-wrapper.expanded {
+                                        max-height: none;
+                                    }
                                 </style>
-                                <div class="markdown-body text-gray-300 p-6 font-mono text-xs overflow-x-auto max-h-[800px] leading-relaxed scrollbar-thin scrollbar-thumb-red-900 scrollbar-track-transparent">
+                                <div id="pastebin-content-wrapper" class="collapsed markdown-body text-gray-300 p-6 font-mono text-xs overflow-x-auto leading-relaxed scrollbar-thin scrollbar-thumb-red-900 scrollbar-track-transparent">
                                     {!! $contentMarkdown !!}
+                                </div>
+                                {{-- View Full Toggle Button --}}
+                                <div id="view-full-btn-container" class="border-t border-red-900/10 bg-gradient-to-t from-[#050505] to-transparent -mt-16 pt-12 pb-3 flex justify-center relative">
+                                    <button id="view-full-btn" onclick="toggleViewFull()" class="flex items-center gap-2 bg-[#0a0a0a] border border-red-900/30 hover:border-red-600 text-[9px] font-black uppercase tracking-[0.2em] text-red-500 hover:text-white px-5 py-2 rounded-sm transition-all duration-200 active:scale-95">
+                                        <svg id="view-full-icon" class="w-3 h-3 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/></svg>
+                                        <span id="view-full-text">View Full Content</span>
+                                    </button>
                                 </div>
                             </div>
 
@@ -622,5 +675,97 @@
                 console.error('Failed to copy text: ', err);
             });
         }
+
+        // ── View Full Content Toggle ──────────────────────────────────────
+        let isExpanded = false;
+        function toggleViewFull() {
+            const wrapper = document.getElementById('pastebin-content-wrapper');
+            const btnContainer = document.getElementById('view-full-btn-container');
+            const btnText = document.getElementById('view-full-text');
+            const icon = document.getElementById('view-full-icon');
+
+            if (!isExpanded) {
+                wrapper.classList.remove('collapsed');
+                wrapper.classList.add('expanded');
+                wrapper.style.maxHeight = wrapper.scrollHeight + 'px';
+                btnContainer.classList.remove('bg-gradient-to-t', 'from-[#050505]', '-mt-16', 'pt-12');
+                btnContainer.classList.add('mt-4', 'pt-0');
+                btnText.innerText = 'Collapse Content';
+                icon.style.transform = 'rotate(180deg)';
+                isExpanded = true;
+            } else {
+                wrapper.style.maxHeight = '800px';
+                wrapper.classList.remove('expanded');
+                wrapper.classList.add('collapsed');
+                btnContainer.classList.add('bg-gradient-to-t', 'from-[#050505]', '-mt-16', 'pt-12');
+                btnContainer.classList.remove('mt-4', 'pt-0');
+                btnText.innerText = 'View Full Content';
+                icon.style.transform = 'rotate(0deg)';
+                isExpanded = false;
+                // Scroll back to content top
+                document.getElementById('pastebin-content-wrapper').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }
+
+        // ── Live Visitor Polling ──────────────────────────────────────────
+        const PASTEBIN_SLUG = @json($pastebin->slug);
+        const VISIT_URL     = '{{ route("pastebin.visit", ":slug") }}'.replace(':slug', PASTEBIN_SLUG);
+        const CSRF_TOKEN    = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') ?? '';
+
+        function buildVisitorHTML(visitor) {
+            const isMemb = visitor.type === 'member';
+            const prefix = isMemb ? '@' : '';
+            const badge  = isMemb
+                ? `<span class="ml-auto text-[7px] font-black uppercase tracking-widest opacity-60" style="color:${visitor.role_color}">[${visitor.role_label}]</span>`
+                : `<span class="ml-auto text-[7px] text-gray-600 font-mono uppercase">guest</span>`;
+            return `
+                <div class="flex items-center gap-2 px-2 py-1.5 bg-[#050505] border border-red-900/10 rounded-sm visitor-entry" style="animation: fadeIn .3s ease">
+                    <span class="w-1.5 h-1.5 rounded-full flex-shrink-0" style="background-color:${visitor.role_color}"></span>
+                    <span class="text-[9px] font-bold truncate" style="color:${visitor.role_color}">${prefix}${visitor.name}</span>
+                    ${badge}
+                </div>`;
+        }
+
+        function updateVisitorList(data) {
+            const countEl = document.getElementById('visitor-count');
+            const listEl  = document.getElementById('visitor-list');
+            if (!countEl || !listEl) return;
+
+            countEl.textContent = data.count;
+
+            if (data.visitors.length === 0) {
+                listEl.innerHTML = '<div class="text-[9px] text-gray-700 font-mono italic text-center py-2">No active visitors</div>';
+                return;
+            }
+            listEl.innerHTML = data.visitors.map(buildVisitorHTML).join('');
+        }
+
+        async function heartbeat() {
+            try {
+                const res = await fetch(VISIT_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'X-CSRF-TOKEN': CSRF_TOKEN,
+                    },
+                });
+                if (res.ok) {
+                    const data = await res.json();
+                    updateVisitorList(data);
+                }
+            } catch (e) {
+                // Silently ignore network errors
+            }
+        }
+
+        // Start polling every 30 seconds
+        document.addEventListener('DOMContentLoaded', () => {
+            heartbeat();
+            setInterval(heartbeat, 30000);
+        });
     </script>
+    <style>
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
 </x-layouts.app>

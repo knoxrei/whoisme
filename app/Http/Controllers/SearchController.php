@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\DTOs\SearchQueryDTO;
+use App\Helper\VisitorTracker;
 use App\Models\Pastebin;
 use App\Services\SearchService;
 use Illuminate\Http\Request;
+
 
 class SearchController extends Controller
 {
@@ -29,7 +31,11 @@ class SearchController extends Controller
                 ->orderBy('created_at', 'desc')
                 ->first();
 
-            return view('search.index', compact('title', 'trending', 'stats', 'latestUser'));
+            // Track & get root page visitors
+            VisitorTracker::trackRoot();
+            $rootVisitors = VisitorTracker::getRootVisitors();
+
+            return view('search.index', compact('title', 'trending', 'stats', 'latestUser', 'rootVisitors'));
         }
 
         $dto      = SearchQueryDTO::fromRequest($request);
@@ -145,5 +151,32 @@ class SearchController extends Controller
         }
 
         return view('search.recent', compact('title', 'pastes', 'nextCursor'));
+    }
+
+    /**
+     * Track visitor heartbeat on root page (AJAX).
+     */
+    public function trackRootVisit(Request $request): \Illuminate\Http\JsonResponse
+    {
+        VisitorTracker::trackRoot();
+        $visitors = VisitorTracker::getRootVisitors();
+
+        return response()->json([
+            'visitors' => $visitors,
+            'count'    => count($visitors),
+        ]);
+    }
+
+    /**
+     * Get live visitor list for root page (AJAX).
+     */
+    public function getRootVisitors(Request $request): \Illuminate\Http\JsonResponse
+    {
+        $visitors = VisitorTracker::getRootVisitors();
+
+        return response()->json([
+            'visitors' => $visitors,
+            'count'    => count($visitors),
+        ]);
     }
 }
