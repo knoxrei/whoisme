@@ -141,10 +141,7 @@
             {{-- Online Now Section --}}
             <div class="w-full mb-8">
                 <div class="flex items-center justify-center gap-2 mb-3">
-                    <span class="relative flex h-2 w-2">
-                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-500 opacity-75"></span>
-                        <span class="relative inline-flex rounded-full h-2 w-2 bg-red-600"></span>
-                    </span>
+                    <span class="w-2 h-2 rounded-full bg-red-600"></span>
                     <p class="text-[9px] text-gray-600 uppercase tracking-widest">Online Now &mdash; <span id="root-visitor-count" class="text-red-500 font-black">{{ count($rootVisitors) }}</span> active</p>
                 </div>
                 <div id="root-visitor-list" class="flex flex-wrap justify-center gap-2">

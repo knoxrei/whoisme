@@ -115,10 +115,7 @@
                     {{-- Who's Browsing Panel --}}
                     <div class="mt-5 border-t border-red-900/10 pt-5">
                         <div class="text-[9px] font-black text-red-500 uppercase tracking-[0.2em] mb-3 flex items-center gap-2">
-                            <span class="relative flex h-2 w-2">
-                                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-500 opacity-75"></span>
-                                <span class="relative inline-flex rounded-full h-2 w-2 bg-red-600"></span>
-                            </span>
+                            <span class="w-2 h-2 rounded-full bg-red-600"></span>
                             Online Now (<span id="visitor-count">{{ count($visitors) }}</span>)
                         </div>
                         <div id="visitor-list" class="space-y-1.5">
@@ -177,7 +174,11 @@
                      
 
                             <!-- Main Content Block -->
-                            <div class="mb-8">
+                            <div class="mb-8" id="content-section-container">
+                                <button id="minimize-fixed-btn" onclick="toggleMaximizeContent()" class="hidden fixed top-4 right-4 z-[1001] bg-[#111] border border-red-900/30 p-2.5 rounded-sm hover:border-red-600 text-gray-400 hover:text-white transition-colors shadow-2xl" title="Minimize">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 4v4m0 0H4m4 0l-5-5m11 1V4m0 0h4m-4 0l5-5M8 20v-4m0 0H4m4 0l5 5m11-1v4m0-4h4m-4 0l5 5"/></svg>
+                                </button>
+
                                 <style>
                                     .markdown-body h1 { font-size: 1.5rem; font-weight: 900; color: #fff; margin-bottom: 1rem; margin-top: 1.5rem; text-transform: uppercase; }
                                     .markdown-body h2 { font-size: 1.25rem; font-weight: 800; color: #fff; margin-bottom: 0.75rem; margin-top: 1.5rem; text-transform: uppercase; }
@@ -208,15 +209,48 @@
                                     #pastebin-content-wrapper.expanded {
                                         max-height: none;
                                     }
+
+                                    /* Maximize State */
+                                    #content-section-container.maximized {
+                                        position: fixed;
+                                        top: 0;
+                                        left: 0;
+                                        width: 100vw;
+                                        height: 100vh;
+                                        z-index: 1000;
+                                        background-color: #050505;
+                                        padding: 3rem;
+                                        overflow-y: auto;
+                                    }
+                                    #content-section-container.maximized #pastebin-content-wrapper {
+                                        max-height: none !important;
+                                        padding: 0;
+                                        max-width: 1200px;
+                                        margin: 0 auto;
+                                    }
+                                    #content-section-container.maximized #view-full-btn-container {
+                                        position: sticky;
+                                        bottom: 0;
+                                        background: #050505;
+                                        padding-top: 1.5rem;
+                                        padding-bottom: 1.5rem;
+                                        margin-top: 2rem;
+                                        border-top: 1px solid rgba(153, 27, 27, 0.2);
+                                        z-index: 10;
+                                    }
                                 </style>
                                 <div id="pastebin-content-wrapper" class="collapsed markdown-body text-gray-300 p-6 font-mono text-xs overflow-x-auto leading-relaxed scrollbar-thin scrollbar-thumb-red-900 scrollbar-track-transparent">
                                     {!! $contentMarkdown !!}
                                 </div>
-                                {{-- View Full Toggle Button --}}
-                                <div id="view-full-btn-container" class="border-t border-red-900/10 bg-gradient-to-t from-[#050505] to-transparent -mt-16 pt-12 pb-3 flex justify-center relative">
+                                {{-- View Full / Maximize Buttons --}}
+                                <div id="view-full-btn-container" class="border-t border-red-900/10 bg-gradient-to-t from-[#050505] to-transparent -mt-16 pt-12 pb-3 flex justify-center gap-3 relative">
                                     <button id="view-full-btn" onclick="toggleViewFull()" class="flex items-center gap-2 bg-[#0a0a0a] border border-red-900/30 hover:border-red-600 text-[9px] font-black uppercase tracking-[0.2em] text-red-500 hover:text-white px-5 py-2 rounded-sm transition-all duration-200 active:scale-95">
                                         <svg id="view-full-icon" class="w-3 h-3 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/></svg>
                                         <span id="view-full-text">View Full Content</span>
+                                    </button>
+                                    <button id="maximize-btn" onclick="toggleMaximizeContent()" class="flex items-center gap-2 bg-[#0a0a0a] border border-red-900/30 hover:border-red-600 text-[9px] font-black uppercase tracking-[0.2em] text-gray-400 hover:text-white px-5 py-2 rounded-sm transition-all duration-200 active:scale-95">
+                                        <svg id="maximize-icon" class="w-3 h-3 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"/></svg>
+                                        <span id="maximize-text">Maximize</span>
                                     </button>
                                 </div>
                             </div>
@@ -703,6 +737,48 @@
                 icon.style.transform = 'rotate(0deg)';
                 isExpanded = false;
                 // Scroll back to content top
+                document.getElementById('pastebin-content-wrapper').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }
+
+        // ── Maximize Content Toggle ───────────────────────────────────────
+        let isMaximized = false;
+        function toggleMaximizeContent() {
+            const container = document.getElementById('content-section-container');
+            const maximizeText = document.getElementById('maximize-text');
+            const maximizeIcon = document.getElementById('maximize-icon');
+            const fixedCloseBtn = document.getElementById('minimize-fixed-btn');
+
+            if (!isMaximized) {
+                container.classList.add('maximized');
+                document.body.style.overflow = 'hidden';
+                maximizeText.innerText = 'Minimize';
+                maximizeIcon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 4v4m0 0H4m4 0l-5-5m11 1V4m0 0h4m-4 0l5-5M8 20v-4m0 0H4m4 0l5 5m11-1v4m0-4h4m-4 0l5 5"/>';
+                fixedCloseBtn.classList.remove('hidden');
+                
+                // If not in expanded mode, remove the gradient visually by just expanding the content fully
+                if (!isExpanded) {
+                    const btnContainer = document.getElementById('view-full-btn-container');
+                    btnContainer.classList.remove('bg-gradient-to-t', 'from-[#050505]', '-mt-16', 'pt-12');
+                    btnContainer.classList.add('mt-4', 'pt-0');
+                }
+                
+                isMaximized = true;
+            } else {
+                container.classList.remove('maximized');
+                document.body.style.overflow = 'auto';
+                maximizeText.innerText = 'Maximize';
+                maximizeIcon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"/>';
+                fixedCloseBtn.classList.add('hidden');
+                
+                // Restore classes if we were collapsed
+                if (!isExpanded) {
+                    const btnContainer = document.getElementById('view-full-btn-container');
+                    btnContainer.classList.add('bg-gradient-to-t', 'from-[#050505]', '-mt-16', 'pt-12');
+                    btnContainer.classList.remove('mt-4', 'pt-0');
+                }
+                
+                isMaximized = false;
                 document.getElementById('pastebin-content-wrapper').scrollIntoView({ behavior: 'smooth', block: 'start' });
             }
         }
