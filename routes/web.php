@@ -121,6 +121,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/settings/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::put('/settings/profile', [ProfileController::class, 'update'])->name('profile.update');
 
+    // Email verification from settings
+    Route::post('/settings/send-verify-email', [ValidateGate::class, 'sendEmailVerification'])->name('profile.send.verify.email');
+    Route::post('/settings/verify-email', [ValidateGate::class, 'confirmEmailVerification'])->name('profile.verify.email');
+
     // Follow Routes
     Route::post('/user/{user}/follow', [FollowController::class, 'follow'])->name('user.follow');
     Route::post('/user/{user}/unfollow', [FollowController::class, 'unfollow'])->name('user.unfollow');

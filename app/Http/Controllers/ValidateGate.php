@@ -38,8 +38,6 @@ class ValidateGate extends Controller
     {
         $validateData = $request->validated();
 
-        $otpCode = sprintf("%06d", mt_rand(1, 999999));
-
         // Determine referrer from request or session
         $referrerId = null;
         if (!empty($validateData['ref'])) {
@@ -48,19 +46,50 @@ class ValidateGate extends Controller
                 $referrerId = $referrer->id;
             }
         }
-        
+
         if (!$referrerId) {
             $referrerId = session()->get('referrer_id');
         }
 
-        // Store registration info in session instead of database
+        // ── If NO email provided: create account directly (no OTP) ────────
+        if (empty($validateData['email'])) {
+            $user = User::create([
+                'username'                => $validateData['username'],
+                'email'                   => null,
+                'password'                => $validateData['password'],
+                'last_active'             => now(),
+                'email_verified_at'       => null,
+                'verification_code'       => null,
+                'verification_expires_at' => null,
+                'referred_by'             => $referrerId,
+            ]);
+
+            $user->identification()->create([
+                'role'       => \App\Enum\Role::MEMBER,
+                'reputation' => $referrerId ? 10 : 0,
+            ]);
+
+            if ($referrerId) {
+                $referrer = User::find($referrerId);
+                if ($referrer && $referrer->identification) {
+                    $referrer->identification->increment('reputation', 10);
+                }
+                session()->forget('referrer_id');
+            }
+
+            return redirect()->route('login')->with('success', 'Account created successfully! You may now login.');
+        }
+
+        // ── If email provided: send OTP for verification ──────────────────
+        $otpCode = sprintf("%06d", mt_rand(1, 999999));
+
         session()->put('pending_registration', [
-            'username' => $validateData['username'],
-            'email' => $validateData['email'],
-            'password' => $validateData['password'],
-            'verification_code' => $otpCode,
+            'username'                => $validateData['username'],
+            'email'                   => $validateData['email'],
+            'password'                => $validateData['password'],
+            'verification_code'       => $otpCode,
             'verification_expires_at' => now()->addMinutes(15)->toIso8601String(),
-            'referrer_id' => $referrerId,
+            'referrer_id'             => $referrerId,
         ]);
 
         try {
@@ -246,7 +275,7 @@ class ValidateGate extends Controller
     public function resetPasswordStore(Request $request)
     {
         $request->validate([
-            'code' => 'required|string|size:6',
+            'code'     => 'required|string|size:6',
             'password' => 'required|string|min:8|confirmed',
         ]);
 
@@ -278,5 +307,75 @@ class ValidateGate extends Controller
         session()->forget('pending_password_reset');
 
         return redirect()->route('login')->with('success', 'Password reset successfully! You may now login with your new credentials.');
+    }
+
+    // ── Email Verification from Settings ─────────────────────────────────
+
+    /**
+     * Send an email verification OTP from profile settings.
+     * Supports: adding a new email or re-verifying an existing one.
+     */
+    public function sendEmailVerification(Request $request)
+    {
+        $user = auth()->user();
+
+        $request->validate([
+            'email' => 'required|email|unique:users,email,' . $user->id,
+        ]);
+
+        $email   = $request->email;
+        $otpCode = sprintf("%06d", mt_rand(1, 999999));
+
+        session()->put('pending_email_verification', [
+            'user_id'                 => $user->id,
+            'email'                   => $email,
+            'verification_code'       => $otpCode,
+            'verification_expires_at' => now()->addMinutes(15)->toIso8601String(),
+        ]);
+
+        try {
+            \Illuminate\Support\Facades\Mail::to($email)->queue(new \App\Mail\VerifyEmailMail($user->username, $otpCode));
+            return redirect()->route('profile.edit')
+                ->with('success', 'Verification code sent to ' . $email . '. Enter the 6-digit code below.');
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error('Email verify SMTP failure: ' . $e->getMessage());
+            return redirect()->route('profile.edit')
+                ->with('warning', 'Mail routing failed. Code logged internally: ' . $otpCode);
+        }
+    }
+
+    /**
+     * Confirm the OTP code submitted from profile settings.
+     */
+    public function confirmEmailVerification(Request $request)
+    {
+        $request->validate([
+            'code' => 'required|string|size:6',
+        ]);
+
+        $pending = session()->get('pending_email_verification');
+
+        if (!$pending || $pending['user_id'] !== auth()->id()) {
+            return redirect()->route('profile.edit')->with('error', 'No pending email verification found.');
+        }
+
+        if ($pending['verification_code'] !== $request->code) {
+            return back()->with('error', 'Verification code is incorrect.');
+        }
+
+        $expiry = \Carbon\Carbon::parse($pending['verification_expires_at']);
+        if (now()->gt($expiry)) {
+            return back()->with('error', 'Verification code has expired. Please request a new one.');
+        }
+
+        auth()->user()->update([
+            'email'             => $pending['email'],
+            'email_verified_at' => now(),
+        ]);
+
+        session()->forget('pending_email_verification');
+
+        return redirect()->route('profile.edit')
+            ->with('success', '✓ Email verified successfully!');
     }
 }

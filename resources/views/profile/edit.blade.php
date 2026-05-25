@@ -6,6 +6,16 @@
                     {{ session('success') }}
                 </div>
             @endif
+            @if(session('warning'))
+                <div class="bg-yellow-600/10 border border-yellow-600/30 text-yellow-400 p-3 rounded-sm mb-6 text-xs font-mono">
+                    {{ session('warning') }}
+                </div>
+            @endif
+            @if(session('error'))
+                <div class="bg-red-600/10 border border-red-600/30 text-red-500 p-3 rounded-sm mb-6 text-xs font-mono">
+                    {{ session('error') }}
+                </div>
+            @endif
 
             <form action="{{ route('profile.update') }}" method="POST" enctype="multipart/form-data" class="space-y-6">
                 @csrf
@@ -78,7 +88,6 @@
                         @error('bio') <p class="text-red-500 text-[10px] mt-1">{{ $message }}</p> @enderror
                     </div>
 
-                  
                     @if($identification->has_custom_color_unlocked)
                         <div class="pt-4 border-t border-red-900/20 mt-4">
                             <label for="custom_color" class="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2">Custom Username Color</label>
@@ -100,6 +109,78 @@
                     </button>
                 </div>
             </form>
+
+            {{-- ── Email & Verification Section (outside the main form) ── --}}
+            @php
+                $pendingEmailVerif = session('pending_email_verification');
+                $isVerified = !is_null($user->email_verified_at);
+                $hasEmail   = !empty($user->email);
+            @endphp
+            <div class="bg-[#0a0a0a] border border-red-900/30 p-5 rounded-sm mt-6">
+                <h2 class="text-sm font-black text-red-500 uppercase tracking-[0.2em] mb-5 border-b border-red-900/20 pb-2">Email & Verification</h2>
+
+                {{-- Current email status --}}
+                <div class="mb-5 flex items-center gap-3">
+                    @if($hasEmail)
+                        <div class="flex-1 bg-[#050505] border border-red-900/20 rounded-sm px-3 py-2 text-xs font-mono text-gray-300">
+                            {{ $user->email }}
+                        </div>
+                        @if($isVerified)
+                            <span class="flex items-center gap-1.5 text-[10px] font-black text-blue-400 border border-blue-500/30 bg-blue-500/10 px-3 py-2 rounded-sm whitespace-nowrap">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                Verified
+                            </span>
+                        @else
+                            <span class="text-[10px] font-black text-yellow-500 border border-yellow-500/30 bg-yellow-500/10 px-3 py-2 rounded-sm whitespace-nowrap">
+                                Not Verified
+                            </span>
+                        @endif
+                    @else
+                        <p class="text-[11px] text-gray-600 italic">No email address linked to your account.</p>
+                    @endif
+                </div>
+
+                {{-- If OTP was sent, show confirm form --}}
+                @if($pendingEmailVerif && $pendingEmailVerif['user_id'] === auth()->id())
+                    <div class="mb-5 p-4 bg-blue-950/20 border border-blue-700/30 rounded-sm">
+                        <p class="text-[11px] text-blue-400 font-mono mb-3">
+                            A 6-digit code was sent to <strong>{{ $pendingEmailVerif['email'] }}</strong>. Enter it below to verify.
+                        </p>
+                        <form action="{{ route('profile.verify.email') }}" method="POST" class="flex items-center gap-3">
+                            @csrf
+                            <input type="text" name="code" maxlength="6" placeholder="000000"
+                                class="w-36 bg-[#050505] border border-blue-700/40 rounded-sm px-3 py-2 text-sm font-mono text-white text-center tracking-[0.4em] focus:outline-none focus:border-blue-500"
+                                autocomplete="off">
+                            <button type="submit" class="bg-blue-600/10 border border-blue-600/30 hover:bg-blue-600 hover:text-white text-blue-400 px-5 py-2 rounded-sm font-black text-[10px] uppercase tracking-widest transition-all active:scale-95">
+                                Confirm Code
+                            </button>
+                        </form>
+                        @error('code') <p class="text-red-500 text-[10px] mt-2">{{ $message }}</p> @enderror
+                    </div>
+                @endif
+
+                {{-- Send / Resend verification button --}}
+                @if(!$isVerified)
+                    <form action="{{ route('profile.send.verify.email') }}" method="POST" class="flex items-end gap-3">
+                        @csrf
+                        @if(!$hasEmail)
+                            <div class="flex-1">
+                                <label for="verify_email" class="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-1">Add Email Address</label>
+                                <input type="email" name="email" id="verify_email" placeholder="email@example.com"
+                                    class="w-full bg-[#050505] border border-red-900/20 rounded-sm px-3 py-2 text-xs text-white focus:outline-none focus:border-red-600">
+                                @error('email') <p class="text-red-500 text-[10px] mt-1">{{ $message }}</p> @enderror
+                            </div>
+                        @else
+                            <input type="hidden" name="email" value="{{ $user->email }}">
+                            <p class="text-[10px] text-gray-600 italic flex-1">A code will be sent to <span class="text-gray-400 font-mono">{{ $user->email }}</span></p>
+                        @endif
+                        <button type="submit" class="flex items-center gap-2 bg-blue-600/10 border border-blue-600/30 hover:bg-blue-600 hover:text-white text-blue-400 px-5 py-2.5 rounded-sm font-black text-[10px] uppercase tracking-widest transition-all active:scale-95 whitespace-nowrap">
+                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                            {{ $hasEmail ? 'Send Verification Email' : 'Add & Verify Email' }}
+                        </button>
+                    </form>
+                @endif
+            </div>
         </div>
     </div>
 </x-layouts.dashboard>

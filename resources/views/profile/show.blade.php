@@ -372,11 +372,18 @@
                                 @endif
                             </div>
 
+                            @if(!empty($user->email))
                             <div class="text-gray-400 font-bold">Email</div>
-                            <div class="col-span-2">
-
-<span>{{ $user->email }}</span>
-                        </div>
+                            <div class="col-span-2 flex items-center gap-2">
+                                <span class="text-gray-300 font-mono text-xs">{{ $user->email }}</span>
+                                @if($user->email_verified_at)
+                                    <span class="flex items-center gap-1 text-[9px] font-black text-blue-400 border border-blue-500/30 bg-blue-500/10 px-1.5 py-0.5 rounded-sm">
+                                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                        Verified
+                                    </span>
+                                @endif
+                            </div>
+                            @endif
                         </div>
                     </div>
                 </div>

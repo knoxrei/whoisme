@@ -19,11 +19,14 @@
                 </div>
 
                 <div class="space-y-1.5">
-                    <label for="email" class="text-xs font-medium text-gray-400 uppercase tracking-wider ml-1">Email
-                        Address</label>
-                    <input type="email" name="email" id="email" required
+                    <label for="email" class="text-xs font-medium text-gray-400 uppercase tracking-wider ml-1">
+                        Email Address
+                        <span class="text-gray-600 normal-case tracking-normal ml-1">(optional)</span>
+                    </label>
+                    <input type="email" name="email" id="email"
                         class="w-full bg-black border border-gray-800 rounded-md px-4 py-3 text-white focus:outline-none focus:ring-1 focus:ring-red-600 focus:border-red-600 transition-all placeholder:text-gray-600"
                         placeholder="email@example.com">
+                    <p class="text-[10px] text-gray-600 ml-1 italic">Required for password reset and email verification.</p>
                     <span class="text-[10px] text-red-500">{{ $errors->first('email') }}</span>
                 </div>
 
