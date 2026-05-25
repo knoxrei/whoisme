@@ -58,11 +58,11 @@ Route::get('/search/suggest', [SearchController::class, 'suggest'])->name('searc
 Route::get('/search/stats', [SearchController::class, 'stats'])->name('search.stats');
 
 // Root Page Visitor Tracking
-Route::post('/track-visitor', [\App\Http\Controllers\SearchController::class, 'trackVisitor'])->name('visitor.track');
+Route::post('/visitors/root', [SearchController::class, 'trackRootVisit'])->name('visitors.root.track');
+Route::get('/visitors/root', [SearchController::class, 'getRootVisitors'])->name('visitors.root.get');
 
 // Pastebin List
 Route::get('/pastebins', [\App\Http\Controllers\PastebinListController::class, 'index'])->name('pastebin.list');
-Route::get('/visitors/root', [SearchController::class, 'getRootVisitors'])->name('visitors.root.get');
 
 
 Route::get('/support', function () {
