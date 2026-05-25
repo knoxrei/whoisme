@@ -25,6 +25,10 @@
                         class="text-[11px] {{ request()->routeIs('pastebin.create') ? 'text-red-600' : 'text-gray-500' }} font-bold uppercase tracking-[0.2em] hover:text-red-500 transition-colors flex items-center gap-2">
                         New Paste
                     </a>
+                    <a href="{{ route('pastebin.list') }}"
+                        class="text-[11px] {{ request()->routeIs('pastebin.list') ? 'text-red-600' : 'text-gray-500' }} font-bold uppercase tracking-[0.2em] hover:text-red-500 transition-colors flex items-center gap-2">
+                        Pastebins
+                    </a>
                 </div>
             </div>
 
