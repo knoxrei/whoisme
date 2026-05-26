@@ -140,26 +140,25 @@
 
             {{-- Online Now Section --}}
             <div class="w-full mb-8">
-                <div class="flex items-center justify-center gap-2 mb-3">
+                <div class="flex items-center justify-center gap-2 mb-2">
                     <span class="w-2 h-2 rounded-full bg-red-600"></span>
                     <p class="text-[9px] text-gray-600 uppercase tracking-widest">Online Now &mdash; <span id="root-visitor-count" class="text-red-500 font-black">{{ count($rootVisitors) }}</span> active</p>
                 </div>
-                <div id="root-visitor-list" class="flex flex-wrap justify-center gap-2">
-                    @forelse($rootVisitors as $visitor)
-                        <div class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#0a0a0a] border border-red-950/20 rounded-sm root-visitor-chip">
-                            <span class="w-1.5 h-1.5 rounded-full" style="background-color: {{ $visitor['role_color'] }}"></span>
-                            <span class="text-[9px] font-bold" style="color: {{ $visitor['role_color'] }}">
-                                {{ $visitor['type'] === 'member' ? '@' : '' }}{{ $visitor['name'] }}
-                            </span>
-                            @if($visitor['type'] === 'member')
-                                <span class="text-[7px] opacity-50 font-black uppercase" style="color: {{ $visitor['role_color'] }}">[{{ $visitor['role_label'] }}]</span>
-                            @else
-                                <span class="text-[7px] text-gray-700 font-mono">anon</span>
-                            @endif
-                        </div>
-                    @empty
-                        <div class="text-[9px] text-gray-700 font-mono italic">No visitors tracked yet...</div>
-                    @endforelse
+                <div id="root-visitor-list" class="text-[10px] font-mono text-gray-400 text-center leading-relaxed break-words">
+                    @if(count($rootVisitors) > 0)
+                        @php
+                            $rootLabels = collect($rootVisitors)->map(function($visitor) {
+                                if ($visitor['type'] === 'member') {
+                                    $role = \App\Enum\Role::from($visitor['role']);
+                                    return $role->userStyle('@' . $visitor['name']);
+                                }
+                                return '<span class="text-gray-500">' . e($visitor['name']) . '</span>';
+                            });
+                        @endphp
+                        {!! $rootLabels->implode(', ') !!}
+                    @else
+                        <span class="text-gray-700 italic">No visitors tracked yet...</span>
+                    @endif
                 </div>
             </div>
 
@@ -174,18 +173,14 @@
     const ROOT_TRACK_URL = '{{ route("visitors.root.track") }}';
     const ROOT_CSRF = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') ?? '';
 
-    function buildRootChip(visitor) {
-        const isMemb  = visitor.type === 'member';
-        const prefix  = isMemb ? '@' : '';
-        const badge   = isMemb
-            ? `<span class="text-[7px] opacity-50 font-black uppercase" style="color:${visitor.role_color}">[${visitor.role_label}]</span>`
-            : `<span class="text-[7px] text-gray-700 font-mono">anon</span>`;
-        return `
-            <div class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#0a0a0a] border border-red-950/20 rounded-sm root-visitor-chip" style="animation: fadeIn .3s ease">
-                <span class="w-1.5 h-1.5 rounded-full" style="background-color:${visitor.role_color}"></span>
-                <span class="text-[9px] font-bold" style="color:${visitor.role_color}">${prefix}${visitor.name}</span>
-                ${badge}
-            </div>`;
+    function buildRootVisitorItem(visitor) {
+        const isMemb = visitor.type === 'member';
+        const name   = (isMemb ? '@' : '') + visitor.name;
+        if (isMemb && visitor.user_style) {
+            return visitor.user_style;
+        }
+        const color = visitor.role_color || '#6b7280';
+        return `<span style="color:${color}">${name}</span>`;
     }
 
     function updateRootVisitors(data) {
@@ -196,10 +191,10 @@
         countEl.textContent = data.count;
 
         if (data.visitors.length === 0) {
-            listEl.innerHTML = '<div class="text-[9px] text-gray-700 font-mono italic">No visitors tracked yet...</div>';
+            listEl.innerHTML = '<span class="text-gray-700 italic">No visitors tracked yet...</span>';
             return;
         }
-        listEl.innerHTML = data.visitors.map(buildRootChip).join('');
+        listEl.innerHTML = data.visitors.map(buildRootVisitorItem).join(', ');
     }
 
     async function rootHeartbeat() {

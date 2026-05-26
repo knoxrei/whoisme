@@ -89,10 +89,7 @@
                                                 {{ Str::limit($paste->title, 40) }}
                                             </a>
                                         </div>
-                                        <div class="text-[10px] text-gray-600 mt-1 uppercase tracking-widest flex items-center gap-2">
-                                            <span>Syntax: <span class="text-red-400 font-bold">{{ $paste->syntax_highlighting ?? 'plain' }}</span></span>
-                                            <span>Size: <span class="text-gray-400">{{ number_format(strlen($paste->content) / 1024, 2) }} KB</span></span>
-                                        </div>
+
                                     </td>
                                     <td class="p-4">
                                         @if($paste->user)
@@ -183,10 +180,7 @@
                                                 {{ Str::limit($paste->title, 40) }}
                                             </a>
                                         </div>
-                                        <div class="text-[10px] text-gray-600 mt-1 uppercase tracking-widest flex items-center gap-2">
-                                            <span>Syntax: <span class="text-red-400 font-bold">{{ $paste->syntax_highlighting ?? 'plain' }}</span></span>
-                                            <span>Size: <span class="text-gray-400">{{ number_format($paste->size_bytes / 1024, 2) }} KB</span></span>
-                                        </div>
+
                                     </td>
                                     <td class="p-4">
                                         @if($paste->user)
