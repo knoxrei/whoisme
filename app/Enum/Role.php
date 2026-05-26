@@ -163,6 +163,15 @@ public function userStyleWithBanner(string $username, string $color): string
             default => 0,
         };
     }
+
+    /**
+     * Determine if the role can manage pinned pastebins.
+     */
+    public function canManagePinned(): bool
+    {
+        return match ($this) {
+            self::OWNER, self::MODERATOR => true,
+            default => false,
+        };
+    }
 }
-
-

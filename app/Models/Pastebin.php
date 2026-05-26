@@ -49,4 +49,9 @@ class Pastebin extends Model
     {
         return $this->hasMany(Comment::class);
     }
+
+    public function pinnedRecord(): \Illuminate\Database\Eloquent\Relations\HasOne
+    {
+        return $this->hasOne(PinnedPastebin::class);
+    }
 }

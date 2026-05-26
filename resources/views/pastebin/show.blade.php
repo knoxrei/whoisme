@@ -114,26 +114,25 @@
 
                     {{-- Who's Browsing Panel --}}
                     <div class="mt-5 border-t border-red-900/10 pt-5">
-                        <div class="text-[9px] font-black text-red-500 uppercase tracking-[0.2em] mb-3 flex items-center gap-2">
+                        <div class="text-[9px] font-black text-red-500 uppercase tracking-[0.2em] mb-2 flex items-center gap-2">
                             <span class="w-2 h-2 rounded-full bg-red-600"></span>
                             Online Now (<span id="visitor-count">{{ count($visitors) }}</span>)
                         </div>
-                        <div id="visitor-list" class="space-y-1.5">
-                            @forelse($visitors as $visitor)
-                                <div class="flex items-center gap-2 px-2 py-1.5 bg-[#050505] border border-red-900/10 rounded-sm">
-                                    <span class="w-1.5 h-1.5 rounded-full flex-shrink-0" style="background-color: {{ $visitor['role_color'] }}"></span>
-                                    <span class="text-[9px] font-bold truncate" style="color: {{ $visitor['role_color'] }}">
-                                        {{ $visitor['type'] === 'member' ? '@' : '' }}{{ $visitor['name'] }}
-                                    </span>
-                                    @if($visitor['type'] === 'member')
-                                        <span class="ml-auto text-[7px] font-black uppercase tracking-widest opacity-60" style="color: {{ $visitor['role_color'] }}">[{{ $visitor['role_label'] }}]</span>
-                                    @else
-                                        <span class="ml-auto text-[7px] text-gray-600 font-mono uppercase">guest</span>
-                                    @endif
-                                </div>
-                            @empty
-                                <div class="text-[9px] text-gray-700 font-mono italic text-center py-2">No active visitors</div>
-                            @endforelse
+                        <div id="visitor-list" class="text-[10px] text-gray-400 font-mono leading-relaxed break-words">
+                            @if(count($visitors) > 0)
+                                @php
+                                    $visitorLabels = collect($visitors)->map(function($visitor) {
+                                        if ($visitor['type'] === 'member') {
+                                            $role = \App\Enum\Role::from($visitor['role']);
+                                            return $role->userStyle('@' . $visitor['name']);
+                                        }
+                                        return '<span class="text-gray-500">' . e($visitor['name']) . '</span>';
+                                    });
+                                @endphp
+                                {!! $visitorLabels->implode(', ') !!}
+                            @else
+                                <span class="text-gray-700 italic">No active visitors</span>
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -788,18 +787,15 @@
         const VISIT_URL     = '{{ route("pastebin.visit", ":slug") }}'.replace(':slug', PASTEBIN_SLUG);
         const CSRF_TOKEN    = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') ?? '';
 
-        function buildVisitorHTML(visitor) {
+        function buildVisitorItem(visitor) {
             const isMemb = visitor.type === 'member';
-            const prefix = isMemb ? '@' : '';
-            const badge  = isMemb
-                ? `<span class="ml-auto text-[7px] font-black uppercase tracking-widest opacity-60" style="color:${visitor.role_color}">[${visitor.role_label}]</span>`
-                : `<span class="ml-auto text-[7px] text-gray-600 font-mono uppercase">guest</span>`;
-            return `
-                <div class="flex items-center gap-2 px-2 py-1.5 bg-[#050505] border border-red-900/10 rounded-sm visitor-entry" style="animation: fadeIn .3s ease">
-                    <span class="w-1.5 h-1.5 rounded-full flex-shrink-0" style="background-color:${visitor.role_color}"></span>
-                    <span class="text-[9px] font-bold truncate" style="color:${visitor.role_color}">${prefix}${visitor.name}</span>
-                    ${badge}
-                </div>`;
+            const name   = (isMemb ? '@' : '') + visitor.name;
+            // Wrap member names with styled span using role_style if available, else role_color
+            if (isMemb && visitor.user_style) {
+                return visitor.user_style;
+            }
+            const color = visitor.role_color || '#6b7280';
+            return `<span style="color:${color}">${name}</span>`;
         }
 
         function updateVisitorList(data) {
@@ -810,10 +806,10 @@
             countEl.textContent = data.count;
 
             if (data.visitors.length === 0) {
-                listEl.innerHTML = '<div class="text-[9px] text-gray-700 font-mono italic text-center py-2">No active visitors</div>';
+                listEl.innerHTML = '<span class="text-gray-700 italic">No active visitors</span>';
                 return;
             }
-            listEl.innerHTML = data.visitors.map(buildVisitorHTML).join('');
+            listEl.innerHTML = data.visitors.map(buildVisitorItem).join(', ');
         }
 
         async function heartbeat() {

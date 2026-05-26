@@ -4,6 +4,7 @@ use App\Http\Controllers\CommentController;
 use App\Http\Controllers\FollowController;
 use App\Http\Controllers\PastebinController;
 use App\Http\Controllers\PastebinEditController;
+use App\Http\Controllers\PinnedPastebinController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UpgradeController;
 use App\Http\Controllers\ValidateGate;
@@ -104,7 +105,16 @@ Route::prefix('pastebin')->name('pastebin.')->group(function () {
         Route::post('/edit/{edit}/approve', [PastebinEditController::class, 'approve'])->name('edit.approve');
         Route::post('/edit/{edit}/reject', [PastebinEditController::class, 'reject'])->name('edit.reject');
         Route::post('/{pastebin}/comments', [CommentController::class, 'store'])->name('comments.store');
+
+        // Pinned Pastebin Management (owner/moderator only — enforced in controller)
+        Route::post('/{pastebin}/pin', [PinnedPastebinController::class, 'pin'])->name('pin');
     });
+});
+
+// Pinned Pastebin routes (outside pastebin prefix to avoid slug conflicts)
+Route::middleware('auth')->group(function () {
+    Route::delete('/pinned/{pin}', [PinnedPastebinController::class, 'unpin'])->name('pastebin.unpin');
+    Route::post('/pinned/reorder', [PinnedPastebinController::class, 'reorder'])->name('pastebin.pinned.reorder');
 });
 
 Route::prefix('upgrade')->name('upgrade.')->group(function () {
