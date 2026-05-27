@@ -37,13 +37,8 @@
             border: 1px solid rgba(255, 255, 255, 0.05);
         }
 
-        .sidebar-item {
-            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
         .sidebar-item:hover {
             background: rgba(255, 255, 255, 0.03);
-            transform: translateX(4px);
         }
 
         .sidebar-item.active {
@@ -63,11 +58,19 @@
 
         ::-webkit-scrollbar-thumb {
             background: #222;
-            border-radius: 10px;
         }
 
-        ::-webkit-scrollbar-thumb:hover {
-            background: #333;
+        /* Hamburger lines */
+        .hamburger-line {
+            display: block;
+            width: 20px;
+            height: 2px;
+            background: currentColor;
+        }
+
+        /* Mobile header */
+        #dashboard-mobile-header {
+            background: #050505;
         }
     </style>
 </head>
@@ -76,13 +79,75 @@
     <!-- Global Top Navbar -->
     <x-navbar />
 
+    <!-- Mobile Dashboard Header Bar (visible only on mobile) -->
+    <div id="dashboard-mobile-header" class="lg:hidden flex items-center justify-between px-4 py-3 border-b border-white/5 z-30 flex-shrink-0">
+        <!-- Hamburger Button -->
+        <button
+            id="sidebar-toggle-btn"
+            onclick="toggleSidebar()"
+            class="flex flex-col gap-1.5 p-2 text-gray-400 hover:text-red-500 transition-colors focus:outline-none"
+            aria-label="Toggle sidebar"
+        >
+            <span class="hamburger-line line-1"></span>
+            <span class="hamburger-line line-2"></span>
+            <span class="hamburger-line line-3"></span>
+        </button>
+
+        <!-- Current Page Label -->
+        <div class="flex items-center gap-2">
+            <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span>
+            <span class="text-[9px] font-black uppercase tracking-[0.2em] text-gray-500 font-mono">
+                @if(request()->routeIs('dashboard')) Dashboard
+                @elseif(request()->routeIs('profile.edit')) Settings
+                @elseif(request()->routeIs('dashboard.pastes')) My Pastes
+                @elseif(request()->routeIs('dashboard.suggestions')) Suggestions
+                @elseif(request()->routeIs('dashboard.upgrades')) Upgrades
+                @elseif(request()->routeIs('dashboard.reports')) Reports
+                @elseif(request()->routeIs('dashboard.users')) Users
+                @elseif(request()->routeIs('admin.ads.*')) Ad Moderation
+                @elseif(request()->routeIs('advertiser.dashboard')) Ads Dashboard
+                @elseif(request()->routeIs('advertiser.ads.create')) Request Ad
+                @else Panel
+                @endif
+            </span>
+        </div>
+
+        <!-- Right side: user avatar shortcut -->
+        <a href="{{ route('profile.show', auth()->user()->username) }}" class="shrink-0">
+            <img src="{{ asset('storage/' . auth()->user()->identification->avatar_path) }}"
+                alt="{{ auth()->user()->username }}"
+                class="w-7 h-7 rounded-sm border border-red-900/30">
+        </a>
+    </div>
+
+    <!-- Sidebar Backdrop Overlay (mobile only) -->
+    <div
+        id="sidebar-backdrop"
+        onclick="closeSidebar()"
+        class="fixed inset-0 z-30 hidden lg:hidden"
+        style="background: rgba(0,0,0,0.75);"
+    ></div>
+
     <div class="flex flex-1 overflow-hidden bg-[#050505]">
         <!-- Sidebar -->
         <aside id="sidebar"
-            class="fixed inset-y-0 left-0 z-40 w-64 transition-transform duration-300 transform lg:translate-x-0 lg:static lg:inset-0 glass border-r border-white/5 pt-4">
+            class="hidden fixed inset-y-0 left-0 z-40 w-72 lg:w-64 lg:block lg:static lg:inset-0 glass border-r border-white/5 pt-4"
+            style="top: 0;">
             <div class="flex flex-col h-full">
+                <!-- Sidebar Mobile Header (branding inside sidebar) -->
+                <div class="lg:hidden flex items-center justify-between px-4 pt-6 pb-4 border-b border-white/5 mb-2">
+                    <a href="/" class="hover:opacity-80 transition-all active:scale-95">
+                        <x-layouts.logo />
+                    </a>
+                    <button onclick="closeSidebar()" class="p-1.5 text-gray-500 hover:text-red-500 transition-colors">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"/>
+                        </svg>
+                    </button>
+                </div>
+
                 <!-- Navigation Links -->
-                <nav class="flex-1 overflow-y-auto py-6 space-y-1 px-3">
+                <nav class="flex-1 overflow-y-auto py-4 lg:py-6 space-y-1 px-3">
                     <div class="px-3 mb-2 text-xs font-semibold tracking-wider text-gray-500 uppercase">
                         Menu
                     </div>
@@ -230,8 +295,8 @@
     </div>
 
     <!-- Global Cyberpunk Modal Container -->
-    <div id="global-action-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 opacity-0 transition-opacity duration-200" style="backdrop-filter: blur(8px); background-color: rgba(0, 0, 0, 0.85);" data-modal-container>
-        <div class="relative w-full max-w-md bg-[#0a0a0a] border rounded-sm overflow-hidden transform scale-95 transition-transform duration-200 ease-out shadow-2xl shadow-black/90" id="global-modal-box" data-modal-box style="border-color: rgba(153, 27, 27, 0.4);">
+    <div id="global-action-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4" style="background-color: rgba(0,0,0,0.85);" data-modal-container>
+        <div class="relative w-full max-w-md bg-[#0a0a0a] border rounded-sm overflow-hidden" id="global-modal-box" data-modal-box style="border-color: rgba(153, 27, 27, 0.4);">
             <!-- Modal Header -->
             <div class="flex items-center justify-between px-6 py-4 border-b bg-[#111]" id="global-modal-header" style="border-color: rgba(153, 27, 27, 0.2);">
                 <h3 class="text-xs font-black uppercase tracking-[0.2em] font-mono text-red-500" id="global-modal-title">
@@ -258,8 +323,38 @@
     </div>
 
     <script>
-        // Simple sidebar toggle for mobile
-        const sidebar = document.getElementById('sidebar');
+        // Sidebar toggle (no animation)
+        var sidebar = document.getElementById('sidebar');
+        var backdrop = document.getElementById('sidebar-backdrop');
+        var sidebarOpen = false;
+
+        function openSidebar() {
+            sidebarOpen = true;
+            sidebar.classList.remove('hidden');
+            backdrop.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeSidebar() {
+            sidebarOpen = false;
+            sidebar.classList.add('hidden');
+            backdrop.classList.add('hidden');
+            document.body.style.overflow = '';
+        }
+
+        function toggleSidebar() {
+            if (sidebarOpen) { closeSidebar(); } else { openSidebar(); }
+        }
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && sidebarOpen) { closeSidebar(); }
+        });
+
+        if (window.innerWidth < 1024) {
+            document.querySelectorAll('#sidebar a, #sidebar button[type="submit"]').forEach(function(el) {
+                el.addEventListener('click', closeSidebar);
+            });
+        }
         
         function openModal(id) {
             const modal = document.getElementById(id);
