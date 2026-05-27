@@ -75,7 +75,7 @@
                 <a href="{{ route('pastebin.create') }}" class="text-gray-500 hover:text-red-500 transition-colors">Publish Paste</a>
             </div>
      @php
-                $internalAds = \App\Helper\AdTracker::getBanners(2, 0);
+                $internalAds = \App\Helper\AdTracker::getBanners(0, 0);
             @endphp
             @if($internalAds->isNotEmpty())
                 <div class="w-full mb-4 mt-5 space-y-4">

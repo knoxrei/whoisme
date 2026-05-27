@@ -316,7 +316,7 @@
 
                     <!-- Sponsor Banners Section -->
                     @php
-                        $showBanners = \App\Helper\AdTracker::getBanners(4, 2);
+                        $showBanners = \App\Helper\AdTracker::getBanners(0, 0);
                     @endphp
 
                     @if($showBanners->isNotEmpty())

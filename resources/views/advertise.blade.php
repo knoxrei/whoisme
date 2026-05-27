@@ -232,7 +232,7 @@
 
 
             @php
-                $internalAds = \App\Helper\AdTracker::getBanners(2, 0);
+                $internalAds = \App\Helper\AdTracker::getBanners(0, 0);
             @endphp
             @if($internalAds->isNotEmpty())
                 <div class="mt-12 w-full">
