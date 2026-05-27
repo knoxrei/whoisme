@@ -209,17 +209,6 @@
             <span class="text-[8px] font-black uppercase tracking-widest">Search</span>
         </a>
 
-        <!-- New Paste (center, highlighted) -->
-        <a href="{{ route('pastebin.create') }}"
-            class="flex flex-col items-center gap-1 -mt-4">
-            <div class="w-12 h-12 rounded-full bg-red-600 flex items-center justify-center border-2 border-[#050505]">
-                <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/>
-                </svg>
-            </div>
-            <span class="text-[8px] font-black uppercase tracking-widest {{ request()->routeIs('pastebin.create') ? 'text-red-500' : 'text-gray-600' }}">New</span>
-        </a>
-
         <!-- Dashboard (auth) / Login (guest) -->
         @auth
             <a href="{{ route('dashboard') }}"
@@ -238,6 +227,17 @@
                 <span class="text-[8px] font-black uppercase tracking-widest">Login</span>
             </a>
         @endauth
+
+        <!-- New Paste (CENTER) -->
+        <a href="{{ route('pastebin.create') }}"
+            class="flex flex-col items-center gap-1 -mt-4">
+            <div class="w-12 h-12 rounded-full bg-red-600 flex items-center justify-center border-2 border-[#050505]">
+                <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/>
+                </svg>
+            </div>
+            <span class="text-[8px] font-black uppercase tracking-widest {{ request()->routeIs('pastebin.create') ? 'text-red-500' : 'text-gray-600' }}">New</span>
+        </a>
 
         <!-- Profile (auth) / Join (guest) -->
         @auth
