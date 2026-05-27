@@ -129,35 +129,90 @@
         </div>
     </div>
 </nav>
-
 <!-- ═══════════════════════════════════════════════════════════
      MOBILE BOTTOM NAVBAR — visible only on mobile (<lg)
 ═══════════════════════════════════════════════════════════ -->
-<div class="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-[#050505]/95 backdrop-blur-md border-t border-red-900/20" id="mobile-bottom-nav">
+
+<!-- More Menu Panel (hidden by default, shown above bottom nav) -->
+<div id="mobile-more-panel" class="lg:hidden hidden fixed bottom-[56px] left-0 right-0 z-50 border-t border-red-900/20" style="background:#050505;">
+    <div class="grid grid-cols-2 border-b border-white/5">
+
+        <a href="{{ route('pastebin.list') }}"
+            class="flex items-center gap-3 px-5 py-4 border-b border-r border-white/5 {{ request()->routeIs('pastebin.list') ? 'text-red-500' : 'text-gray-400' }}">
+            <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+            </svg>
+            <span class="text-[10px] font-black uppercase tracking-widest">Pastebins</span>
+        </a>
+
+        <a href="{{ route('upgrade.index') }}"
+            class="flex items-center gap-3 px-5 py-4 border-b border-white/5 {{ request()->routeIs('upgrade.index') ? 'text-red-500' : 'text-gray-400' }}">
+            <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 11l3-3m0 0l3 3m-3-3v8m0-13a9 9 0 110 18 9 9 0 010-18z"/>
+            </svg>
+            <span class="text-[10px] font-black uppercase tracking-widest">Upgrade</span>
+        </a>
+
+        <a href="{{ route('advertise') }}"
+            class="flex items-center gap-3 px-5 py-4 border-b border-r border-white/5 {{ request()->routeIs('advertise') ? 'text-red-500' : 'text-gray-400' }}">
+            <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z"/>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z"/>
+            </svg>
+            <span class="text-[10px] font-black uppercase tracking-widest">Advertise</span>
+        </a>
+
+        <a href="{{ route('support') }}"
+            class="flex items-center gap-3 px-5 py-4 border-b border-white/5 {{ request()->routeIs('support') ? 'text-red-500' : 'text-gray-400' }}">
+            <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z"/>
+            </svg>
+            <span class="text-[10px] font-black uppercase tracking-widest">Support</span>
+        </a>
+
+        <a href="{{ route('about') }}"
+            class="flex items-center gap-3 px-5 py-4 border-r border-white/5 {{ request()->routeIs('about') ? 'text-red-500' : 'text-gray-400' }}">
+            <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+            <span class="text-[10px] font-black uppercase tracking-widest">About</span>
+        </a>
+
+        <a href="{{ route('terms') }}"
+            class="flex items-center gap-3 px-5 py-4 border-white/5 {{ request()->routeIs('terms') ? 'text-red-500' : 'text-gray-400' }}">
+            <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+            </svg>
+            <span class="text-[10px] font-black uppercase tracking-widest">Terms</span>
+        </a>
+
+        <a href="{{ route('profile.users-list') }}"
+            class="col-span-2 flex items-center gap-3 px-5 py-4 border-t border-white/5 {{ request()->routeIs('profile.users-list') ? 'text-red-500' : 'text-gray-400' }}">
+            <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
+            </svg>
+            <span class="text-[10px] font-black uppercase tracking-widest">Users</span>
+        </a>
+
+    </div>
+</div>
+
+<div class="lg:hidden fixed bottom-0 left-0 right-0 z-50 border-t border-red-900/20" id="mobile-bottom-nav" style="background:#050505;">
     <div class="flex items-center justify-around px-2 py-2 safe-area-bottom">
 
         <!-- Home / Search -->
         <a href="{{ route('welcome') }}"
-            class="flex flex-col items-center gap-1 px-3 py-1.5 rounded-sm transition-colors group {{ request()->routeIs('welcome') || request()->routeIs('search.index') ? 'text-red-500' : 'text-gray-600' }} hover:text-red-500">
+            class="flex flex-col items-center gap-1 px-3 py-1.5 {{ request()->routeIs('welcome') || request()->routeIs('search.index') ? 'text-red-500' : 'text-gray-600' }}">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
             </svg>
             <span class="text-[8px] font-black uppercase tracking-widest">Search</span>
         </a>
 
-        <!-- Pastebins -->
-        <a href="{{ route('pastebin.list') }}"
-            class="flex flex-col items-center gap-1 px-3 py-1.5 rounded-sm transition-colors group {{ request()->routeIs('pastebin.list') ? 'text-red-500' : 'text-gray-600' }} hover:text-red-500">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-            </svg>
-            <span class="text-[8px] font-black uppercase tracking-widest">Pastes</span>
-        </a>
-
         <!-- New Paste (center, highlighted) -->
         <a href="{{ route('pastebin.create') }}"
             class="flex flex-col items-center gap-1 -mt-4">
-            <div class="w-12 h-12 rounded-full bg-red-600 hover:bg-red-700 flex items-center justify-center shadow-lg shadow-red-600/30 transition-all active:scale-95 border-2 border-[#050505]">
+            <div class="w-12 h-12 rounded-full bg-red-600 flex items-center justify-center border-2 border-[#050505]">
                 <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/>
                 </svg>
@@ -168,7 +223,7 @@
         <!-- Dashboard (auth) / Login (guest) -->
         @auth
             <a href="{{ route('dashboard') }}"
-                class="flex flex-col items-center gap-1 px-3 py-1.5 rounded-sm transition-colors {{ request()->routeIs('dashboard') ? 'text-red-500' : 'text-gray-600' }} hover:text-red-500">
+                class="flex flex-col items-center gap-1 px-3 py-1.5 {{ request()->routeIs('dashboard') ? 'text-red-500' : 'text-gray-600' }}">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7h18M3 12h18M3 17h18"/>
                 </svg>
@@ -176,7 +231,7 @@
             </a>
         @else
             <a href="{{ route('login') }}"
-                class="flex flex-col items-center gap-1 px-3 py-1.5 rounded-sm transition-colors text-gray-600 hover:text-red-500">
+                class="flex flex-col items-center gap-1 px-3 py-1.5 text-gray-600">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"/>
                 </svg>
@@ -184,11 +239,11 @@
             </a>
         @endauth
 
-        <!-- Profile (auth) / More (guest) -->
+        <!-- Profile (auth) / Join (guest) -->
         @auth
             <a href="{{ route('profile.show', auth()->user()->username) }}"
-                class="flex flex-col items-center gap-1 px-3 py-1.5 rounded-sm transition-colors {{ request()->routeIs('profile.show') && request()->route('username') === auth()->user()->username ? 'text-red-500' : 'text-gray-600' }} hover:text-red-500">
-                <div class="w-5 h-5 overflow-hidden rounded-sm border border-current/20">
+                class="flex flex-col items-center gap-1 px-3 py-1.5 {{ request()->routeIs('profile.show') && request()->route('username') === auth()->user()->username ? 'text-red-500' : 'text-gray-600' }}">
+                <div class="w-5 h-5 overflow-hidden rounded-sm border border-white/10">
                     <img src="{{ asset('storage/' . auth()->user()->identification->avatar_path) }}"
                         alt="{{ auth()->user()->username }}" class="w-full h-full object-cover">
                 </div>
@@ -196,15 +251,55 @@
             </a>
         @else
             <a href="{{ route('register.index') }}"
-                class="flex flex-col items-center gap-1 px-3 py-1.5 rounded-sm transition-colors text-gray-600 hover:text-red-500">
+                class="flex flex-col items-center gap-1 px-3 py-1.5 text-gray-600">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
                 </svg>
                 <span class="text-[8px] font-black uppercase tracking-widest">Join</span>
             </a>
         @endauth
+
+        <!-- More toggle -->
+        <button id="mobile-more-btn" onclick="toggleMoreMenu()" type="button"
+            class="flex flex-col items-center gap-1 px-3 py-1.5 text-gray-600">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h.01M12 12h.01M19 12h.01"/>
+            </svg>
+            <span class="text-[8px] font-black uppercase tracking-widest">More</span>
+        </button>
+
     </div>
 </div>
+
+<script>
+    var morePanel = document.getElementById('mobile-more-panel');
+    var morePanelOpen = false;
+
+    function toggleMoreMenu() {
+        morePanelOpen = !morePanelOpen;
+        if (morePanelOpen) {
+            morePanel.classList.remove('hidden');
+        } else {
+            morePanel.classList.add('hidden');
+        }
+    }
+
+    // Close panel when clicking a link inside it
+    morePanel.querySelectorAll('a').forEach(function(el) {
+        el.addEventListener('click', function() {
+            morePanel.classList.add('hidden');
+            morePanelOpen = false;
+        });
+    });
+
+    // Close panel when scrolling
+    document.addEventListener('scroll', function() {
+        if (morePanelOpen) {
+            morePanel.classList.add('hidden');
+            morePanelOpen = false;
+        }
+    }, { passive: true });
+</script>
 
 <!-- Add bottom padding to page body on mobile so content isn't hidden behind bottom nav -->
 <style>
