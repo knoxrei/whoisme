@@ -22,7 +22,7 @@ class AdTracker
             return collect();
         }
 
-        $finalAds = $ads->take($limit);
+        $finalAds = $limit > 0 ? $ads->take($limit) : $ads;
 
         // Track impressions
         $today = now()->toDateString();
