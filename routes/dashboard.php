@@ -16,6 +16,7 @@ Route::middleware(['auth'])->group(function () {
     // Reports Management
     Route::get('/dashboard/reports', [DashboardController::class, 'reports'])->name('dashboard.reports');
     Route::post('/dashboard/reports/{report}/dismiss', [DashboardController::class, 'dismissReport'])->name('dashboard.reports.dismiss');
+    Route::post('/dashboard/reports/{report}/edit-thread', [DashboardController::class, 'instantEditThread'])->name('dashboard.reports.edit-thread');
 
     // User Management Control Panel
     Route::get('/dashboard/users', [DashboardController::class, 'users'])->name('dashboard.users');

@@ -11,7 +11,7 @@ class ReportPastebin extends Model
         'pastebin_id',
         'reason',
         'user_id',
-        
+        'status',
     ];
 
     public function pastebin(): BelongsTo

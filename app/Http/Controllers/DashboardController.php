@@ -277,6 +277,35 @@ class DashboardController extends Controller
         return back()->with('success', 'Report has been successfully dismissed.');
     }
 
+    public function instantEditThread(Request $request, \App\Models\ReportPastebin $report)
+    {
+        $role = auth()->user()->identification->role;
+        if ($role !== Role::OWNER && $role !== Role::MODERATOR) {
+            abort(403, 'Unauthorized.');
+        }
+
+        if (!$report->pastebin) {
+            return back()->with('error', 'The reported thread has already been deleted.');
+        }
+
+        $request->validate([
+            'title'       => 'required|string|max:255',
+            'content'     => 'required|string',
+            'description' => 'nullable|string|max:500',
+        ]);
+
+        $report->pastebin->update([
+            'title'       => $request->title,
+            'content'     => $request->content,
+            'description' => $request->description,
+        ]);
+
+        // Mark the report as resolved after editing
+        $report->update(['status' => 'resolved']);
+
+        return back()->with('success', 'Thread has been instantly edited and the report marked as resolved.');
+    }
+
     public function users(Request $request)
     {
         $this->authorize('manage', User::class);
