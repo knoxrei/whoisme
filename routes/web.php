@@ -78,12 +78,8 @@ Route::get('/about', function () {
     return view('about');
 })->name('about');
 
-Route::get('/advertise', function () {
-    return view('advertise');
-})->name('advertise');
-
+Route::get('/advertise', [\App\Http\Controllers\AdController::class, 'advertise'])->name('advertise');
 Route::post('/advertise', [\App\Http\Controllers\AdController::class, 'store'])->name('advertise.store');
-Route::get('/advertise/live-stats', [\App\Http\Controllers\AdController::class, 'liveStats'])->name('advertise.live-stats');
 
 Route::prefix('pastebin')->name('pastebin.')->group(function () {
     Route::get('/', [PastebinController::class, 'index'])->name('create');

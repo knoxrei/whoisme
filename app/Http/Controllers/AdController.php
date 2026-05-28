@@ -335,7 +335,7 @@ class AdController extends Controller
         return back()->with('success', 'Internal Ad created and published directly.');
     }
 
-    public function liveStats(): \Illuminate\Http\JsonResponse
+    public function advertise()
     {
         $activeAds = Ad::where('status', 'active')->with('statistics')->get();
 
@@ -346,22 +346,22 @@ class AdController extends Controller
             ? round(($totalClicks / $totalImpressions) * 100, 2)
             : 0;
 
-        // Return active banners list
-        $banners = $activeAds->map(fn($ad) => [
-            'id'         => $ad->id,
-            'title'      => $ad->title,
-            'media_url'  => $ad->media_url,
-            'target_url' => route('ads.click', $ad->id),
-            'clicks'     => $ad->statistics->sum('clicks'),
-            'views'      => $ad->statistics->sum('impressions'),
-        ])->values();
+        // Active banners (with media_url)
+        $activeBanners = $activeAds->filter(fn($ad) => $ad->media_url)->values();
 
-        return response()->json([
-            'active_ads'        => $activeCount,
-            'total_impressions'  => $totalImpressions,
-            'total_clicks'       => $totalClicks,
-            'avg_ctr'            => $avgCtr,
-            'banners'            => $banners,
+        // Per-ad stats
+        $activeBanners = $activeBanners->map(function ($ad) {
+            $ad->total_clicks      = $ad->statistics->sum('clicks');
+            $ad->total_impressions = $ad->statistics->sum('impressions');
+            return $ad;
+        });
+
+        return view('advertise', [
+            'activeCount'      => $activeCount,
+            'totalImpressions' => $totalImpressions,
+            'totalClicks'      => $totalClicks,
+            'avgCtr'           => $avgCtr,
+            'activeBanners'    => $activeBanners,
         ]);
     }
 
