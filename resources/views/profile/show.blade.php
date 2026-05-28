@@ -247,6 +247,144 @@
                     </div>
                 </div>
 
+                {{-- ============================================================ --}}
+                {{-- ADVERTISER SECTION — only shown for Advertiser role users   --}}
+                {{-- ============================================================ --}}
+                @if($advertiserData)
+                    {{-- Active Banners Preview --}}
+                    @if($advertiserData['activeBanners']->isNotEmpty())
+                        <div class="bg-[#0a0a0a] border border-amber-900/30 overflow-hidden rounded-sm">
+                            <div class="bg-[#111] px-4 py-2.5 border-b border-amber-900/40 text-[11px] font-black text-amber-500 uppercase tracking-wider flex items-center gap-2">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"/></svg>
+                                Active Banners
+                                <span class="ml-auto text-[9px] font-mono text-amber-700">{{ $advertiserData['activeBanners']->count() }} LIVE</span>
+                            </div>
+                            <div class="p-4 grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                @foreach($advertiserData['activeBanners'] as $banner)
+                                    <div class="group relative border border-amber-900/20 rounded-sm overflow-hidden bg-[#050505] hover:border-amber-700/40 transition-colors">
+                                        <a href="{{ $banner->target_url }}" target="_blank" rel="noopener noreferrer">
+                                            <img
+                                                src="{{ $banner->media_url }}"
+                                                alt="{{ $banner->title }}"
+                                                class="w-full h-24 object-cover opacity-90 group-hover:opacity-100 transition-opacity"
+                                                onerror="this.style.display='none'"
+                                            >
+                                        </a>
+                                        <div class="px-3 py-2 flex items-center justify-between">
+                                            <div>
+                                                <div class="text-[10px] font-black text-white truncate max-w-[160px]">{{ $banner->title }}</div>
+                                                <div class="text-[8px] text-amber-600 uppercase font-mono">{{ $banner->campaign_name }}</div>
+                                            </div>
+                                            <span class="text-[8px] font-black px-1.5 py-0.5 rounded-sm border border-green-700/40 bg-green-950/20 text-green-500 uppercase">LIVE</span>
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
+                    @endif
+
+                    {{-- Advertiser Stats Overview --}}
+                    <div class="bg-[#0a0a0a] border border-amber-900/30 overflow-hidden rounded-sm">
+                        <div class="bg-[#111] px-4 py-2.5 border-b border-amber-900/40 text-[11px] font-black text-amber-500 uppercase tracking-wider flex items-center gap-2">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+                            Advertising Statistics
+                            @if($advertiserData['advertiser']->company_name)
+                                <span class="ml-auto text-[9px] font-mono text-amber-700">{{ $advertiserData['advertiser']->company_name }}</span>
+                            @endif
+                        </div>
+                        <div class="p-5">
+                            {{-- Summary Stat Cards --}}
+                            <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-5">
+                                <div class="bg-[#050505] border border-amber-900/15 rounded-sm p-3 text-center">
+                                    <div class="text-[9px] font-bold text-gray-500 uppercase tracking-widest mb-1">Total Clicks</div>
+                                    <div class="text-xl font-black text-amber-400">{{ number_format($advertiserData['totalClicks']) }}</div>
+                                </div>
+                                <div class="bg-[#050505] border border-amber-900/15 rounded-sm p-3 text-center">
+                                    <div class="text-[9px] font-bold text-gray-500 uppercase tracking-widest mb-1">Total Views</div>
+                                    <div class="text-xl font-black text-amber-400">{{ number_format($advertiserData['totalImpressions']) }}</div>
+                                </div>
+                                <div class="bg-[#050505] border border-amber-900/15 rounded-sm p-3 text-center">
+                                    <div class="text-[9px] font-bold text-gray-500 uppercase tracking-widest mb-1">Campaigns</div>
+                                    <div class="text-xl font-black text-white">{{ $advertiserData['totalCampaigns'] }}</div>
+                                </div>
+                                <div class="bg-[#050505] border border-amber-900/15 rounded-sm p-3 text-center">
+                                    <div class="text-[9px] font-bold text-gray-500 uppercase tracking-widest mb-1">Total Ads</div>
+                                    <div class="text-xl font-black text-white">{{ $advertiserData['totalAds'] }}</div>
+                                </div>
+                            </div>
+
+                            {{-- CTR rate if both exist --}}
+                            @if($advertiserData['totalImpressions'] > 0)
+                                <div class="mb-5">
+                                    <div class="flex justify-between text-[9px] font-mono text-gray-500 mb-1">
+                                        <span class="uppercase tracking-widest">Click-Through Rate (CTR)</span>
+                                        <span class="text-amber-500 font-black">{{ number_format(($advertiserData['totalClicks'] / $advertiserData['totalImpressions']) * 100, 2) }}%</span>
+                                    </div>
+                                    @php
+                                        $ctrPercent = min(100, ($advertiserData['totalClicks'] / max(1, $advertiserData['totalImpressions'])) * 100 * 10);
+                                    @endphp
+                                    <div class="w-full h-1 bg-amber-900/20 rounded-full overflow-hidden">
+                                        <div class="h-full bg-amber-500 rounded-full transition-all" style="width: {{ $ctrPercent }}%"></div>
+                                    </div>
+                                </div>
+                            @endif
+
+                            {{-- All Ads Table --}}
+                            @if($advertiserData['allAds']->isNotEmpty())
+                                <div class="text-[9px] font-black text-gray-500 uppercase tracking-widest mb-2 border-t border-amber-900/10 pt-4">All Ads (incl. expired)</div>
+                                <div class="overflow-x-auto">
+                                    <table class="w-full text-left font-mono">
+                                        <thead>
+                                            <tr class="text-[8px] text-gray-600 uppercase tracking-widest border-b border-amber-900/10">
+                                                <th class="pb-2 font-black">Ad Title</th>
+                                                <th class="pb-2 font-black">Campaign</th>
+                                                <th class="pb-2 font-black">Type</th>
+                                                <th class="pb-2 font-black text-center">Clicks</th>
+                                                <th class="pb-2 font-black text-center">Views</th>
+                                                <th class="pb-2 font-black text-center">Status</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="divide-y divide-amber-900/10">
+                                            @foreach($advertiserData['allAds'] as $ad)
+                                                @php
+                                                    $adClicks = $ad->statistics->sum('clicks');
+                                                    $adViews  = $ad->statistics->sum('impressions');
+                                                @endphp
+                                                <tr class="text-[10px] hover:bg-amber-950/5 transition-colors">
+                                                    <td class="py-2.5 pr-3">
+                                                        <a href="{{ $ad->target_url }}" target="_blank" rel="noopener noreferrer" class="text-gray-200 font-bold hover:text-amber-400 transition-colors truncate max-w-[140px] block">
+                                                            {{ Str::limit($ad->title, 28) }}
+                                                        </a>
+                                                    </td>
+                                                    <td class="py-2.5 pr-3 text-gray-500">{{ Str::limit($ad->campaign_name, 20) }}</td>
+                                                    <td class="py-2.5 pr-3">
+                                                        <span class="text-[8px] uppercase tracking-wider text-gray-400 border border-gray-800 px-1.5 py-0.5 rounded-sm">{{ $ad->type }}</span>
+                                                    </td>
+                                                    <td class="py-2.5 text-center font-black text-amber-400">{{ number_format($adClicks) }}</td>
+                                                    <td class="py-2.5 text-center font-black text-gray-300">{{ number_format($adViews) }}</td>
+                                                    <td class="py-2.5 text-center">
+                                                        <span class="text-[8px] font-black uppercase tracking-wider px-1.5 py-0.5 rounded-sm border
+                                                            @if($ad->status === 'active') border-green-800/50 bg-green-950/20 text-green-500
+                                                            @elseif($ad->status === 'paused') border-yellow-800/50 bg-yellow-950/20 text-yellow-500
+                                                            @elseif($ad->status === 'rejected') border-red-800/50 bg-red-950/20 text-red-500
+                                                            @else border-gray-800/50 bg-gray-950/20 text-gray-500
+                                                            @endif">
+                                                            {{ $ad->status }}
+                                                        </span>
+                                                    </td>
+                                                </tr>
+                                            @endforeach
+                                        </tbody>
+                                    </table>
+                                </div>
+                            @else
+                                <div class="py-6 text-center text-[10px] text-gray-600 italic">No ads created yet.</div>
+                            @endif
+                        </div>
+                    </div>
+                @endif
+                {{-- END ADVERTISER SECTION --}}
+
                         <!-- Referral System Card -->
                         <div class="bg-[#0a0a0a] border border-red-900/30 overflow-hidden rounded-sm">
                             <div class="bg-[#111] px-4 py-2.5 border-b border-red-900/40 text-[11px] font-black text-red-500 uppercase tracking-wider flex items-center justify-between">
