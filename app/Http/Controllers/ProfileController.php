@@ -43,44 +43,40 @@ class ProfileController extends Controller
         $advertiserData = null;
         if ($user->identification?->role === \App\Enum\Role::ADVERTISER) {
             $advertiser = \App\Models\Advertiser::where('user_id', $user->id)
-                ->with(['campaigns.ads.statistics'])
+                ->with(['campaigns.ads' => fn($q) => $q->where('status', 'active')->with('statistics')])
                 ->first();
 
             if ($advertiser) {
-                // Collect all ads across all campaigns
-                $allAds = collect();
+                // Collect only ACTIVE ads across all campaigns
+                $activeAds = collect();
                 foreach ($advertiser->campaigns as $campaign) {
                     foreach ($campaign->ads as $ad) {
                         $ad->campaign_name = $campaign->name;
-                        $ad->campaign_status = $campaign->status;
-                        $ad->campaign_start = $campaign->start_date;
-                        $ad->campaign_end = $campaign->end_date;
-                        $allAds->push($ad);
+                        $activeAds->push($ad);
                     }
                 }
 
-                // Aggregate total clicks & views (impressions) across all ads/stats
+                // Aggregate stats from active ads only
                 $totalClicks      = 0;
                 $totalImpressions = 0;
-                foreach ($allAds as $ad) {
+                foreach ($activeAds as $ad) {
                     foreach ($ad->statistics as $stat) {
                         $totalClicks      += $stat->clicks;
                         $totalImpressions += $stat->impressions;
                     }
                 }
 
-                // Active banners: ads with status 'active' that have a media_url
-                $activeBanners = $allAds->filter(fn($ad) => $ad->status === 'active' && $ad->media_url);
+                // Active banners: active ads that have a media_url
+                $activeBanners = $activeAds->filter(fn($ad) => $ad->media_url)->values();
 
-                // All ads (including expired / non-active) for the stats table
                 $advertiserData = [
                     'advertiser'       => $advertiser,
-                    'allAds'           => $allAds,
                     'activeBanners'    => $activeBanners,
+                    'activeAds'        => $activeAds,
                     'totalClicks'      => $totalClicks,
                     'totalImpressions' => $totalImpressions,
                     'totalCampaigns'   => $advertiser->campaigns->count(),
-                    'totalAds'         => $allAds->count(),
+                    'totalActiveAds'   => $activeAds->count(),
                 ];
             }
         }
