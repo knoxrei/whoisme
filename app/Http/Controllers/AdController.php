@@ -335,6 +335,36 @@ class AdController extends Controller
         return back()->with('success', 'Internal Ad created and published directly.');
     }
 
+    public function liveStats(): \Illuminate\Http\JsonResponse
+    {
+        $activeAds = Ad::where('status', 'active')->with('statistics')->get();
+
+        $totalClicks      = \App\Models\AdStatistic::sum('clicks');
+        $totalImpressions = \App\Models\AdStatistic::sum('impressions');
+        $activeCount      = $activeAds->count();
+        $avgCtr           = $totalImpressions > 0
+            ? round(($totalClicks / $totalImpressions) * 100, 2)
+            : 0;
+
+        // Return active banners list
+        $banners = $activeAds->map(fn($ad) => [
+            'id'         => $ad->id,
+            'title'      => $ad->title,
+            'media_url'  => $ad->media_url,
+            'target_url' => route('ads.click', $ad->id),
+            'clicks'     => $ad->statistics->sum('clicks'),
+            'views'      => $ad->statistics->sum('impressions'),
+        ])->values();
+
+        return response()->json([
+            'active_ads'        => $activeCount,
+            'total_impressions'  => $totalImpressions,
+            'total_clicks'       => $totalClicks,
+            'avg_ctr'            => $avgCtr,
+            'banners'            => $banners,
+        ]);
+    }
+
     public function trackClick(Ad $ad)
     {
         $stats = \App\Models\AdStatistic::firstOrCreate(
