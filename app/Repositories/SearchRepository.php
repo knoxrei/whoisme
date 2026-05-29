@@ -54,21 +54,26 @@ class SearchRepository
             if ($driver === 'mysql' || $driver === 'mariadb') {
                 $parsedQuery = $this->parseBooleanQuery($dto->query);
 
-                // Combined FULLTEXT index scan (pastebins_search_fulltext)
-                $query->whereRaw(
-                    "MATCH(title, description, content) AGAINST(? IN BOOLEAN MODE)",
-                    [$parsedQuery]
-                );
-
-                // Weighted relevance: title × 5, description × 2, content × 1
-                // Plus views/download signals for popularity-aware relevance
-                $query->select('pastebins.*')
-                    ->selectRaw(
-                        "(MATCH(title) AGAINST(? IN BOOLEAN MODE) * 5.0
-                        + MATCH(description) AGAINST(? IN BOOLEAN MODE) * 2.0
-                        + MATCH(content) AGAINST(? IN BOOLEAN MODE) * 1.0) as db_relevance",
-                        [$dto->query, $dto->query, $dto->query]
+                if ($parsedQuery !== '') {
+                    // Combined FULLTEXT index scan (pastebins_search_fulltext)
+                    $query->whereRaw(
+                        "MATCH(title, description, content) AGAINST(? IN BOOLEAN MODE)",
+                        [$parsedQuery]
                     );
+
+                    // Weighted relevance: title × 5, description × 2, content × 1
+                    // Use $parsedQuery (not raw $dto->query) to keep SQL valid
+                    $query->select('pastebins.*')
+                        ->selectRaw(
+                            "(MATCH(title) AGAINST(? IN BOOLEAN MODE) * 5.0
+                            + MATCH(description) AGAINST(? IN BOOLEAN MODE) * 2.0
+                            + MATCH(content) AGAINST(? IN BOOLEAN MODE) * 1.0) as db_relevance",
+                            [$parsedQuery, $parsedQuery, $parsedQuery]
+                        );
+                } else {
+                    // Parsed query is empty (e.g. input was only special chars like "--")
+                    $query->select('pastebins.*')->selectRaw('0 as db_relevance');
+                }
             } else {
                 // SQLite fallback: LIKE search
                 $words = preg_split('/\s+/', trim($dto->query), -1, PREG_SPLIT_NO_EMPTY);
