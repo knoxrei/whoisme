@@ -6,12 +6,21 @@
             </a>
         </td>
         <td class="py-3.5 px-4 text-gray-400 font-bold">
-            @if($paste->user_id)
-                <a href="{{ route('profile.show', $paste->author_name) }}" class="hover:text-red-500 hover:underline">
-                    {!! $paste->user->identification->role->userStyle($paste->author_name) !!}
+            @if($paste->user_id && $paste->user)
+                <a href="{{ route('profile.show', $paste->user->username) }}" class="flex items-center gap-2 group">
+                    <div class="w-6 h-6 border border-red-900/30 overflow-hidden shrink-0">
+                        @if($paste->user->identification && $paste->user->identification->avatar_path)
+                            <img src="{{ Storage::url($paste->user->identification->avatar_path) }}" class="w-full h-full object-cover">
+                        @else
+                            <div class="w-full h-full bg-[#111] flex items-center justify-center text-[10px] font-bold text-gray-500">{{ substr($paste->user->username, 0, 1) }}</div>
+                        @endif
+                    </div>
+                    <span class="text-xs group-hover:text-red-500 transition-colors">
+                        {!! $paste->user->identification->role->userStyle($paste->user->username) !!}
+                    </span>
                 </a>
             @else
-                {{ $paste->author_name }}
+                {{ $paste->author_name ?: 'Anonymous' }}
             @endif
         </td>
         <td class="py-3.5 px-4 text-center font-bold text-gray-300">{{ number_format($paste->views_count) }}</td>
