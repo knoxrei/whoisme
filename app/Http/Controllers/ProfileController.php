@@ -166,10 +166,10 @@ class ProfileController extends Controller
         if ($user->identification->has_custom_color_unlocked && $request->has('custom_color')) {
             $data['custom_color'] = $request->custom_color;
         }
-        dd($request->hasFile('avatar'));
+
         if ($request->hasFile('avatar')) {
             // Delete old avatar if exists
-            if ($identification->avatar_path) {
+            if ($identification->avatar_path && $identification->avatar_path != 'upload/defaultAvatar.png') {
                 Storage::disk('public')->delete($identification->avatar_path);
             }
 
