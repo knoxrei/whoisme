@@ -172,7 +172,14 @@ class ProfileController extends Controller
             if ($identification->avatar_path && $identification->avatar_path != 'upload/defaultAvatar.png') {
                 Storage::disk('public')->delete($identification->avatar_path);
             }
+            $file = $request->file('avatar');
 
+            dd([
+                'isValid' => $file->isValid(),
+                'error' => $file->getError(),
+                'errorMessage' => $file->getErrorMessage(),
+                'disk_root' => config('filesystems.disks.public.root'),
+            ]);
             $path = $request->file('avatar')->store('avatars', 'public');
             dd($path);
             $data['avatar_path'] = $path;
