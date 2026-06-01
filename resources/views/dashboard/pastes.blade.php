@@ -48,7 +48,7 @@
                                 </td>
                                 <td class="py-4">
                                     <span class="px-1.5 py-0.5 rounded-sm text-[8px] font-black uppercase tracking-widest border 
-                                        {{ $paste->visibility === 'public' ? 'bg-green-950/30 text-green-500 border-green-900/30' : 'bg-red-950/30 text-red-500 border-red-900/30' }}">
+                                        {{ $paste->visibility->value === 'public' ? 'bg-green-950/30 text-green-500 border-green-900/30' : 'bg-red-950/30 text-red-500 border-red-900/30' }}">
                                         {{ $paste->visibility }}
                                     </span>
                                 </td>

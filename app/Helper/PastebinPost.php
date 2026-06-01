@@ -83,12 +83,16 @@ class PastebinPost
             'is_self_destruct' => $validateData['is_self_destruct'] ?? false,
         ]);
 
-        if ($pastebin->visibility === 'public') {
-            // Reload fresh identification to avoid null issues
-            $identification = \App\Models\Identification::firstOrCreate(
+        if ($pastebin->visibility === \App\Enum\Visibility::PUBLIC) {
+            // Retrieve or create identification, then increment reputation
+            $identification = $user->identification()->firstOrCreate(
                 ['user_id' => $user->id],
-                ['reputation' => 0, 'role' => \App\Enum\Role::MEMBER->value]
+                [
+                    'reputation' => 0,
+                    'role' => \App\Enum\Role::MEMBER->value,
+                ]
             );
+            
             $identification->increment('reputation', 1);
 
             // Flash reputation reward notification
@@ -98,7 +102,7 @@ class PastebinPost
             if ($user->referred_by) {
                 $referrer = \App\Models\User::find($user->referred_by);
                 if ($referrer) {
-                    $referrerIdentification = \App\Models\Identification::firstOrCreate(
+                    $referrerIdentification = $referrer->identification()->firstOrCreate(
                         ['user_id' => $referrer->id],
                         ['reputation' => 0, 'role' => \App\Enum\Role::MEMBER->value]
                     );

@@ -48,7 +48,7 @@ class PastebinController extends Controller
             $isBurned = true;
 
             // Decrement user reputation if public
-            if ($pastebin->visibility === 'public' && $pastebin->user_id) {
+            if ($pastebin->visibility === \App\Enum\Visibility::PUBLIC && $pastebin->user_id) {
                 $authorIdentification = \App\Models\Identification::where('user_id', $pastebin->user_id)->first();
                 if ($authorIdentification) {
                     $authorIdentification->decrement('reputation', 1);
@@ -201,7 +201,7 @@ class PastebinController extends Controller
         $this->authorize('delete', $pastebin);
 
         // Decrement user reputation if public
-        if ($pastebin->visibility === 'public' && $pastebin->user_id) {
+        if ($pastebin->visibility === \App\Enum\Visibility::PUBLIC && $pastebin->user_id) {
             $authorIdentification = \App\Models\Identification::where('user_id', $pastebin->user_id)->first();
             if ($authorIdentification) {
                 $authorIdentification->decrement('reputation', 1);
