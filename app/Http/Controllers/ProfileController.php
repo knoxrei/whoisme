@@ -19,7 +19,7 @@ class ProfileController extends Controller
             ->with(['identification', 'followers.identification', 'following.identification'])
             ->withCount(['pastebins', 'followers', 'following', 'comments'])
             ->firstOrFail();
-        
+
         $this->authorize('view', $user->identification);
         $recentContributions = $user->edits()
             ->where('status', 'approved')
@@ -27,7 +27,7 @@ class ProfileController extends Controller
             ->latest()
             ->take(5)
             ->get();
-            
+
         $recentPosts = $user->pastebins()
             ->latest()
             ->take(5)
@@ -96,9 +96,9 @@ class ProfileController extends Controller
     public function edit()
     {
         $user = Auth::user()->load('identification');
-        
+
         $this->authorize('update', $user->identification);
-        
+
         return view('profile.edit', [
             'user' => $user,
             'identification' => $user->identification,
@@ -158,10 +158,9 @@ class ProfileController extends Controller
 
         // Update Identification table
         $data = [
-            'bio' => $request->bio,
-            'website' => $request->website,
-            'gender' => $request->gender,
-            'location' => $request->location,
+            'bio' => $request->bio ?? 'N/A',
+            'website' => $request->website ?? 'N/A',
+
         ];
 
         if ($user->identification->has_custom_color_unlocked && $request->has('custom_color')) {
@@ -173,7 +172,7 @@ class ProfileController extends Controller
             if ($identification->avatar_path) {
                 Storage::disk('public')->delete($identification->avatar_path);
             }
-            
+
             $path = $request->file('avatar')->store('avatars', 'public');
             $data['avatar_path'] = $path;
         }
@@ -226,9 +225,9 @@ class ProfileController extends Controller
     public function allPastebins($username, Request $request)
     {
         $user = User::where('username', $username)->firstOrFail();
-        
+
         $query = $user->pastebins()->latest();
-        
+
         // Security filter: guests/other users can only see public, unsecured pastes
         if (!Auth::check() || Auth::id() !== $user->id) {
             $query->where('visibility', 'public')
@@ -262,8 +261,10 @@ class ProfileController extends Controller
 
         // Total count for header (only on first load)
         $total = $user->pastebins()
-            ->when(!Auth::check() || Auth::id() !== $user->id, fn($q) =>
-                $q->where('visibility', 'public')->whereNull('password')->where('is_self_destruct', false)
+            ->when(
+                !Auth::check() || Auth::id() !== $user->id,
+                fn($q)
+                => $q->where('visibility', 'public')->whereNull('password')->where('is_self_destruct', false)
             )->count();
 
         return view('profile.pastebins', compact('user', 'pastes', 'title', 'nextCursor', 'total'));
@@ -275,11 +276,11 @@ class ProfileController extends Controller
     public function allPosts($username, Request $request)
     {
         $user = User::where('username', $username)->firstOrFail();
-        
+
         $query = \App\Models\Comment::where('user_id', $user->id)
             ->with('pastebin')
             ->latest();
-            
+
         // Security filter: guests/other users can only see comments belonging to public, unsecured pastes
         if (!Auth::check() || Auth::id() !== $user->id) {
             $query->whereHas('pastebin', function ($q) {
@@ -315,9 +316,13 @@ class ProfileController extends Controller
 
         // Total count for header (only on first load)
         $total = \App\Models\Comment::where('user_id', $user->id)
-            ->when(!Auth::check() || Auth::id() !== $user->id, fn($q) =>
-                $q->whereHas('pastebin', fn($p) =>
-                    $p->where('visibility', 'public')->whereNull('password')->where('is_self_destruct', false)
+            ->when(
+                !Auth::check() || Auth::id() !== $user->id,
+                fn($q)
+                => $q->whereHas(
+                    'pastebin',
+                    fn($p)
+                    => $p->where('visibility', 'public')->whereNull('password')->where('is_self_destruct', false)
                 )
             )->count();
 
@@ -356,7 +361,7 @@ class ProfileController extends Controller
             $u->avatar_url = $u->identification && $u->identification->avatar_path
                 ? asset('storage/' . $u->identification->avatar_path)
                 : asset('storage/avatars/default.png');
-                
+
             $u->display_style = $u->identification && $u->identification->role
                 ? $u->identification->role->userStyleWithBanner($u->username, $u->identification->color_username ?? '#ffffff')
                 : $u->username;
