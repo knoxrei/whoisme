@@ -121,7 +121,7 @@ Route::prefix('upgrade')->name('upgrade.')->group(function () {
 
 
 // Profile Routes
-Route::get('/users', [ProfileController::class, 'usersList'])->middleware('auth')->name('profile.users-list');
+Route::get('/users', [ProfileController::class, 'usersList'])->name('profile.users-list');
 Route::get('/user-{username}', [ProfileController::class, 'show'])->name('profile.show');
 Route::get('/user-{username}/pastebins', [ProfileController::class, 'allPastebins'])->name('profile.pastebins');
 Route::get('/user-{username}/posts', [ProfileController::class, 'allPosts'])->name('profile.posts');

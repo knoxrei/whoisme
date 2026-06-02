@@ -6,7 +6,7 @@ use App\Enum\Role;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
 use App\Models\User;
-
+use App\Services\PasswordVerifier;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -192,23 +192,35 @@ class ValidateGate extends Controller
     public function login()
     {
         $title = 'Login';
-        return view('gate.login', compact('title'));
+        $legacyPlatformName = config('platform.legacy_name');
+
+        return view('gate.login', compact('title', 'legacyPlatformName'));
     }
 
-    public function loginStore(LoginRequest $request)
+    public function loginStore(LoginRequest $request, PasswordVerifier $passwordVerifier)
     {
         $validatedData = $request->validated();
+        $identity = $validatedData['username'];
+        $password = $validatedData['password'];
 
-        if (Auth::attempt($validatedData)) {
-            $user = Auth::user();
-            session()->put('anonuser', $user->username);
-            session()->put('login_time', now());
-            \Illuminate\Support\Facades\Cache::put("user:login_time:{$user->id}", now(), now()->addHours(2));
-            session()->flash('success', "Data {$validatedData['username']} has been logged in!");
-            return redirect()->route('dashboard');
+        $user = User::query()
+            ->where('username', $identity)
+            ->orWhere('email', $identity)
+            ->first();
+
+        if (! $user || ! $passwordVerifier->verify($user, $password)) {
+            return redirect()->route('login')->with('error', 'Credentials do not match our records.');
         }
 
-        return redirect()->route('login')->with('error', "Data its not in our record!");
+        Auth::login($user, $request->boolean('remember'));
+        $user->update(['last_active' => now()]);
+
+        session()->put('anonuser', $user->username);
+        session()->put('login_time', now());
+        \Illuminate\Support\Facades\Cache::put("user:login_time:{$user->id}", now(), now()->addHours(2));
+        session()->flash('success', "Welcome back, {$user->username}!");
+
+        return redirect()->route('dashboard');
     }
 
     public function logout(Request $request)

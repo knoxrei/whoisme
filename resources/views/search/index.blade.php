@@ -76,7 +76,13 @@
             </div>
             <x-internal-ads class="mb-4 mt-5" />
             <!-- Live Site Stats -->
-            <div class="w-full grid grid-cols-3 gap-3 mb-8">
+            <div class="w-full grid grid-cols-2 sm:grid-cols-4 gap-3 mb-8">
+                <div class="bg-[#0a0a0a] border border-red-950/20 rounded-sm p-3 text-center">
+                    <div class="text-red-500 font-black text-base tabular-nums" id="stat-users">
+                        {{ number_format($stats['total_users'] ?? 0) }}
+                    </div>
+                    <div class="text-[9px] text-gray-600 uppercase tracking-widest mt-1">Total Users</div>
+                </div>
                 <div class="bg-[#0a0a0a] border border-red-950/20 rounded-sm p-3 text-center">
                     <div class="text-red-500 font-black text-base tabular-nums" id="stat-total">
                         {{ number_format($stats['total']) }}

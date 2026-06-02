@@ -11,6 +11,15 @@
             <div class="mb-8 text-center">
                 <h1 class="text-3xl font-semibold text-white tracking-tight">Login</h1>
                 <p class="text-gray-500 mt-2 text-sm">Please enter your credentials to continue.</p>
+                @if(!empty($legacyPlatformName))
+                    <div class="mt-4 p-3 border border-red-900/30 bg-red-950/10 rounded-sm text-left">
+                        <p class="text-[10px] text-gray-400 font-mono leading-relaxed">
+                            Already registered on <strong class="text-red-500">{{ $legacyPlatformName }}</strong>?
+                            Use the same username and password to sign in here. Passwords are stored with
+                            <strong class="text-gray-300">Argon2</strong> encryption and remain compatible after migration.
+                        </p>
+                    </div>
+                @endif
             </div>
             @if(session('success'))
                 <div
@@ -28,10 +37,10 @@
                 @csrf
                 <div class="space-y-1.5">
                     <label for="username"
-                        class="text-xs font-medium text-gray-400 uppercase tracking-wider ml-1">Username</label>
+                        class="text-xs font-medium text-gray-400 uppercase tracking-wider ml-1">Username or Email</label>
                     <input type="text" name="username" id="username" required
                         class="w-full bg-black border border-gray-800 rounded-md px-4 py-3 text-white focus:outline-none focus:ring-1 focus:ring-red-600 focus:border-red-600 transition-all placeholder:text-gray-600"
-                        placeholder="Your username">
+                        placeholder="Username or email address">
                 </div>
 
                 <div class="space-y-1.5">
@@ -40,6 +49,12 @@
                     <input type="password" name="password" id="password" required
                         class="w-full bg-black border border-gray-800 rounded-md px-4 py-3 text-white focus:outline-none focus:ring-1 focus:ring-red-600 focus:border-red-600 transition-all placeholder:text-gray-600"
                         placeholder="••••••••">
+                </div>
+
+                <div class="flex items-center gap-2">
+                    <input type="checkbox" name="remember" id="remember" value="1"
+                        class="rounded border-gray-700 bg-black text-red-600 focus:ring-red-600">
+                    <label for="remember" class="text-xs text-gray-500">Remember me</label>
                 </div>
 
                 <div class="pt-2">

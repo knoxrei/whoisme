@@ -178,10 +178,13 @@ class SearchRepository
             ->selectRaw('COUNT(*) as total, SUM(views_count) as total_views, SUM(download_count) as total_downloads')
             ->first();
 
+        $totalUsers = (int) DB::table('users')->count();
+
         return [
             'total'           => (int) ($row->total ?? 0),
             'total_views'     => (int) ($row->total_views ?? 0),
             'total_downloads' => (int) ($row->total_downloads ?? 0),
+            'total_users'     => $totalUsers,
         ];
     }
 
