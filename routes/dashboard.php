@@ -28,6 +28,5 @@ Route::middleware(['auth'])->group(function () {
 
     // Bulk email (owner only — enforced in controller)
     Route::get('/dashboard/bulk-mail', [BulkMailController::class, 'index'])->name('dashboard.bulk-mail');
-    Route::get('/dashboard/bulk-mail/recipients', [BulkMailController::class, 'recipients'])->name('dashboard.bulk-mail.recipients');
-    Route::post('/dashboard/bulk-mail/send', [BulkMailController::class, 'sendBatch'])->name('dashboard.bulk-mail.send');
+    Route::post('/dashboard/bulk-mail/dispatch', [BulkMailController::class, 'dispatch'])->name('dashboard.bulk-mail.dispatch');
 });
