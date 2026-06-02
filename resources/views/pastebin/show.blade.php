@@ -27,7 +27,6 @@
                 </div>
             @endif
             
-            <!-- Breadcrumb/Header Bar -->
             <div class="bg-[#0a0a0a] border border-red-900/40 px-5 py-4 mb-2 flex items-center justify-between rounded-sm">
                 <div class="flex items-center gap-3">
                     {!! $pastebin->visibility->badge() !!}
@@ -45,10 +44,8 @@
                 </div>
             </div>
 
-            <!-- Main Thread Container -->
             <div class="flex flex-col md:flex-row gap-2 ">
                 
-                <!-- Left Sidebar (User Card Column) -->
                 <aside class="w-full md:w-64 flex-shrink-0 bg-[#0a0a0a] border border-red-900/30 rounded-sm">
                     <div class="sticky top-4 md:top-20 p-5 text-center">
                         <div class="mb-4">
@@ -61,7 +58,6 @@
                             </a>
                         </div>
 
-                    <!-- Avatar -->
                     <div class="mb-5 flex justify-center">
                         <div class="w-32 h-32 overflow-hidden ">
                             @if($pastebin->user && $pastebin->user->identification->avatar_path)
@@ -72,7 +68,6 @@
                         </div>
                     </div>
 
-                    <!-- Role Badge -->
                     <div class="mb-6 space-y-2">
                         @if($pastebin->user)
                             <div class="border border-red-900/20 bg-[#050505] py-1 text-[9px] font-black text-gray-500 uppercase tracking-[0.2em]">
@@ -90,7 +85,6 @@
                         @endif
                     </div>
 
-                    <!-- User Stats -->
                     <div class="text-[10px] space-y-2 text-left px-1 border-t border-red-900/10 pt-5">
                         @if($pastebin->user)
                             <div class="flex justify-between items-center">
@@ -112,7 +106,6 @@
                         </div>
                     </div>
 
-                    {{-- Who's Browsing Panel --}}
                     <div class="mt-5 border-t border-red-900/10 pt-5">
                         <div class="text-[9px] font-black text-red-500 uppercase tracking-[0.2em] mb-2 flex items-center gap-2">
                             <span class="w-2 h-2 rounded-full bg-red-600"></span>
@@ -138,19 +131,14 @@
                 </div>
             </aside>
 
-                <!-- Right Content Area -->
                 <main class="flex-1 flex flex-col gap-2">
-                    <!-- Post Card -->
                     <div class="bg-[#050505] border border-red-900/30 rounded-sm flex flex-col min-h-[600px]">
-                        <!-- Post Header -->
                         <div class="bg-[#111] px-5 py-2.5 border-b border-red-900/30 flex justify-between items-center text-[10px] text-gray-500 font-mono">
                             {{ $pastebin->created_at->format('d-m-Y, H:i A') }}
                         </div>
 
-                        <!-- Post Content -->
                         <div class="p-8 flex-1">
                             
-                            <!-- Burn-After-Reading Alert -->
                             @if(isset($isBurned) && $isBurned)
                                 <div class="mb-8 p-4 bg-red-950/20 border-2 border-dashed border-red-600 rounded-sm text-red-500 font-mono text-xs flex items-start gap-3">
                                     <div class="flex-shrink-0 text-lg">⚠️</div>
@@ -163,16 +151,12 @@
                                 </div>
                             @endif
 
-                            <!-- Cover Image -->
                             @if($pastebin->cover_path && $pastebin->cover_path !== 'defaultCover.png')
                                 <div class="mb-8 border border-red-900/20 bg-[#050505] p-1 rounded-sm overflow-hidden">
                                     <img src="{{ asset('storage/' . $pastebin->cover_path) }}" class="w-full max-h-[400px] object-cover" alt="cover">
                                 </div>
                             @endif
 
-                     
-
-                            <!-- Main Content Block -->
                             <div class="mb-8" id="content-section-container">
                                 <button id="minimize-fixed-btn" onclick="toggleMaximizeContent()" class="hidden fixed top-4 right-4 z-[1001] bg-[#111] border border-red-900/30 p-2.5 rounded-sm hover:border-red-600 text-gray-400 hover:text-white transition-colors shadow-2xl" title="Minimize">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 4v4m0 0H4m4 0l-5-5m11 1V4m0 0h4m-4 0l5-5M8 20v-4m0 0H4m4 0l5 5m11-1v4m0-4h4m-4 0l5 5"/></svg>
@@ -241,7 +225,6 @@
                                 <div id="pastebin-content-wrapper" class="collapsed markdown-body text-gray-300 p-6 font-mono text-xs overflow-x-auto leading-relaxed scrollbar-thin scrollbar-thumb-red-900 scrollbar-track-transparent">
                                     {!! $contentMarkdown !!}
                                 </div>
-                                {{-- View Full / Maximize Buttons --}}
                                 <div id="view-full-btn-container" class="border-t border-red-900/10 bg-gradient-to-t from-[#050505] to-transparent -mt-16 pt-12 pb-3 flex justify-center gap-3 relative">
                                     <button id="view-full-btn" onclick="toggleViewFull()" class="flex items-center gap-2 bg-[#0a0a0a] border border-red-900/30 hover:border-red-600 text-[9px] font-black uppercase tracking-[0.2em] text-red-500 hover:text-white px-5 py-2 rounded-sm transition-all duration-200 active:scale-95">
                                         <svg id="view-full-icon" class="w-3 h-3 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/></svg>
@@ -254,7 +237,6 @@
                                 </div>
                             </div>
 
-                            <!-- Gallery Images -->
                             @if($pastebin->images && $pastebin->images->count() > 0)
                             <div class="mt-12 pt-8 border-t border-red-900/10">
                                 <div class="text-[10px] font-black text-red-500 uppercase mb-5 tracking-[0.2em] flex items-center gap-3">
@@ -274,7 +256,6 @@
                             @endif
                         </div>
 
-                        <!-- Footer Actions -->
                         <footer class="bg-[#111] border-t border-red-900/30 px-6 py-3 flex items-center justify-between rounded-b-sm mt-auto">
                             
                             <div class="flex gap-3">
@@ -316,7 +297,6 @@
 
                     <x-internal-ads />
 
-                    <!-- Comments Section -->
                     <div class="bg-[#0a0a0a] border border-red-900/30 p-6 rounded-sm flex flex-col gap-6">
                         <h3 class="text-xs font-black text-red-500 uppercase tracking-[0.2em] flex items-center gap-3">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg>
@@ -410,7 +390,6 @@
                         @endauth
                     </div>
 
-                    <!-- Pending Suggestions Block -->
                     @if(auth()->check() && (auth()->id() === $pastebin->user_id || auth()->user()->canUsePremiumFeatures()))
                         @if(isset($pendingEdits) && count($pendingEdits) > 0)
                             <div class="bg-[#0a0a0a] border border-red-600/30 p-6 rounded-sm">
@@ -454,7 +433,6 @@
         </div>
     </div>
 
-    <!-- Edit/Suggest Modal -->
     <div id="edit-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4">
         <div class="absolute inset-0 bg-black/95"></div>
         <div class="relative bg-[#0a0a0a] border border-red-900/40 w-full max-w-4xl rounded-sm overflow-hidden">
@@ -500,7 +478,6 @@
                         @foreach($pastebin->images as $image)
                             <div class="relative aspect-square border border-red-900/20 p-1 group transition-all duration-150 image-to-delete-container">
                                 <img src="{{ asset('storage/' . $image->image_path) }}" class="w-full h-full object-cover rounded-sm image-preview" alt="existing evidence">
-                                <!-- Overlay with checkbox -->
                                 <div class="absolute inset-0 bg-black/40 group-hover:bg-black/70 flex items-center justify-center transition-all duration-150 overlay-delete opacity-0 group-hover:opacity-100">
                                     <label class="flex flex-col items-center justify-center cursor-pointer text-gray-400 hover:text-red-500 text-[9px] font-black uppercase tracking-wider gap-2 select-none w-full h-full">
                                         <input type="checkbox" name="delete_images[]" value="{{ $image->id }}" onchange="toggleImageDeleteState(this)" class="form-checkbox text-red-600 focus:ring-red-600 h-4 w-4 bg-black border-red-900/40 rounded-sm cursor-pointer">
@@ -549,7 +526,6 @@
         @endcan
     @endauth
 
-    <!-- Report Modal -->
     <div id="report-modal" class="fixed inset-0 z-[100] hidden flex items-center justify-center p-4">
         <div class="absolute inset-0 bg-black/95 backdrop-blur-sm" onclick="document.getElementById('report-modal').classList.add('hidden')"></div>
         <div class="relative bg-[#0a0a0a] border border-red-900/40 w-full max-w-md rounded-sm overflow-hidden shadow-2xl">
@@ -574,7 +550,6 @@
         </div>
     </div>
 
-    <!-- Share Modal -->
     <div id="share-modal" class="fixed inset-0 z-[100] hidden flex items-center justify-center p-4">
         <div class="absolute inset-0 bg-black/95 backdrop-blur-sm" onclick="closeShareModal()"></div>
         <div class="relative bg-[#0a0a0a] border border-red-900/40 w-full max-w-md rounded-sm overflow-hidden shadow-2xl">
@@ -585,7 +560,6 @@
                 </button>
             </div>
             <div class="p-6 space-y-6">
-                <!-- Social Share Links -->
                 <div class="grid grid-cols-2 gap-3">
                     <a href="https://t.me/share/url?url={{ urlencode(request()->url()) }}&text={{ urlencode($pastebin->title) }}" target="_blank" 
                        class="flex items-center justify-center gap-2 p-3 bg-[#0a0a0a] border border-red-900/20 hover:border-red-600 hover:bg-red-950/10 rounded-sm text-xs font-black uppercase tracking-wider text-gray-300 transition-all active:scale-95">
@@ -600,7 +574,6 @@
                     </a>
                 </div>
 
-                <!-- Copy Link Input -->
                 <div class="flex flex-col gap-2">
                     <label class="text-[10px] font-bold text-gray-500 uppercase">Share Link</label>
                     <div class="flex items-center gap-2 bg-black border border-red-900/20 p-2.5 rounded-sm">
