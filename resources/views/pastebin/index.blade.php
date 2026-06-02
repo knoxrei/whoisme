@@ -1,5 +1,7 @@
 <x-layouts.app :title="$title">
-    <div class="w-full max-w-5xl mx-auto py-8 px-4 sm:px-6 lg:px-8 font-mono text-gray-200">
+<div class="min-h-screen text-gray-200 font-mono py-12 px-4">
+
+    <div class="max-w-7xl mx-auto border border-red-950/20 p-6 relative">
 
         <!-- Flash Messages -->
         @if(session('success'))
@@ -309,4 +311,5 @@
         </script>
         @endif
     @endauth
+    </div>
 </x-layouts.app>
