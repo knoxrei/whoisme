@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enum\Role;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -232,8 +233,8 @@ class ProfileController extends Controller
         // Security filter: guests/other users can only see public, unsecured pastes
         if (!Auth::check() || Auth::id() !== $user->id) {
             $query->where('visibility', 'public')
-                  ->whereNull('password')
-                  ->where('is_self_destruct', false);
+                ->whereNull('password')
+                ->where('is_self_destruct', false);
         }
 
         // Cursor-based for load-more speed
@@ -286,8 +287,8 @@ class ProfileController extends Controller
         if (!Auth::check() || Auth::id() !== $user->id) {
             $query->whereHas('pastebin', function ($q) {
                 $q->where('visibility', 'public')
-                  ->whereNull('password')
-                  ->where('is_self_destruct', false);
+                    ->whereNull('password')
+                    ->where('is_self_destruct', false);
             });
         }
 
@@ -336,57 +337,77 @@ class ProfileController extends Controller
     public function usersList()
     {
         $title = 'User';
+        $perPage = 10;
 
-        // Retrieve all users eager loaded with identification, ordered by reputation descending
-        $users = User::with(['identification'])
-            ->leftJoin('identifications', 'users.id', '=', 'identifications.user_id')
-            ->select('users.*')
-            ->orderBy('identifications.reputation', 'desc')
-            ->get();
+        $staff = $this->usersListBaseQuery()
+            ->whereIn('identifications.role', [Role::OWNER->value, Role::MODERATOR->value])
+            ->paginate($perPage, ['*'], 'staff_page')
+            ->withQueryString();
 
-        // Initialize groups
-        $staff = [];
-        $premium = [];
-        $advertisers = [];
-        $members = [];
+        $premium = $this->usersListBaseQuery()
+            ->whereIn('identifications.role', [Role::RICH->value, Role::PRIME->value, Role::VIP->value])
+            ->paginate($perPage, ['*'], 'premium_page')
+            ->withQueryString();
 
-        foreach ($users as $u) {
-            $role = $u->identification->role ?? \App\Enum\Role::MEMBER;
+        $advertisers = $this->usersListBaseQuery()
+            ->where('identifications.role', Role::ADVERTISER->value)
+            ->paginate($perPage, ['*'], 'advertisers_page')
+            ->withQueryString();
 
-            // Skip banned users from the public list for clean visual
-            if ($role === \App\Enum\Role::BANNED) {
-                continue;
-            }
+        $members = $this->usersListBaseQuery()
+            ->where(function ($q) {
+                $q->whereNotIn('identifications.role', [
+                    Role::OWNER->value,
+                    Role::MODERATOR->value,
+                    Role::RICH->value,
+                    Role::PRIME->value,
+                    Role::VIP->value,
+                    Role::ADVERTISER->value,
+                    Role::BANNED->value,
+                ])->orWhereNull('identifications.role');
+            })
+            ->paginate($perPage, ['*'], 'members_page')
+            ->withQueryString();
 
-            // Add helper attributes for display style
-            $u->avatar_url = $u->identification && $u->identification->avatar_path
-                ? asset('storage/' . $u->identification->avatar_path)
-                : asset('storage/avatars/default.png');
-
-            $u->display_style = $u->identification && $u->identification->role
-                ? $u->identification->role->userStyleWithBanner($u->username, $u->identification->color_username ?? '#ffffff')
-                : $u->username;
-
-            // Grouping logic with maximum 10 entries per group for lightweight loading
-            if ($role === \App\Enum\Role::OWNER || $role === \App\Enum\Role::MODERATOR) {
-                if (count($staff) < 10) {
-                    $staff[] = $u;
-                }
-            } elseif ($role === \App\Enum\Role::RICH || $role === \App\Enum\Role::PRIME || $role === \App\Enum\Role::VIP) {
-                if (count($premium) < 10) {
-                    $premium[] = $u;
-                }
-            } elseif ($role === \App\Enum\Role::ADVERTISER) {
-                if (count($advertisers) < 10) {
-                    $advertisers[] = $u;
-                }
-            } else {
-                if (count($members) < 10) {
-                    $members[] = $u;
-                }
-            }
+        foreach ([$staff, $premium, $advertisers, $members] as $paginator) {
+            $paginator->getCollection()->transform(fn(User $u) => $this->decorateUserForList($u));
         }
 
         return view('profile.users-list', compact('title', 'staff', 'premium', 'advertisers', 'members'));
+    }
+
+    /**
+     * Base query for the public users list (non-banned, ordered by reputation).
+     */
+    private function usersListBaseQuery()
+    {
+        return User::query()
+            ->with('identification')
+            ->leftJoin('identifications', 'users.id', '=', 'identifications.user_id')
+            ->where(function ($q) {
+                $q->where('identifications.role', '!=', Role::BANNED->value)
+                    ->orWhereNull('identifications.role');
+            })
+            ->select('users.*')
+            ->orderByDesc('identifications.reputation');
+    }
+
+    /**
+     * Attach display helpers used by the users list view.
+     */
+    private function decorateUserForList(User $user): User
+    {
+        $user->avatar_url = $user->identification && $user->identification->avatar_path
+            ? asset('storage/' . $user->identification->avatar_path)
+            : asset('storage/avatars/default.png');
+
+        $user->display_style = $user->identification && $user->identification->role
+            ? $user->identification->role->userStyleWithBanner(
+                $user->username,
+                $user->identification->color_username ?? '#ffffff'
+            )
+            : $user->username;
+
+        return $user;
     }
 }
