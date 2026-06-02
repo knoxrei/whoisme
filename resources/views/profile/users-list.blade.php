@@ -1,7 +1,7 @@
 <x-layouts.app :title="$title">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 font-mono text-gray-300">
         
-        <div class="border-b border-red-950/40 pb-6 mb-12 flex flex-col md:flex-row md:items-end justify-between gap-4">
+        <div class="border-b border-red-950/40 pb-6 mb-8 flex flex-col md:flex-row md:items-end justify-between gap-4">
             <div>
                 <h1 class="text-xl md:text-2xl font-black text-white uppercase tracking-wider" style="font-family: 'Outfit', sans-serif;">
                     Our <span class="text-red-500">Users</span>
@@ -10,16 +10,36 @@
                     Secure index of captured aliases and system entities ordered by reputation score.
                 </p>
             </div>
-            
-            <div class="flex flex-wrap items-center gap-x-4 gap-y-2 text-[9px] font-bold text-gray-600 border-l border-red-950/30 pl-0 md:pl-4 uppercase tracking-widest">
-                <div>Staff: <span class="text-red-500 font-black">{{ $staff->total() }}</span></div>
-                <div class="hidden sm:block text-red-950/30">•</div>
-                <div>Premium: <span class="text-yellow-500 font-black">{{ $premium->total() }}</span></div>
-                <div class="hidden sm:block text-red-950/30">•</div>
-                <div>Promo Nodes: <span class="text-blue-400 font-black">{{ $advertisers->total() }}</span></div>
-                <div class="hidden sm:block text-red-950/30">•</div>
-                <div>Members: <span class="text-gray-400 font-black">{{ $members->total() }}</span></div>
+
+            <form method="GET" action="{{ route('profile.users-list') }}" class="flex flex-wrap items-center gap-2 font-mono text-[10px] w-full md:w-auto">
+                <input type="text" name="q" value="{{ $search ?? '' }}" placeholder="Search username or email..."
+                    class="flex-1 md:w-56 bg-[#0a0a0a] border border-red-950/40 focus:border-red-600 rounded-sm px-3 py-2 text-white text-xs focus:outline-none">
+                <button type="submit" class="px-4 py-2 bg-red-950/30 border border-red-900/40 hover:border-red-600 text-red-500 hover:text-white uppercase tracking-widest rounded-sm font-black transition-colors">
+                    Search
+                </button>
+                @if(!empty($search))
+                    <a href="{{ route('profile.users-list') }}" class="px-3 py-2 border border-red-900/40 text-gray-500 hover:text-white uppercase tracking-widest rounded-sm">
+                        Reset
+                    </a>
+                @endif
+            </form>
+        </div>
+
+        @if(!empty($search))
+            <div class="mb-8 p-3 border border-red-900/30 bg-red-950/10 rounded-sm text-[10px] font-mono text-gray-400">
+                Results for <strong class="text-red-500">"{{ $search }}"</strong>
+                — <span class="text-white font-black">{{ number_format($totalResults) }}</span> match(es) across all categories.
             </div>
+        @endif
+
+        <div class="flex flex-wrap items-center gap-x-4 gap-y-2 text-[9px] font-bold text-gray-600 border-b border-red-950/20 pb-6 mb-8 uppercase tracking-widest">
+            <div>Staff: <span class="text-red-500 font-black">{{ $staff->total() }}</span></div>
+            <div class="hidden sm:block text-red-950/30">•</div>
+            <div>Premium: <span class="text-yellow-500 font-black">{{ $premium->total() }}</span></div>
+            <div class="hidden sm:block text-red-950/30">•</div>
+            <div>Promo Nodes: <span class="text-blue-400 font-black">{{ $advertisers->total() }}</span></div>
+            <div class="hidden sm:block text-red-950/30">•</div>
+            <div>Members: <span class="text-gray-400 font-black">{{ $members->total() }}</span></div>
         </div>
 
         <div class="space-y-16">

@@ -314,15 +314,19 @@ class DashboardController extends Controller
         $user = auth()->user();
         $role = $user->identification->role;
 
-        $search = $request->query('q');
+        $search = trim((string) $request->query('q', ''));
         $filterRole = $request->query('filter_role');
 
-        $query = User::with(['identification'])->latest();
+        $query = User::with(['identification'])->withCount('pastebins')->latest();
 
-        if ($search) {
+        if ($search !== '') {
             $query->where(function ($q) use ($search) {
                 $q->where('username', 'like', "%{$search}%")
-                  ->orWhere('email', 'like', "%{$search}%");
+                    ->orWhere('email', 'like', "%{$search}%");
+
+                if (ctype_digit($search)) {
+                    $q->orWhere('id', (int) $search);
+                }
             });
         }
 
@@ -372,8 +376,9 @@ class DashboardController extends Controller
             'user' => $user,
             'role' => $role,
             'users' => $users,
-            'search' => $search,
+            'search' => $search !== '' ? $search : null,
             'filterRole' => $filterRole,
+            'totalUsers' => $users->total(),
         ]);
     }
 

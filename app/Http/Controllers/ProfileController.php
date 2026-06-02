@@ -334,27 +334,28 @@ class ProfileController extends Controller
     /**
      * Display a public categorized list of community users.
      */
-    public function usersList()
+    public function usersList(Request $request)
     {
         $title = 'User';
         $perPage = 10;
+        $search = trim((string) $request->query('q', ''));
 
-        $staff = $this->usersListBaseQuery()
+        $staff = $this->usersListBaseQuery($search)
             ->whereIn('identifications.role', [Role::OWNER->value, Role::MODERATOR->value])
             ->paginate($perPage, ['*'], 'staff_page')
             ->withQueryString();
 
-        $premium = $this->usersListBaseQuery()
+        $premium = $this->usersListBaseQuery($search)
             ->whereIn('identifications.role', [Role::RICH->value, Role::PRIME->value, Role::VIP->value])
             ->paginate($perPage, ['*'], 'premium_page')
             ->withQueryString();
 
-        $advertisers = $this->usersListBaseQuery()
+        $advertisers = $this->usersListBaseQuery($search)
             ->where('identifications.role', Role::ADVERTISER->value)
             ->paginate($perPage, ['*'], 'advertisers_page')
             ->withQueryString();
 
-        $members = $this->usersListBaseQuery()
+        $members = $this->usersListBaseQuery($search)
             ->where(function ($q) {
                 $q->whereNotIn('identifications.role', [
                     Role::OWNER->value,
@@ -373,15 +374,25 @@ class ProfileController extends Controller
             $paginator->getCollection()->transform(fn (User $u) => $this->decorateUserForList($u));
         }
 
-        return view('profile.users-list', compact('title', 'staff', 'premium', 'advertisers', 'members'));
+        $totalResults = $staff->total() + $premium->total() + $advertisers->total() + $members->total();
+
+        return view('profile.users-list', compact(
+            'title',
+            'staff',
+            'premium',
+            'advertisers',
+            'members',
+            'search',
+            'totalResults',
+        ));
     }
 
     /**
      * Base query for the public users list (non-banned, ordered by reputation).
      */
-    private function usersListBaseQuery()
+    private function usersListBaseQuery(?string $search = null)
     {
-        return User::query()
+        $query = User::query()
             ->with('identification')
             ->leftJoin('identifications', 'users.id', '=', 'identifications.user_id')
             ->where(function ($q) {
@@ -390,6 +401,33 @@ class ProfileController extends Controller
             })
             ->select('users.*')
             ->orderByDesc('identifications.reputation');
+
+        if ($search !== null && $search !== '') {
+            $this->applyUserSearchFilter($query, $search);
+        }
+
+        return $query;
+    }
+
+    /**
+     * Apply username / email / id search to a user query.
+     */
+    private function applyUserSearchFilter($query, string $search): void
+    {
+        $term = trim($search);
+
+        if ($term === '') {
+            return;
+        }
+
+        $query->where(function ($q) use ($term) {
+            $q->where('users.username', 'like', "%{$term}%")
+                ->orWhere('users.email', 'like', "%{$term}%");
+
+            if (ctype_digit($term)) {
+                $q->orWhere('users.id', (int) $term);
+            }
+        });
     }
 
     /**

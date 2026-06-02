@@ -12,12 +12,16 @@
             
             <form method="GET" action="{{ route('dashboard.users') }}" class="flex flex-wrap items-center gap-3 font-mono text-[10px]">
                 <div class="relative">
-                    <input type="text" name="q" value="{{ $search }}" placeholder="Search username/email..." 
-                        class="bg-black border border-red-900/20 focus:border-red-600 rounded-sm px-3 py-1.5 text-white text-xs w-48 focus:outline-none">
+                    <input type="text" name="q" value="{{ $search ?? '' }}" placeholder="Search username, email, or ID..."
+                        class="bg-black border border-red-900/20 focus:border-red-600 rounded-sm px-3 py-1.5 text-white text-xs w-52 md:w-56 focus:outline-none">
                 </div>
 
+                <button type="submit" class="px-3 py-1.5 bg-red-950/30 border border-red-900/40 hover:border-red-600 text-red-500 hover:text-white uppercase tracking-widest rounded-sm font-black transition-colors">
+                    Search
+                </button>
+
                 <div>
-                    <select name="filter_role" onchange="this.form.submit()" 
+                    <select name="filter_role" onchange="this.form.submit()"
                         class="bg-black border border-red-900/20 focus:border-red-600 rounded-sm px-3 py-1.5 text-xs text-gray-400 appearance-none cursor-pointer">
                         <option value="">All Clearance Level</option>
                         @foreach(\App\Enum\Role::cases() as $r)
@@ -41,6 +45,21 @@
                 @endif
             </form>
         </div>
+
+        @if($search || $filterRole)
+            <div class="p-3 border border-red-900/30 bg-red-950/10 rounded-sm text-[10px] font-mono text-gray-400">
+                @if($search)
+                    Searching <strong class="text-red-500">"{{ $search }}"</strong>
+                @endif
+                @if($search && $filterRole)
+                    <span class="text-gray-600"> • </span>
+                @endif
+                @if($filterRole)
+                    Role filter: <strong class="text-red-500">{{ \App\Enum\Role::from($filterRole)->label() }}</strong>
+                @endif
+                — <span class="text-white font-black">{{ number_format($totalUsers) }}</span> result(s)
+            </div>
+        @endif
 
         @if(session('success'))
             <div class="p-4 bg-green-950/20 border border-green-900/30 text-green-500 text-xs font-mono font-bold rounded-sm">
