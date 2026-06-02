@@ -37,7 +37,17 @@ class SearchController extends Controller
             $rootVisitors = $rootVisitorSnapshot['visitors'];
             $rootVisitorCount = $rootVisitorSnapshot['count'];
 
-            return view('search.index', compact('title', 'trending', 'stats', 'latestUser', 'rootVisitors', 'rootVisitorCount'));
+            $legacyPlatformName = config('platform.legacy_name');
+
+            return view('search.index', compact(
+                'title',
+                'trending',
+                'stats',
+                'latestUser',
+                'rootVisitors',
+                'rootVisitorCount',
+                'legacyPlatformName',
+            ));
         }
 
         $dto      = SearchQueryDTO::fromRequest($request);

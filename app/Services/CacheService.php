@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Cache;
 
 class CacheService
 {
+    public const SITE_STATS_CACHE_KEY = 'site_stats_v2';
     /**
      * Get or set search results in the cache with adaptive TTL.
      * Popular / short queries get longer cache; rare queries get shorter TTL.
@@ -33,7 +34,7 @@ class CacheService
      */
     public function rememberStats(\Closure $callback): array
     {
-        return Cache::remember('site_stats', 300, $callback);
+        return Cache::remember(self::SITE_STATS_CACHE_KEY, 300, $callback);
     }
 
     /**
@@ -46,6 +47,7 @@ class CacheService
         }
         // Always flush site stats so counter updates fast
         Cache::forget('site_stats');
+        Cache::forget(self::SITE_STATS_CACHE_KEY);
         Cache::forget('trending_pastes_list');
     }
 

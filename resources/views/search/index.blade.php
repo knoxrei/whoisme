@@ -24,6 +24,16 @@
                         <span>Clearnet Node</span>
                     </a>
                 </div>
+                @if(!empty($legacyPlatformName))
+                    <div class="mt-5 w-full max-w-lg p-3 border border-red-900/30 bg-red-950/10 rounded-sm text-left">
+                        <p class="text-[10px] text-gray-400 font-mono leading-relaxed">
+                            Already registered on <strong class="text-red-500">{{ $legacyPlatformName }}</strong>?
+                            You can <a href="{{ route('login') }}" class="text-red-500 hover:text-red-400 underline underline-offset-2">sign in here</a>
+                            with the same username and password. Credentials are encrypted with
+                            <strong class="text-gray-300">Argon2</strong> and remain valid after migration.
+                        </p>
+                    </div>
+                @endif
             </div>
 
             <!-- Search Form with Autocomplete -->
