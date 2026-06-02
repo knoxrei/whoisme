@@ -157,9 +157,6 @@
                         Terminal Operations
                     </h2>
                     <div class="grid grid-cols-1 gap-3">
-                        <a href="{{ route('dashboard.bulk-mail') }}" class="py-2.5 rounded-sm bg-red-950/20 hover:bg-red-900/20 text-red-500 border border-red-900/30 text-[10px] tracking-widest uppercase font-black text-center transition-colors duration-150 block">
-                            Bulk Email Broadcast
-                        </a>
                         <button onclick="alert('Maintenance block configured')" class="py-2.5 rounded-sm bg-red-950/20 hover:bg-red-900/20 text-red-500 border border-red-900/30 text-[10px] tracking-widest uppercase font-black text-center transition-colors duration-150">
                             Trigger Maint Lock
                         </button>
