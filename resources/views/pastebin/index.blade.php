@@ -18,9 +18,9 @@
         <!-- Header -->
         <div class="mb-6 flex flex-col md:flex-row md:items-center md:justify-between border-b border-red-900/30 pb-4 gap-4">
             <div>
-                <h1 class="text-2xl font-black text-white uppercase tracking-tight mt-2">
+                <h2 class="text-2xl font-black text-white uppercase tracking-tight mt-2">
                     Global Pastebins Index
-                </h1>
+                </h2>
                 <p class="text-xs text-gray-500 mt-1">Listing all public, non-self-destructing pastes.</p>
             </div>
             <div class="bg-[#0a0a0a] border border-red-900/30 px-4 py-2 rounded-sm text-xs">
@@ -30,7 +30,7 @@
 
         <!-- ── Pinned Pastebins Section ─────────────────────────────────────── -->
         @if($pinnedPastebins->isNotEmpty())
-            <div class="bg-[#0a0a0a] border border-red-600/40 overflow-hidden rounded-sm mb-6" id="pinned-section">
+            <div class="border border-red-600/40 overflow-hidden rounded-sm mb-6" id="pinned-section">
                 <div class="bg-[#111] px-4 py-3 border-b border-red-600/40 flex items-center justify-between">
                     <div class="flex items-center gap-2 text-xs font-black text-red-500 uppercase tracking-wider">
                         <svg class="w-3.5 h-3.5 text-red-500" fill="currentColor" viewBox="0 0 24 24">
@@ -145,7 +145,7 @@
 
         <!-- ── Recent Pastebins List Container ─────────────────────────────── -->
         <div class="bg-[#0a0a0a] border border-red-900/30 overflow-hidden rounded-sm mb-6">
-            <div class="bg-[#111] px-4 py-3 border-b border-red-900/40 text-xs font-black text-red-500 uppercase tracking-wider">
+            <div class="px-4 py-3 border-b border-red-900/40 text-xs font-black text-red-500 uppercase tracking-wider">
                 Recent Pastebins
             </div>
 
@@ -172,7 +172,7 @@
                         </thead>
                         <tbody class="divide-y divide-red-950/20">
                             @foreach($pastebins as $paste)
-                                <tr class="hover:bg-red-900/5 transition-colors">
+                                <tr >
                                     <td class="p-4">
                                         <div class="flex items-center gap-2">
                                             @if($paste->password)
@@ -199,7 +199,7 @@
                                                 </span>
                                             </a>
                                         @else
-                                            <span class="text-gray-500 italic">Anonymous</span>
+                                            <span class="text-gray-500 italic">{{ $paste->author_name ?: 'Anonymous' }}</span>
                                         @endif
                                     </td>
                                     <td class="p-4 text-center text-gray-300 font-bold">
