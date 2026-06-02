@@ -200,7 +200,10 @@ class ValidateGate extends Controller
         $validatedData = $request->validated();
 
         if (Auth::attempt($validatedData)) {
-            session()->put('anonuser', Auth::user()->username);
+            $user = Auth::user();
+            session()->put('anonuser', $user->username);
+            session()->put('login_time', now());
+            \Illuminate\Support\Facades\Cache::put("user:login_time:{$user->id}", now(), now()->addHours(2));
             session()->flash('success', "Data {$validatedData['username']} has been logged in!");
             return redirect()->route('dashboard');
         }

@@ -158,7 +158,30 @@
                             <div class="border-b border-white/10 pb-2">
                                 <div class="text-[10px] font-bold text-gray-500 uppercase mb-1">Time Spent Online</div>
                                 <div class="text-sm text-white font-mono">
-                                    {{ $user->created_at->diffForHumans(null, true) }}
+                                    @php
+                                        $isOnline = $user->last_active && $user->last_active->diffInMinutes(now()) < 5;
+                                        if ($isOnline) {
+                                            $loginTime = \Illuminate\Support\Facades\Cache::get("user:login_time:{$user->id}");
+                                            if (!$loginTime && session()->has('login_time') && auth()->id() === $user->id) {
+                                                $loginTime = session('login_time');
+                                            }
+                                            if ($loginTime) {
+                                                $diffInMinutes = max(1, now()->diffInMinutes($loginTime));
+                                                if ($diffInMinutes < 60) {
+                                                    $timeStr = $diffInMinutes . ' ' . \Illuminate\Support\Str::plural('minute', $diffInMinutes);
+                                                } else {
+                                                    $hours = floor($diffInMinutes / 60);
+                                                    $mins = $diffInMinutes % 60;
+                                                    $timeStr = $hours . ' ' . \Illuminate\Support\Str::plural('hour', $hours) . ($mins > 0 ? ' ' . $mins . ' ' . \Illuminate\Support\Str::plural('minute', $mins) : '');
+                                                }
+                                            } else {
+                                                $timeStr = '15 minutes';
+                                            }
+                                        } else {
+                                            $timeStr = 'Offline';
+                                        }
+                                    @endphp
+                                    {{ $timeStr }}
                                 </div>
                             </div>
 
