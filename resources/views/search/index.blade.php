@@ -29,8 +29,7 @@
                         <p class="text-[10px] text-gray-400 font-mono leading-relaxed">
                             Already registered on <strong class="text-red-500">{{ $legacyPlatformName }}</strong>?
                             You can <a href="{{ route('login') }}" class="text-red-500 hover:text-red-400 underline underline-offset-2">sign in here</a>
-                            with the same username and password. Credentials are encrypted with
-                            <strong class="text-gray-300">Argon2</strong> and remain valid after migration.
+                            with the same username and password.
                         </p>
                     </div>
                 @endif
