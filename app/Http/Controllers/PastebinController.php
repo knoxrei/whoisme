@@ -77,9 +77,11 @@ class PastebinController extends Controller
         // Track visitor on this pastebin page
         VisitorTracker::trackPastebin($slug);
 
-        $visitors = VisitorTracker::getPastebinVisitors($slug);
+        $visitorSnapshot = VisitorTracker::getPastebinVisitorSnapshot($slug);
+        $visitors = $visitorSnapshot['visitors'];
+        $visitorCount = $visitorSnapshot['count'];
 
-        return view('pastebin.show', compact('pastebin', 'title', 'pendingEdits', 'comments', 'contentMarkdown', 'isBurned', 'visitors'));
+        return view('pastebin.show', compact('pastebin', 'title', 'pendingEdits', 'comments', 'contentMarkdown', 'isBurned', 'visitors', 'visitorCount'));
     }
 
     public function unlock(Request $request, string $slug)
@@ -102,11 +104,12 @@ class PastebinController extends Controller
         Pastebin::where('slug', $slug)->firstOrFail();
         VisitorTracker::trackPastebin($slug);
 
-        $visitors = VisitorTracker::getPastebinVisitors($slug);
+        $visitorSnapshot = VisitorTracker::getPastebinVisitorSnapshot($slug);
+        $visitors = $visitorSnapshot['visitors'];
 
         return response()->json([
             'visitors' => $visitors,
-            'count'    => count($visitors),
+            'count'    => $visitorSnapshot['count'],
         ]);
     }
 
@@ -116,11 +119,12 @@ class PastebinController extends Controller
     public function getVisitors(string $slug): \Illuminate\Http\JsonResponse
     {
         Pastebin::where('slug', $slug)->firstOrFail();
-        $visitors = VisitorTracker::getPastebinVisitors($slug);
+        $visitorSnapshot = VisitorTracker::getPastebinVisitorSnapshot($slug);
+        $visitors = $visitorSnapshot['visitors'];
 
         return response()->json([
             'visitors' => $visitors,
-            'count'    => count($visitors),
+            'count'    => $visitorSnapshot['count'],
         ]);
     }
 

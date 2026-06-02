@@ -33,9 +33,11 @@ class SearchController extends Controller
 
             // Track & get root page visitors
             VisitorTracker::trackRoot();
-            $rootVisitors = VisitorTracker::getRootVisitors();
+            $rootVisitorSnapshot = VisitorTracker::getRootVisitorSnapshot();
+            $rootVisitors = $rootVisitorSnapshot['visitors'];
+            $rootVisitorCount = $rootVisitorSnapshot['count'];
 
-            return view('search.index', compact('title', 'trending', 'stats', 'latestUser', 'rootVisitors'));
+            return view('search.index', compact('title', 'trending', 'stats', 'latestUser', 'rootVisitors', 'rootVisitorCount'));
         }
 
         $dto      = SearchQueryDTO::fromRequest($request);
@@ -160,11 +162,12 @@ class SearchController extends Controller
     public function trackRootVisit(Request $request): \Illuminate\Http\JsonResponse
     {
         VisitorTracker::trackRoot();
-        $visitors = VisitorTracker::getRootVisitors();
+        $visitorSnapshot = VisitorTracker::getRootVisitorSnapshot();
+        $visitors = $visitorSnapshot['visitors'];
 
         return response()->json([
             'visitors' => $visitors,
-            'count'    => count($visitors),
+            'count'    => $visitorSnapshot['count'],
         ]);
     }
 
@@ -173,11 +176,12 @@ class SearchController extends Controller
      */
     public function getRootVisitors(Request $request): \Illuminate\Http\JsonResponse
     {
-        $visitors = VisitorTracker::getRootVisitors();
+        $visitorSnapshot = VisitorTracker::getRootVisitorSnapshot();
+        $visitors = $visitorSnapshot['visitors'];
 
         return response()->json([
             'visitors' => $visitors,
-            'count'    => count($visitors),
+            'count'    => $visitorSnapshot['count'],
         ]);
     }
 }

@@ -116,7 +116,7 @@
                     <div class="mt-5 border-t border-red-900/10 pt-5">
                         <div class="text-[9px] font-black text-red-500 uppercase tracking-[0.2em] mb-2 flex items-center gap-2">
                             <span class="w-2 h-2 rounded-full bg-red-600"></span>
-                            Online Now (<span id="visitor-count">{{ count($visitors) }}</span>)
+                            Online Now (<span id="visitor-count">{{ $visitorCount ?? count($visitors) }}</span>)
                         </div>
                         <div id="visitor-list" class="text-[10px] text-gray-400 font-mono leading-relaxed break-words">
                             @if(count($visitors) > 0)

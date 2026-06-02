@@ -129,7 +129,7 @@
             <div class="w-full mb-8">
                 <div class="flex items-center justify-center gap-2 mb-2">
                     <span class="w-2 h-2 rounded-full bg-red-600"></span>
-                    <p class="text-[9px] text-gray-600 uppercase tracking-widest">Online Now &mdash; <span id="root-visitor-count" class="text-red-500 font-black">{{ count($rootVisitors) }}</span> active</p>
+                    <p class="text-[9px] text-gray-600 uppercase tracking-widest">Online Now &mdash; <span id="root-visitor-count" class="text-red-500 font-black">{{ $rootVisitorCount ?? count($rootVisitors) }}</span> active</p>
                 </div>
                 <div id="root-visitor-list" class="text-[10px] font-mono text-gray-400 text-center leading-relaxed break-words">
                     @if(count($rootVisitors) > 0)
