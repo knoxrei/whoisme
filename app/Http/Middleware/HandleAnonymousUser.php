@@ -26,7 +26,7 @@ class HandleAnonymousUser
                 Cookie::queue('anon_tracker_id', $anonId, 60 * 24 * 30); // 30 days
             }
 
-            if (!$anonName) {
+            if (!$anonName || !preg_match('/^Anonymous-\w+$/', $anonName)) {
                 $firstname = 'Anonymous';
                 $lastname = ['redHat', 'blueHat', 'greenHat', 'purpleHat', 'blackHat', 'brownHat', 'whiteHat'];
                 $lastnameRandom = collect($lastname)->random();

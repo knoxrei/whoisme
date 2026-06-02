@@ -13,9 +13,9 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        $middleware->append(HandleAnonymousUser::class);
         $middleware->append(\App\Http\Middleware\CheckRoleExpiration::class);
         $middleware->web(append: [
+            HandleAnonymousUser::class,
             \App\Http\Middleware\UpdateLastActive::class,
         ]);
         $middleware->alias([
