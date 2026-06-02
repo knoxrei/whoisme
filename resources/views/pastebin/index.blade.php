@@ -144,7 +144,7 @@
         @endif
 
         <!-- ── Recent Pastebins List Container ─────────────────────────────── -->
-        <div class="bg-[#0a0a0a] border border-red-900/30 overflow-hidden rounded-sm mb-6">
+        <div class="border border-red-900/30 overflow-hidden rounded-sm mb-6">
             <div class="px-4 py-3 border-b border-red-900/40 text-xs font-black text-red-500 uppercase tracking-wider">
                 Recent Pastebins
             </div>
