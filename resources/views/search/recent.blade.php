@@ -30,6 +30,7 @@
                             <th class="py-3 px-4">Author Signature</th>
                             <th class="py-3 px-4 text-center">Views</th>
                             <th class="py-3 px-4 text-center">Downloads</th>
+                            <th class="py-3 px-4 text-center">Comments</th>
                             <th class="py-3 px-4 text-right">Published At</th>
                         </tr>
                     </thead>
@@ -38,7 +39,7 @@
                             @include('search.partials.recent-rows', ['pastes' => collect([$paste])])
                         @empty
                             <tr>
-                                <td colspan="5" class="py-8 px-4 text-center text-gray-600 uppercase tracking-widest select-none">
+                                <td colspan="6" class="py-8 px-4 text-center text-gray-600 uppercase tracking-widest select-none">
                                     No live feeds found in active index stream.
                                 </td>
                             </tr>

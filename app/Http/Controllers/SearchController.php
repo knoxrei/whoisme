@@ -124,6 +124,7 @@ class SearchController extends Controller
 
         $query = Pastebin::query()
             ->with(['user.identification'])
+            ->withCount('comments')
             ->where('visibility', 'public')
             ->whereNull('password')
             ->where('is_self_destruct', false);

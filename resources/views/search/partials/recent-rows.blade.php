@@ -25,6 +25,7 @@
         </td>
         <td class="py-3.5 px-4 text-center font-bold text-gray-300">{{ number_format($paste->views_count) }}</td>
         <td class="py-3.5 px-4 text-center font-bold text-gray-300">{{ number_format($paste->download_count) }}</td>
+        <td class="py-3.5 px-4 text-center font-bold text-gray-300">{{ number_format($paste->comments_count ?? 0) }}</td>
         <td class="py-3.5 px-4 text-right text-gray-500 font-mono">
             {{ $paste->created_at->format('Y-m-d H:i:s') }} ({{ $paste->created_at->diffForHumans() }})
         </td>
