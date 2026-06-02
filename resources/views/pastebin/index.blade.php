@@ -59,6 +59,7 @@
                                 <th class="p-4">Author</th>
                                 <th class="p-4 text-center">Views</th>
                                 <th class="p-4 text-center">Downloads</th>
+                                <th class="p-4 text-center">Comments</th>
                                 <th class="p-4 text-right">Created</th>
                                 @auth
                                     @if(auth()->user()->identification?->role?->canManagePinned())
@@ -117,6 +118,9 @@
                                     <td class="p-4 text-center text-gray-300 font-bold">
                                         {{ number_format($paste->download_count ?? $paste->downloads_count ?? 0) }}
                                     </td>
+                                    <td class="p-4 text-center text-gray-300 font-bold">
+                                        {{ number_format($paste->comments_count ?? 0) }}
+                                    </td>
                                     <td class="p-4 text-right text-gray-500 text-[10px] tracking-wider">
                                         {{ $paste->created_at->format('d-m-Y') }}
                                     </td>
@@ -162,6 +166,7 @@
                                 <th class="p-4">Author</th>
                                 <th class="p-4 text-center">Views</th>
                                 <th class="p-4 text-center">Downloads</th>
+                                <th class="p-4 text-center">Comments</th>
                                 <th class="p-4 text-right">Published</th>
                                 @auth
                                     @if(auth()->user()->identification?->role?->canManagePinned())
@@ -207,6 +212,9 @@
                                     </td>
                                     <td class="p-4 text-center text-gray-300 font-bold">
                                         {{ number_format($paste->download_count ?? $paste->downloads_count ?? 0) }}
+                                    </td>
+                                    <td class="p-4 text-center text-gray-300 font-bold">
+                                        {{ number_format($paste->comments_count ?? 0) }}
                                     </td>
                                     <td class="p-4 text-right text-gray-500 text-[10px] tracking-wider">
                                         {{ $paste->created_at->diffForHumans() }}

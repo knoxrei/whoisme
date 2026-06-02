@@ -14,8 +14,7 @@ class PastebinListController extends Controller
 
         // Fetch pinned pastebins ordered by sort_order, eager-load pastebin + user + identification
         $pinnedPastebins = PinnedPastebin::with([
-            'pastebin.user.identification',
-            'pastebin.images',
+            'pastebin' => fn ($q) => $q->withCount('comments')->with(['user.identification', 'images']),
         ])
         ->orderBy('sort_order')
         ->get()
@@ -25,6 +24,7 @@ class PastebinListController extends Controller
             ->whereNull('password')
             ->where('is_self_destruct', false)
             ->with(['user', 'user.identification', 'pinnedRecord'])
+            ->withCount('comments')
             ->latest()
             ->paginate(15);
 
