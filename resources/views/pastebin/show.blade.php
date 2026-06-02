@@ -314,28 +314,7 @@
                         </footer>
                     </div>
 
-                    <!-- Sponsor Banners Section -->
-                    @php
-                        $showBanners = \App\Helper\AdTracker::getBanners(0, 0);
-                    @endphp
-
-                    @if($showBanners->isNotEmpty())
-                        <div class="bg-[#050505] border border-red-900/30 p-5 rounded-sm">
-                            <p class="text-[9px] text-red-500 font-black uppercase tracking-[0.2em] text-center mb-3 flex items-center justify-center gap-1.5 font-mono select-none">
-                                <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span>
-                                OFFICIAL PLATFORM SPONSORS
-                            </p>
-                            <div class="flex flex-wrap justify-center gap-4">
-                                @foreach($showBanners as $banner)
-                                    <a href="{{ route('ads.click', $banner->id) }}" target="_blank" 
-                                       class="block w-full max-w-[466px] h-[58px] border border-red-950/40 hover:border-red-600/70 overflow-hidden rounded-sm bg-black transition-colors duration-150 relative group">
-                                        <img src="{{ asset($banner->media_url) }}" alt="{{ $banner->title }}" 
-                                             class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity duration-150">
-                                    </a>
-                                @endforeach
-                            </div>
-                        </div>
-                    @endif
+                    <x-internal-ads />
 
                     <!-- Comments Section -->
                     <div class="bg-[#0a0a0a] border border-red-900/30 p-6 rounded-sm flex flex-col gap-6">

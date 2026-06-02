@@ -82,28 +82,7 @@
                 </a>
             </div>
 
-            @php
-                $internalAds = \App\Helper\AdTracker::getBanners(0, 0);
-            @endphp
-            @if($internalAds->isNotEmpty())
-                <div class="mt-12 w-full">
-                    <div class="w-full flex items-center justify-center gap-3 mb-4">
-                        <div class="h-[1px] bg-red-950/40 flex-grow"></div>
-                        <span class="text-[8px] font-black text-red-500 uppercase tracking-[0.2em] whitespace-nowrap select-none flex items-center gap-1.5 font-mono">
-                            <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span>
-                            OFFICIAL PLATFORM SPONSORS
-                        </span>
-                        <div class="h-[1px] bg-red-950/40 flex-grow"></div>
-                    </div>
-                    <div class="flex flex-col gap-3 items-center">
-                        @foreach($internalAds as $ad)
-                            <a href="{{ route('ads.click', $ad->id) }}" target="_blank" class="block w-full h-[58px] border border-red-950/30 hover:border-red-500/60 overflow-hidden rounded bg-[#0a0a0a]/30 transition-all duration-150 relative group">
-                                <img src="{{ asset($ad->media_url) }}" alt="{{ $ad->title }}" class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity duration-150">
-                            </a>
-                        @endforeach
-                    </div>
-                </div>
-            @endif
+            <x-internal-ads class="mt-12" />
         </main>
     </div>
 </x-layouts.app>

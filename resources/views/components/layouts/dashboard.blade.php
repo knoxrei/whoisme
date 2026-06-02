@@ -271,27 +271,7 @@
                     {{ $slot }}
                 </div>
 
-                <!-- Bottom Internal Ads for Dashboard Content -->
-                @php
-                    $dashboardBottomBanners = \App\Helper\AdTracker::getBanners(0, 0);
-                @endphp
-                @if($dashboardBottomBanners->isNotEmpty())
-                    <div class="mt-8 pt-6 border-t border-red-950/20">
-                        <span class="text-[8px] font-black text-red-500 uppercase tracking-[0.2em] select-none flex items-center gap-1.5 font-mono mb-3">
-                            <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span>
-                            OFFICIAL PLATFORM SPONSORS
-                        </span>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                            @foreach($dashboardBottomBanners as $banner)
-                                <a href="{{ route('ads.click', $banner->id) }}" target="_blank"
-                                    class="block w-full h-[60px] border border-red-950/30 overflow-hidden bg-[#0a0a0a]">
-                                    <img src="{{ asset($banner->media_url) }}" alt="{{ $banner->title }}"
-                                        class="w-full h-full object-cover">
-                                </a>
-                            @endforeach
-                        </div>
-                    </div>
-                @endif
+                <x-internal-ads class="mt-8 pt-6" />
             </div>
         </main>
     </div>

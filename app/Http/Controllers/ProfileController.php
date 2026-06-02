@@ -233,8 +233,8 @@ class ProfileController extends Controller
         // Security filter: guests/other users can only see public, unsecured pastes
         if (!Auth::check() || Auth::id() !== $user->id) {
             $query->where('visibility', 'public')
-                ->whereNull('password')
-                ->where('is_self_destruct', false);
+                  ->whereNull('password')
+                  ->where('is_self_destruct', false);
         }
 
         // Cursor-based for load-more speed
@@ -287,8 +287,8 @@ class ProfileController extends Controller
         if (!Auth::check() || Auth::id() !== $user->id) {
             $query->whereHas('pastebin', function ($q) {
                 $q->where('visibility', 'public')
-                    ->whereNull('password')
-                    ->where('is_self_destruct', false);
+                  ->whereNull('password')
+                  ->where('is_self_destruct', false);
             });
         }
 
@@ -370,7 +370,7 @@ class ProfileController extends Controller
             ->withQueryString();
 
         foreach ([$staff, $premium, $advertisers, $members] as $paginator) {
-            $paginator->getCollection()->transform(fn(User $u) => $this->decorateUserForList($u));
+            $paginator->getCollection()->transform(fn (User $u) => $this->decorateUserForList($u));
         }
 
         return view('profile.users-list', compact('title', 'staff', 'premium', 'advertisers', 'members'));
