@@ -3,7 +3,6 @@
 
     <div class="max-w-7xl mx-auto border border-red-950/20 p-6 relative">
 
-        <!-- Flash Messages -->
         @if(session('success'))
             <div class="mb-4 p-3 bg-green-950/20 border border-green-900/30 text-green-500 text-xs font-bold rounded-sm">
                 {{ session('success') }}
@@ -15,7 +14,6 @@
             </div>
         @endif
 
-        <!-- Header -->
         <div class="mb-6 flex flex-col md:flex-row md:items-center md:justify-between border-b border-red-900/30 pb-4 gap-4">
             <div>
                 <h2 class="text-2xl font-black text-white uppercase tracking-tight mt-2">
@@ -28,7 +26,6 @@
             </div>
         </div>
 
-        <!-- ── Pinned Pastebins Section ─────────────────────────────────────── -->
         @if($pinnedPastebins->isNotEmpty())
             <div class="border border-red-600/40 overflow-hidden rounded-sm mb-6" id="pinned-section">
                 <div class="bg-[#111] px-4 py-3 border-b border-red-600/40 flex items-center justify-between">
@@ -81,7 +78,6 @@
                                     @endauth
                                     <td class="p-4">
                                         <div class="flex items-center gap-2">
-                                            <!-- Pin icon -->
                                             <svg class="w-3 h-3 text-red-500 shrink-0" fill="currentColor" viewBox="0 0 24 24">
                                                 <path d="M16 2l-1.41 1.41L16 5H8.83L7 3.17 5.59 4.58 7 6v2.17l-5 5V16h5v5l1 1 1-1v-5h5v-2.83l5-5V6l1.41-1.41L16 2z"/>
                                             </svg>
@@ -147,7 +143,6 @@
             </div>
         @endif
 
-        <!-- ── Recent Pastebins List Container ─────────────────────────────── -->
         <div class="border border-red-900/30 overflow-hidden rounded-sm mb-6">
             <div class="px-4 py-3 border-b border-red-900/40 text-xs font-black text-red-500 uppercase tracking-wider">
                 Recent Pastebins
@@ -244,7 +239,6 @@
             @endif
         </div>
 
-        <!-- Pagination -->
         <div class="mt-4">
             {{ $pastebins->links() }}
         </div>
@@ -254,7 +248,6 @@
     @auth
         @if(auth()->user()->identification?->role?->canManagePinned())
         <script>
-            // ── Drag-to-reorder for pinned pastebins ──────────────────────────
             (function () {
                 const tbody = document.getElementById('pinned-tbody');
                 if (!tbody) return;
@@ -297,7 +290,6 @@
                     if (row) {
                         row.classList.remove('dragging', 'opacity-40');
                     }
-                    // Collect new order
                     const order = [...tbody.querySelectorAll('.pinned-row')].map(r => parseInt(r.dataset.pinId));
 
                     fetch('{{ route("pastebin.pinned.reorder") }}', {
@@ -311,12 +303,11 @@
                     }).catch(() => {});
                 });
 
-                // Make each row draggable (by the drag handle)
                 tbody.querySelectorAll('.pinned-row').forEach(row => {
                     row.setAttribute('draggable', 'true');
                 });
             })();
-        </script>
+</script>
         @endif
     @endauth
     </div>

@@ -1,6 +1,5 @@
 <x-layouts.dashboard :title="$title" :role="$role">
     <div class="space-y-8 max-w-7xl mx-auto">
-        <!-- Control Center Header -->
         <div class="border border-red-900/40 bg-gradient-to-b from-red-950/10 to-[#0a0a0a] p-8 rounded-sm relative overflow-hidden">
             <div class="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
                 <div>
@@ -23,9 +22,7 @@
             </div>
         </div>
 
-        <!-- Admin Stats Grid -->
         <div class="grid grid-cols-2 lg:grid-cols-6 gap-4">
-            <!-- Stat 1: Total Users -->
             <div class="p-5 bg-[#0a0a0a] border border-red-900/20 rounded-sm">
                 <div class="flex items-center justify-between mb-3">
                     <span class="text-[9px] font-black text-gray-500 uppercase tracking-widest">Total Users</span>
@@ -36,7 +33,6 @@
                 <p class="text-xl font-mono font-bold text-white">{{ number_format($systemTotalUsers) }}</p>
             </div>
 
-            <!-- Stat 2: Total Pastes -->
             <div class="p-5 bg-[#0a0a0a] border border-red-900/20 rounded-sm">
                 <div class="flex items-center justify-between mb-3">
                     <span class="text-[9px] font-black text-gray-500 uppercase tracking-widest">System Pastes</span>
@@ -47,7 +43,6 @@
                 <p class="text-xl font-mono font-bold text-white">{{ number_format($systemTotalPastes) }}</p>
             </div>
 
-            <!-- Stat 3: Pending Edits -->
             <div class="p-5 bg-[#0a0a0a] border border-red-900/20 rounded-sm">
                 <div class="flex items-center justify-between mb-3">
                     <span class="text-[9px] font-black text-gray-500 uppercase tracking-widest">Pending Suggestions</span>
@@ -60,7 +55,6 @@
                 </a>
             </div>
 
-            <!-- Stat 4: Pending Upgrades -->
             <div class="p-5 bg-[#0a0a0a] border border-red-900/20 rounded-sm">
                 <div class="flex items-center justify-between mb-3">
                     <span class="text-[9px] font-black text-gray-500 uppercase tracking-widest">Pending Upgrades</span>
@@ -73,7 +67,6 @@
                 </a>
             </div>
 
-            <!-- Stat 5: Pending Reports -->
             <div class="p-5 bg-[#0a0a0a] border border-red-900/20 rounded-sm">
                 <div class="flex items-center justify-between mb-3">
                     <span class="text-[9px] font-black text-gray-500 uppercase tracking-widest">Pending Reports</span>
@@ -86,7 +79,6 @@
                 </a>
             </div>
 
-            <!-- Stat 6: Active Staff -->
             <div class="p-5 bg-[#0a0a0a] border border-red-900/20 rounded-sm">
                 <div class="flex items-center justify-between mb-3">
                     <span class="text-[9px] font-black text-gray-500 uppercase tracking-widest">Operator Count</span>
@@ -99,7 +91,6 @@
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <!-- Recent Suggestions Audit Log -->
             <div class="lg:col-span-2 p-6 border border-red-900/20 bg-[#050505] rounded-sm">
                 <div class="flex items-center justify-between mb-6">
                     <h2 class="text-xs font-black text-red-500 uppercase tracking-widest flex items-center gap-2">
@@ -178,7 +169,6 @@
                     </div>
                 </div>
 
-                <!-- Alert Triggers -->
                 <div class="p-6 border border-red-900/20 bg-[#050505] rounded-sm">
                     <h2 class="text-xs font-black text-red-500 uppercase tracking-widest mb-4 flex items-center gap-2">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>

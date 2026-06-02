@@ -1,6 +1,5 @@
 <x-layouts.app :title="$user->username . ' Profile'">
     <div class="w-full max-w-5xl mx-auto py-8 px-4 sm:px-6 lg:px-8 font-sans text-gray-200">
-        <!-- Header Banner - High Contrast for Tor -->
         <div class="bg-[#0a0a0a] border border-red-900/40 p-4 md:p-6 flex items-center gap-6 mb-8 rounded-sm">
             <div class="w-20 h-20 md:w-24 md:h-24 overflow-hidden flex-shrink-0 border border-red-900/30">
                 @if($user->identification->avatar_path)
@@ -20,7 +19,6 @@
                 </div>
                 
                 <div class="flex flex-wrap items-center gap-x-6 gap-y-2 mt-3">
-                    <!-- Status -->
                     <div class="text-[11px] md:text-xs text-gray-300 flex items-center gap-x-2">
                         <span class="font-bold text-gray-500 uppercase tracking-tighter">Status:</span> 
                         @if($user->last_active && $user->last_active->diffInMinutes(now()) < 5)
@@ -30,7 +28,6 @@
                         @endif
                     </div>
 
-                    <!-- Followers / Following (Clickable) -->
                     <div class="flex items-center gap-4 text-[11px] md:text-xs">
                         <button onclick="toggleModal('followersModal')" class="flex items-center gap-1.5 hover:text-red-500 transition-colors">
                             <span class="text-gray-500 font-bold uppercase tracking-tighter">Followers:</span>
@@ -70,7 +67,6 @@
                             </form>
                         @endif
 
-                        <!-- Administrative Moderation Operations -->
                         @if(in_array(auth()->user()->identification->role->value, ['owner', 'moderator']))
                             @if($user->identification->role->value === 'banned')
                                 <form id="unban-user-form" action="{{ route('profile.unban', $user->id) }}" method="POST" class="inline">
@@ -92,7 +88,7 @@
                                             }
                                         });
                                     }
-                                </script>
+</script>
                             @else
                                 <form id="ban-user-form" action="{{ route('profile.ban', $user->id) }}" method="POST" class="inline">
                                     @csrf
@@ -113,7 +109,7 @@
                                             }
                                         });
                                     }
-                                </script>
+</script>
                             @endif
                         @endif
                     @else
@@ -138,7 +134,6 @@
         @endif
 
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-            <!-- Left Sidebar: Forum Info -->
             <div class="lg:col-span-3 space-y-6">
                 <div class="bg-[#0a0a0a] border border-red-900/30 overflow-hidden rounded-sm">
                     <div class="bg-[#111] px-4 py-2.5 border-b border-red-900/40 text-[11px] font-black text-red-500 uppercase tracking-wider">
@@ -198,7 +193,6 @@
                     </div>
                 </div>
 
-                <!-- Recent Posts Block -->
                 <div class="bg-[#0a0a0a] border border-red-900/30 overflow-hidden rounded-sm">
                     <div class="bg-[#111] px-4 py-2.5 border-b border-red-900/40 text-[11px] font-black text-red-500 uppercase tracking-wider">
                         Recent Posts
@@ -217,7 +211,6 @@
                     </div>
                 </div>
 
-                <!-- Recent Comments Block -->
                 <div class="bg-[#0a0a0a] border border-red-900/30 overflow-hidden rounded-sm">
                     <div class="bg-[#111] px-4 py-2.5 border-b border-red-900/40 text-[11px] font-black text-red-500 uppercase tracking-wider">
                         Recent Comments
@@ -240,9 +233,7 @@
                 </div>
             </div>
 
-            <!-- Middle Column: Details & Stats -->
             <div class="lg:col-span-9 space-y-6">
-                <!-- Recent Contributions Block -->
                 <div class="bg-[#0a0a0a] border border-red-900/30 overflow-hidden rounded-sm">
                     <div class="bg-[#111] px-4 py-2.5 border-b border-red-900/40 text-[11px] font-black text-red-500 uppercase tracking-wider flex items-center justify-between">
                         Recent Approved Contributions
@@ -270,12 +261,8 @@
                     </div>
                 </div>
 
-                {{-- ============================================================ --}}
-                {{-- ADVERTISER SECTION — only shown for Advertiser role users   --}}
-                {{-- ============================================================ --}}
                 @if($advertiserData)
 
-                    {{-- Active Banner Showcase --}}
                     @if($advertiserData['activeBanners']->isNotEmpty())
                         <div class="bg-[#0a0a0a] border border-amber-900/30 overflow-hidden rounded-sm">
                             <div class="bg-[#111] px-4 py-2.5 border-b border-amber-900/40 text-[11px] font-black text-amber-500 uppercase tracking-wider flex items-center gap-2">
@@ -328,7 +315,6 @@
                         </div>
                     @endif
 
-                    {{-- Advertising Statistics --}}
                     <div class="bg-[#0a0a0a] border border-amber-900/30 overflow-hidden rounded-sm">
                         <div class="bg-[#111] px-4 py-2.5 border-b border-amber-900/40 text-[11px] font-black text-amber-500 uppercase tracking-wider flex items-center gap-2">
                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
@@ -338,7 +324,6 @@
                             @endif
                         </div>
                         <div class="p-5">
-                            {{-- Stat Cards --}}
                             <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-5">
                                 <div class="bg-[#050505] border border-amber-900/15 rounded-sm p-3 text-center">
                                     <div class="text-[9px] font-bold text-gray-500 uppercase tracking-widest mb-1">Active Ads</div>
@@ -364,7 +349,6 @@
                                 </div>
                             </div>
 
-                            {{-- CTR bar --}}
                             @if($advertiserData['totalImpressions'] > 0)
                                 @php $ctrPct = min(100, ($advertiserData['totalClicks'] / max(1, $advertiserData['totalImpressions'])) * 100 * 10); @endphp
                                 <div class="mb-5">
@@ -378,7 +362,6 @@
                                 </div>
                             @endif
 
-                            {{-- Active Ads Table --}}
                             @if($advertiserData['activeAds']->isNotEmpty())
                                 <div class="text-[9px] font-black text-gray-500 uppercase tracking-widest mb-2 border-t border-amber-900/10 pt-4">Active Ads</div>
                                 <div class="overflow-x-auto">
@@ -423,10 +406,7 @@
                     </div>
 
                 @endif
-                {{-- END ADVERTISER SECTION --}}
-
-                        <!-- Referral System Card -->
-                        <div class="bg-[#0a0a0a] border border-red-900/30 overflow-hidden rounded-sm">
+                <div class="bg-[#0a0a0a] border border-red-900/30 overflow-hidden rounded-sm">
                             <div class="bg-[#111] px-4 py-2.5 border-b border-red-900/40 text-[11px] font-black text-red-500 uppercase tracking-wider flex items-center justify-between">
                                 <span>{{ auth()->check() && auth()->id() === $user->id ? 'Your Referral Program' : $user->username . "'s Referral Program" }}</span>
                             </div>
@@ -503,13 +483,13 @@
                             function copyReferralLink() {
                                 const copyText = document.getElementById("referral-link");
                                 copyText.select();
-                                copyText.setSelectionRange(0, 99999); // For mobile devices
-                                
+                                copyText.setSelectionRange(0, 99999);
+
                                 copyTextToClipboard(copyText.value, function() {
                                     const btnText = document.getElementById("copy-btn-text");
                                     btnText.innerText = "Copied!";
-                                    btnText.style.color = '#22c55e'; // Tailwind green-500
-                                    
+                                    btnText.style.color = '#22c55e';
+
                                     setTimeout(() => {
                                         btnText.innerText = "Copy";
                                         btnText.style.color = '';
@@ -520,20 +500,20 @@
                             function copyReferralCode() {
                                 const copyText = document.getElementById("referral-code");
                                 copyText.select();
-                                copyText.setSelectionRange(0, 99999); // For mobile devices
-                                
+                                copyText.setSelectionRange(0, 99999);
+
                                 copyTextToClipboard(copyText.value, function() {
                                     const btnText = document.getElementById("copy-code-btn-text");
                                     btnText.innerText = "Copied!";
-                                    btnText.style.color = '#22c55e'; // Tailwind green-500
-                                    
+                                    btnText.style.color = '#22c55e';
+
                                     setTimeout(() => {
                                         btnText.innerText = "Copy";
                                         btnText.style.color = '';
                                     }, 2000);
                                 });
                             }
-                        </script>
+</script>
 
                 <div class="bg-[#0a0a0a] border border-red-900/30 overflow-hidden rounded-sm">
                     <div class="bg-[#111] px-4 py-2.5 border-b border-red-900/40 text-[11px] font-black text-red-500 uppercase tracking-wider">
@@ -647,7 +627,6 @@
         </div>
     </div>
 
-    <!-- Modals Section -->
     <div id="followersModal" class="fixed inset-0 z-[100] hidden items-center justify-center bg-black/80 backdrop-blur-sm p-4">
         <div class="bg-[#0a0a0a] border border-red-900/40 w-full max-w-md rounded-sm overflow-hidden shadow-2xl">
             <div class="bg-[#111] px-5 py-3 border-b border-red-900/40 flex justify-between items-center">
@@ -722,10 +701,9 @@
             }
         }
 
-        // Close on clicking outside
         window.onclick = function(event) {
             if (event.target.id === 'followersModal') toggleModal('followersModal');
             if (event.target.id === 'followingModal') toggleModal('followingModal');
         }
-    </script>
+</script>
 </x-layouts.app>

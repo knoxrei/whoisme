@@ -1,6 +1,5 @@
 <x-layouts.dashboard :title="$title" :role="$role">
     <div class="space-y-8 max-w-7xl mx-auto">
-        <!-- Header Banner (Ultra Minimalist Red & Black) -->
         <div class="border border-red-900/30 bg-[#0a0a0a] p-8 rounded-sm relative overflow-hidden">
             <div class="absolute right-0 top-0 bottom-0 w-1/3 bg-gradient-to-l from-red-950/10 to-transparent pointer-events-none"></div>
             <div class="relative z-10">
@@ -29,9 +28,7 @@
             </div>
         </div>
 
-        <!-- System Stats Grid (Pure Text & Border, Ultra Tor Friendly) -->
         <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
-            <!-- Stat 1: Total Pastes -->
             <div class="p-5 bg-[#0a0a0a] border border-red-900/20 rounded-sm">
                 <div class="flex items-center justify-between mb-3">
                     <span class="text-[9px] font-black text-gray-500 uppercase tracking-widest">Total Pastes</span>
@@ -42,7 +39,6 @@
                 <p class="text-xl font-mono font-bold text-white">{{ number_format($totalPastes) }}</p>
             </div>
 
-            <!-- Stat 2: Total Views -->
             <div class="p-5 bg-[#0a0a0a] border border-red-900/20 rounded-sm">
                 <div class="flex items-center justify-between mb-3">
                     <span class="text-[9px] font-black text-gray-500 uppercase tracking-widest">Total Views</span>
@@ -53,7 +49,6 @@
                 <p class="text-xl font-mono font-bold text-white">{{ number_format($totalViews) }}</p>
             </div>
 
-            <!-- Stat 3: Downloads -->
             <div class="p-5 bg-[#0a0a0a] border border-red-900/20 rounded-sm">
                 <div class="flex items-center justify-between mb-3">
                     <span class="text-[9px] font-black text-gray-500 uppercase tracking-widest">Downloads</span>
@@ -64,7 +59,6 @@
                 <p class="text-xl font-mono font-bold text-white">{{ number_format($totalDownloads) }}</p>
             </div>
 
-            <!-- Stat 4: Approved Edits -->
             <div class="p-5 bg-[#0a0a0a] border border-red-900/20 rounded-sm">
                 <div class="flex items-center justify-between mb-3">
                     <span class="text-[9px] font-black text-gray-500 uppercase tracking-widest">Approved Edits</span>
@@ -77,10 +71,8 @@
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <!-- Left 2-Columns: Dynamic Content -->
             <div class="lg:col-span-2 space-y-6">
                 
-                <!-- Recent Pastes -->
                 <div class="p-6 border border-red-900/20 bg-[#050505] rounded-sm">
                     <div class="flex items-center justify-between mb-5">
                         <h2 class="text-xs font-black text-red-500 uppercase tracking-widest flex items-center gap-2">
@@ -119,7 +111,6 @@
                     </div>
                 </div>
 
-                <!-- Account Status & Benefits (Pure Data Layout) -->
                 <div class="p-6 border border-red-900/20 bg-[#050505] rounded-sm">
                     <div class="flex items-center justify-between mb-5">
                         <h2 class="text-xs font-black text-red-500 uppercase tracking-widest flex items-center gap-2">
@@ -129,7 +120,6 @@
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <!-- Privilege 1 -->
                         <div class="p-4 rounded-sm bg-[#0a0a0a] border border-red-900/10 flex flex-col justify-between">
                             <div>
                                 <span class="text-[8px] font-black text-gray-500 uppercase tracking-widest">GIF Avatars</span>
@@ -142,7 +132,6 @@
                             </p>
                         </div>
 
-                        <!-- Privilege 2 -->
                         <div class="p-4 rounded-sm bg-[#0a0a0a] border border-red-900/10 flex flex-col justify-between">
                             <div>
                                 <span class="text-[8px] font-black text-gray-500 uppercase tracking-widest">Encrypted Pastes</span>
@@ -155,7 +144,6 @@
                             </p>
                         </div>
 
-                        <!-- Privilege 3 -->
                         <div class="p-4 rounded-sm bg-[#0a0a0a] border border-red-900/10 flex flex-col justify-between">
                             <div>
                                 <span class="text-[8px] font-black text-gray-500 uppercase tracking-widest">Ident Name Shift</span>
@@ -170,9 +158,7 @@
                     </div>
             </div>
 
-            <!-- Right Column: System Intel -->
             <div class="space-y-6">
-                <!-- Upgrade Portal -->
                 @if($role->value !== 'rich')
                     <div class="p-6 border border-red-900/40 bg-gradient-to-b from-red-950/20 to-black rounded-sm relative overflow-hidden">
                         <div class="relative z-10">
@@ -188,7 +174,6 @@
                     </div>
                 @endif
 
-                <!-- Global Contributor Rankings -->
                 <div class="p-6 border border-red-900/20 bg-[#050505] rounded-sm">
                     <h2 class="text-xs font-black text-red-500 uppercase tracking-widest mb-4 flex items-center gap-2">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>

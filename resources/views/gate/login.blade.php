@@ -1,12 +1,6 @@
 <x-layouts.app :title="$title">
     <div class="min-h-screen flex flex-col items-center justify-center  px-4">
 
-
-
-
-
-
-
         <div class="w-full max-w-md  rounded-lg p-10 shadow-xl">
             <div class="mb-8 text-center">
                 <h1 class="text-3xl font-semibold text-white tracking-tight">Login</h1>

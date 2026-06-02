@@ -37,7 +37,7 @@
             overflow: hidden;
         }
 
-        /* ── NEBULA ── */
+        
         .nebula {
             position: fixed;
             border-radius: 50%;
@@ -82,7 +82,7 @@
             }
         }
 
-        /* ── CSS STAR FIELD (3 layers, no JS) ── */
+        
         .stars {
             position: fixed;
             inset: 0;
@@ -189,7 +189,7 @@
             }
         }
 
-        /* ── SHOOTING STARS ── */
+        
         .shoots {
             position: fixed;
             inset: 0;
@@ -264,7 +264,7 @@
             }
         }
 
-        /* ── PLANET ── */
+        
         .planet-wrap {
             position: fixed;
             right: -80px;
@@ -318,7 +318,7 @@
             }
         }
 
-        /* ── DEBRIS ── */
+        
         .debris-wrap {
             position: fixed;
             inset: 0;
@@ -421,7 +421,7 @@
             }
         }
 
-        /* ── SCANLINES ── */
+        
         .scanlines {
             position: fixed;
             inset: 0;
@@ -430,7 +430,7 @@
             background: repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(0, 0, 0, .04) 3px, rgba(0, 0, 0, .04) 4px);
         }
 
-        /* ── SCENE ── */
+        
         .scene {
             position: relative;
             z-index: 1;
@@ -443,7 +443,7 @@
             text-align: center;
         }
 
-        /* ── ASTRONAUT ── */
+        
         .astro-wrap {
             margin-bottom: 1.2rem;
             filter: drop-shadow(0 0 26px rgba(79, 172, 254, .38));
@@ -462,7 +462,7 @@
             }
         }
 
-        /* ── 404 GLITCH ── */
+        
         .glitch-wrap {
             position: relative;
             line-height: 1;
@@ -586,7 +586,7 @@
             }
         }
 
-        /* ── BADGE ── */
+        
         .badge {
             display: inline-flex;
             align-items: center;
@@ -625,7 +625,7 @@
             }
         }
 
-        /* ── TEXT ── */
+        
         .headline {
             font-size: clamp(1.4rem, 4vw, 2.1rem);
             font-weight: 800;
@@ -650,7 +650,7 @@
             font-weight: 600;
         }
 
-        /* ── BUTTONS ── */
+        
         .actions {
             display: flex;
             flex-wrap: wrap;
@@ -727,7 +727,7 @@
             border-color: rgba(255, 255, 255, .2);
         }
 
-        /* ── HUD ── */
+        
         .hud {
             position: fixed;
             bottom: 24px;

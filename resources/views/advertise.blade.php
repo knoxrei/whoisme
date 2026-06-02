@@ -2,7 +2,6 @@
     <div class="min-h-screen bg-[#050505] text-gray-300 py-16 px-6 font-sans">
         <main class="w-full max-w-5xl mx-auto">
 
-            <!-- Hero -->
             <div class="mb-12 border-b border-red-900/30 pb-6 text-center md:text-left">
                 <h1 class="text-4xl md:text-6xl font-black text-white tracking-tighter mb-4"
                     style="font-family: 'Outfit', sans-serif;">
@@ -14,7 +13,6 @@
                 </p>
             </div>
 
-            <!-- Pricing -->
             <div class="mb-20">
                 <div class="flex flex-col items-center mb-8">
                     <h2 class="text-2xl font-black text-white tracking-tighter uppercase mb-2">Advertising Plans</h2>
@@ -46,7 +44,6 @@
                 </div>
             </div>
 
-            <!-- Features -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-20">
                 <div
                     class="bg-[#0a0a0a] border border-white/5 p-8 rounded-sm hover:border-red-500/30 transition-colors">
@@ -89,9 +86,6 @@
                 </div>
             </div>
 
-            <!-- ============================================================ -->
-            <!-- DASHBOARD WINDOW — server-rendered stats                      -->
-            <!-- ============================================================ -->
             <div class="mb-20">
                 <div class="flex flex-col items-center mb-8">
                     <h2 class="text-2xl font-black text-white tracking-tighter uppercase mb-2">Exclusive Advertiser
@@ -101,7 +95,6 @@
                 </div>
 
                 <div class="rounded-lg border border-white/10 bg-[#0a0a0a] overflow-hidden shadow-2xl">
-                    <!-- Window Chrome -->
                     <div class="bg-[#111] border-b border-white/5 px-4 py-3 flex items-center gap-2">
                         <div class="w-3 h-3 rounded-full bg-red-500/80"></div>
                         <div class="w-3 h-3 rounded-full bg-yellow-500/80"></div>
@@ -114,7 +107,6 @@
                     </div>
 
                     <div class="flex flex-col md:flex-row min-h-[440px]">
-                        <!-- Sidebar -->
                         <div
                             class="w-full md:w-48 border-r border-white/5 bg-[#050505] p-4 flex flex-col gap-2 flex-shrink-0">
                             <div
@@ -143,7 +135,6 @@
                             </div>
                         </div>
 
-                        <!-- Main Content -->
                         <div class="flex-1 p-6 bg-[#080808]">
                             <div class="flex justify-between items-center mb-6 border-b border-white/5 pb-4">
                                 <h3 class="text-white font-bold uppercase tracking-widest text-sm">Campaign Overview
@@ -154,7 +145,6 @@
                                 </a>
                             </div>
 
-                            <!-- Stats Cards -->
                             <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
                                 <div class="bg-[#111] p-4 border border-white/5 rounded-sm">
                                     <div class="text-[9px] text-gray-500 uppercase tracking-widest font-mono mb-1">
@@ -194,7 +184,6 @@
                                 </div>
                             </div>
 
-                            <!-- CTR Progress Bar -->
                             @if($totalImpressions > 0)
                                 <div class="mb-5">
                                     <div class="flex justify-between text-[9px] font-mono text-gray-600 mb-1">
@@ -209,7 +198,6 @@
                                 </div>
                             @endif
 
-                            <!-- Active Banners List inside window -->
                             <div class="bg-[#111] border border-white/5 rounded-sm overflow-hidden">
                                 <div
                                     class="flex justify-between items-center text-[10px] text-gray-400 font-mono border-b border-white/5 px-4 py-2.5">
@@ -254,14 +242,6 @@
                 </div>
             </div>
 
-            <!-- ============================================================ -->
-            <!-- ACTIVE BANNERS SHOWCASE                                       -->
-            <!-- ============================================================ -->
-
-
-            <!-- ============================================================ -->
-            <!-- SUBMISSION FORM                                               -->
-            <!-- ============================================================ -->
             <div id="submit-ad-section" class="border-t border-white/5 pt-16">
                 <div class="flex flex-col items-center mb-10">
                     <h2 class="text-2xl font-black text-white tracking-tighter uppercase mb-2">Submit Your Ad Request
@@ -366,7 +346,6 @@
         </main>
     </div>
 
-    {{-- Image upload preview only (minimal JS, no fetch/polling) --}}
     <script>
         function previewAdImage(event) {
             const reader = new FileReader();
@@ -383,5 +362,5 @@
             document.getElementById('ad-image-preview-container').classList.add('hidden');
             document.getElementById('ad-image-preview').src = '#';
         }
-    </script>
+</script>
 </x-layouts.app>

@@ -1,6 +1,5 @@
 <x-layouts.dashboard :title="'Ad Management Dashboard'">
     <div class="space-y-8 max-w-7xl mx-auto">
-        <!-- Header Banner -->
         <div class="border border-red-900/30 bg-[#0a0a0a] p-8 rounded-sm relative overflow-hidden">
             <div class="absolute right-0 top-0 bottom-0 w-1/3 bg-gradient-to-l from-red-950/10 to-transparent pointer-events-none"></div>
             <div class="relative z-10">
@@ -26,9 +25,7 @@
             </div>
         @endif
 
-        <!-- Quick Stats Overview Cards -->
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            <!-- Active Ads Card -->
             <div class="p-6 border border-red-900/20 bg-[#0a0a0a]/60 rounded-sm relative overflow-hidden">
                 <div class="absolute top-0 right-0 p-4 text-red-500/20">
                     <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
@@ -37,7 +34,6 @@
                 <span class="text-3xl font-black text-white block mt-2 font-mono">{{ $stats['active_count'] }}</span>
             </div>
 
-            <!-- Pending Ads Card -->
             <div class="p-6 border border-yellow-900/20 bg-[#0a0a0a]/60 rounded-sm relative overflow-hidden">
                 <div class="absolute top-0 right-0 p-4 text-yellow-500/20">
                     <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
@@ -46,7 +42,6 @@
                 <span class="text-3xl font-black text-yellow-500 block mt-2 font-mono">{{ $stats['pending_count'] }}</span>
             </div>
 
-            <!-- Total Impressions Card -->
             <div class="p-6 border border-indigo-900/20 bg-[#0a0a0a]/60 rounded-sm relative overflow-hidden">
                 <div class="absolute top-0 right-0 p-4 text-indigo-500/20">
                     <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122"/></svg>
@@ -55,7 +50,6 @@
                 <span class="text-3xl font-black text-indigo-400 block mt-2 font-mono">{{ number_format($stats['total_impressions']) }}</span>
             </div>
 
-            <!-- Total Clicks Card -->
             <div class="p-6 border border-green-900/20 bg-[#0a0a0a]/60 rounded-sm relative overflow-hidden">
                 <div class="absolute top-0 right-0 p-4 text-green-500/20">
                     <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122"/></svg>
@@ -65,7 +59,6 @@
             </div>
         </div>
 
-        <!-- Direct Manual Ad Creation Form (Toggleable Card) -->
         <details class="p-6 border border-red-900/30 bg-[#0a0a0a] rounded-sm group overflow-hidden" open>
             <summary class="text-xs font-black text-red-500 uppercase tracking-[0.2em] flex items-center justify-between cursor-pointer select-none font-mono list-none">
                 <span class="flex items-center gap-2">
@@ -110,7 +103,6 @@
             </form>
         </details>
 
-        <!-- Pending Moderation Requests -->
         @if(count($pendingAds) > 0)
         <div class="space-y-4">
             <h2 class="text-xs font-black text-yellow-500 uppercase tracking-[0.2em] font-mono select-none">
@@ -120,7 +112,6 @@
                 @foreach($pendingAds as $request)
                     <div class="p-6 border border-yellow-900/30 bg-[#050505] rounded-sm flex flex-col lg:flex-row lg:items-center justify-between gap-6 hover:border-yellow-900/50 transition-colors">
                         <div class="flex-1 grid grid-cols-1 md:grid-cols-3 gap-6">
-                            <!-- Advertiser Info -->
                             <div>
                                 <span class="text-[9px] font-black text-gray-500 uppercase tracking-widest block font-mono">Advertiser</span>
                                 <div class="mt-2 flex items-center gap-2">
@@ -134,7 +125,6 @@
                                 </div>
                             </div>
 
-                            <!-- Ad Details -->
                             <div>
                                 <span class="text-[9px] font-black text-gray-500 uppercase tracking-widest block font-mono">Ad Details</span>
                                 <div class="mt-2">
@@ -143,7 +133,6 @@
                                 </div>
                             </div>
 
-                            <!-- Media Preview -->
                             <div>
                                 <span class="text-[9px] font-black text-gray-500 uppercase tracking-widest block font-mono">Media</span>
                                 <div class="mt-2 border border-gray-800 bg-black flex items-center justify-center overflow-hidden h-12 w-full rounded-sm">
@@ -156,7 +145,6 @@
                             </div>
                         </div>
 
-                        <!-- Actions -->
                         <div class="flex items-center gap-2 lg:border-l lg:border-yellow-900/20 lg:pl-6">
                             <form action="{{ route('admin.ads.approve', $request->ad->id) }}" method="POST">
                                 @csrf
@@ -175,8 +163,6 @@
                         </div>
                     </div>
 
-                    <!-- Modals for moderation -->
-                    <!-- Revise Modal -->
                     <div id="revise-modal-{{ $request->ad->id }}" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 opacity-0 transition-opacity duration-200" style="backdrop-filter: blur(8px); background-color: rgba(0, 0, 0, 0.85);" data-modal-container>
                         <div class="relative w-full max-w-md bg-[#0a0a0a] border rounded-sm overflow-hidden transform scale-95 transition-transform duration-200 ease-out shadow-2xl shadow-black/90" data-modal-box style="border-color: rgba(234, 179, 8, 0.4);">
                             <form action="{{ route('admin.ads.request_revision', $request->ad->id) }}" method="POST">
@@ -198,7 +184,6 @@
                         </div>
                     </div>
 
-                    <!-- Reject Modal -->
                     <div id="reject-modal-{{ $request->ad->id }}" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 opacity-0 transition-opacity duration-200" style="backdrop-filter: blur(8px); background-color: rgba(0, 0, 0, 0.85);" data-modal-container>
                         <div class="relative w-full max-w-md bg-[#0a0a0a] border rounded-sm overflow-hidden transform scale-95 transition-transform duration-200 ease-out shadow-2xl shadow-black/90" data-modal-box style="border-color: rgba(153, 27, 27, 0.4);">
                             <form action="{{ route('admin.ads.reject', $request->ad->id) }}" method="POST">
@@ -224,7 +209,6 @@
         </div>
         @endif
 
-        <!-- Active and All Banners Directory Database Table -->
         <div class="space-y-4">
             <h2 class="text-xs font-black text-red-500 uppercase tracking-[0.2em] font-mono select-none">
                 All Banner Inventories Database
@@ -245,7 +229,6 @@
                         <tbody class="divide-y divide-red-900/10">
                             @forelse($allAds as $ad)
                                 <tr class="hover:bg-red-950/5 transition-colors">
-                                    <!-- Banner Image Preview -->
                                     <td class="p-4">
                                         <div class="border border-gray-800 bg-black flex items-center justify-center overflow-hidden h-10 w-24 rounded-sm">
                                             @if($ad->media_url)
@@ -256,7 +239,6 @@
                                         </div>
                                     </td>
                                     
-                                    <!-- Details -->
                                     <td class="p-4">
                                         <div class="font-bold text-gray-200">{{ $ad->title }}</div>
                                         <div class="text-[9px] text-gray-500 mt-1 truncate max-w-[200px]" title="{{ $ad->target_url }}">
@@ -264,19 +246,16 @@
                                         </div>
                                     </td>
                                     
-                                    <!-- Advertiser / Contact -->
                                     <td class="p-4">
                                         <div class="text-gray-300">{{ $ad->campaign->advertiser->company_name ?? 'Direct Sponsor' }}</div>
                                         <div class="text-[9px] text-gray-500 mt-0.5">Contact: <span class="text-red-500/80">{{ $ad->contact ?? 'Admin' }}</span></div>
                                     </td>
                                     
-                                    <!-- Telemetry -->
                                     <td class="p-4 whitespace-nowrap">
                                         <div class="text-[9px] text-indigo-400">Views: <span class="font-bold">{{ number_format($ad->statistics->sum('impressions')) }}</span></div>
                                         <div class="text-[9px] text-green-400 mt-0.5">Clicks: <span class="font-bold">{{ number_format($ad->statistics->sum('clicks')) }}</span></div>
                                     </td>
                                     
-                                    <!-- Status -->
                                     <td class="p-4">
                                         @if($ad->status === 'active')
                                             <span class="px-2 py-0.5 border border-green-900/40 bg-green-950/20 text-green-500 text-[8px] font-black uppercase tracking-widest rounded-sm">ACTIVE</span>
@@ -289,10 +268,8 @@
                                         @endif
                                     </td>
                                     
-                                    <!-- Action Buttons -->
                                     <td class="p-4 text-right">
                                         <div class="flex items-center justify-end gap-1.5">
-                                            <!-- Activate / Suspend Toggle -->
                                             @if($ad->status !== 'active')
                                                 <form action="{{ route('admin.ads.activate', $ad->id) }}" method="POST" class="inline">
                                                     @csrf
@@ -309,7 +286,6 @@
                                                 </form>
                                             @endif
                                             
-                                            <!-- Delete Form -->
                                             <form action="{{ route('admin.ads.delete', $ad->id) }}" method="POST" onsubmit="return confirm('Are you absolutely sure you want to permanently delete this banner and its telemetry? This cannot be undone.');" class="inline">
                                                 @csrf
                                                 @method('DELETE')

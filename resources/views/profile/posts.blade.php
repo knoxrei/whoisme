@@ -1,7 +1,6 @@
 <x-layouts.app :title="$title">
     <div class="w-full max-w-5xl mx-auto py-8 px-4 sm:px-6 lg:px-8 font-mono text-gray-200">
         
-        <!-- Back Link & Header -->
         <div class="mb-6 flex flex-col md:flex-row md:items-center md:justify-between border-b border-red-900/30 pb-4 gap-4">
             <div>
                 <a href="{{ route('profile.show', $user->username) }}" class="text-[10px] font-bold text-gray-500 hover:text-red-500 uppercase tracking-widest transition-colors duration-150">
@@ -16,7 +15,6 @@
             </div>
         </div>
 
-        <!-- Comments Feed Container -->
         <div id="posts-feed" class="space-y-4 mb-6">
             @if($comments->isEmpty())
                 <div class="bg-[#0a0a0a] border border-red-900/30 rounded-sm p-8 text-center text-gray-500 text-xs">
@@ -29,7 +27,6 @@
             @endif
         </div>
 
-        <!-- Load More Button -->
         <div id="load-more-wrap" class="flex flex-col items-center gap-3 {{ $nextCursor ? '' : 'hidden' }}">
             <button
                 id="load-more-btn"

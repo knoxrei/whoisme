@@ -181,7 +181,7 @@
                                     .markdown-body th, .markdown-body td { border: 1px solid rgba(153, 27, 27, 0.3); padding: 0.5rem; text-align: left; }
                                     .markdown-body th { background-color: rgba(153, 27, 27, 0.1); font-weight: bold; }
 
-                                    /* View Full Transition */
+                                    
                                     #pastebin-content-wrapper {
                                         transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1);
                                         overflow: hidden;
@@ -193,7 +193,7 @@
                                         max-height: none;
                                     }
 
-                                    /* Maximize State */
+                                    
                                     #content-section-container.maximized {
                                         position: fixed;
                                         top: 0;
@@ -377,12 +377,12 @@
                                     const textarea = document.getElementById('comment-textarea');
                                     const quotedText = text.split('\n').map(line => '> ' + line).join('\n');
                                     const replyFormat = `> **@${username}** said:\n${quotedText}\n\n`;
-                                    
+
                                     textarea.value = textarea.value ? textarea.value + '\n' + replyFormat : replyFormat;
                                     textarea.focus();
                                     textarea.scrollIntoView({behavior: 'smooth', block: 'center'});
                                 }
-                            </script>
+</script>
                         @else
                             <div class="mt-4 text-xs text-gray-500 font-mono text-center p-3 border border-red-900/20 bg-[#050505]">
                                 <a href="{{ route('login') }}" class="text-red-500 hover:underline">Log in</a> to post a comment.
@@ -522,7 +522,7 @@
                         }
                     });
                 }
-            </script>
+</script>
         @endcan
     @endauth
 
@@ -589,7 +589,6 @@
     </div>
 
     <script>
-        // Gallery selection limit for edit modal
         document.addEventListener('DOMContentLoaded', function () {
             const editImageInput = document.getElementById('edit_image');
             if (editImageInput) {
@@ -646,12 +645,12 @@
             const copyText = document.getElementById("share-link-input");
             copyText.select();
             copyText.setSelectionRange(0, 99999);
-            
+
             navigator.clipboard.writeText(copyText.value).then(() => {
                 const btnText = document.getElementById("copy-share-btn-text");
                 btnText.innerText = "Copied!";
-                btnText.style.color = '#22c55e'; // Tailwind green-500
-                
+                btnText.style.color = '#22c55e';
+
                 setTimeout(() => {
                     btnText.innerText = "Copy";
                     btnText.style.color = '';
@@ -661,7 +660,6 @@
             });
         }
 
-        // ── View Full Content Toggle ──────────────────────────────────────
         let isExpanded = false;
         function toggleViewFull() {
             const wrapper = document.getElementById('pastebin-content-wrapper');
@@ -687,12 +685,10 @@
                 btnText.innerText = 'View Full Content';
                 icon.style.transform = 'rotate(0deg)';
                 isExpanded = false;
-                // Scroll back to content top
                 document.getElementById('pastebin-content-wrapper').scrollIntoView({ behavior: 'smooth', block: 'start' });
             }
         }
 
-        // ── Maximize Content Toggle ───────────────────────────────────────
         let isMaximized = false;
         function toggleMaximizeContent() {
             const container = document.getElementById('content-section-container');
@@ -706,14 +702,13 @@
                 maximizeText.innerText = 'Minimize';
                 maximizeIcon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 4v4m0 0H4m4 0l-5-5m11 1V4m0 0h4m-4 0l5-5M8 20v-4m0 0H4m4 0l5 5m11-1v4m0-4h4m-4 0l5 5"/>';
                 fixedCloseBtn.classList.remove('hidden');
-                
-                // If not in expanded mode, remove the gradient visually by just expanding the content fully
+
                 if (!isExpanded) {
                     const btnContainer = document.getElementById('view-full-btn-container');
                     btnContainer.classList.remove('bg-gradient-to-t', 'from-[#050505]', '-mt-16', 'pt-12');
                     btnContainer.classList.add('mt-4', 'pt-0');
                 }
-                
+
                 isMaximized = true;
             } else {
                 container.classList.remove('maximized');
@@ -721,20 +716,18 @@
                 maximizeText.innerText = 'Maximize';
                 maximizeIcon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"/>';
                 fixedCloseBtn.classList.add('hidden');
-                
-                // Restore classes if we were collapsed
+
                 if (!isExpanded) {
                     const btnContainer = document.getElementById('view-full-btn-container');
                     btnContainer.classList.add('bg-gradient-to-t', 'from-[#050505]', '-mt-16', 'pt-12');
                     btnContainer.classList.remove('mt-4', 'pt-0');
                 }
-                
+
                 isMaximized = false;
                 document.getElementById('pastebin-content-wrapper').scrollIntoView({ behavior: 'smooth', block: 'start' });
             }
         }
 
-        // ── Live Visitor Polling ──────────────────────────────────────────
         const PASTEBIN_SLUG = @json($pastebin->slug);
         const VISIT_URL     = '{{ route("pastebin.visit", ":slug") }}'.replace(':slug', PASTEBIN_SLUG);
         const CSRF_TOKEN    = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') ?? '';
@@ -742,7 +735,6 @@
         function buildVisitorItem(visitor) {
             const isMemb = visitor.type === 'member';
             const name   = (isMemb ? '@' : '') + visitor.name;
-            // Wrap member names with styled span using role_style if available, else role_color
             if (isMemb && visitor.user_style) {
                 return visitor.user_style;
             }
@@ -779,16 +771,14 @@
                     updateVisitorList(data);
                 }
             } catch (e) {
-                // Silently ignore network errors
             }
         }
 
-        // Start polling every 30 seconds
         document.addEventListener('DOMContentLoaded', () => {
             heartbeat();
             setInterval(heartbeat, 30000);
         });
-    </script>
+</script>
     <style>
         @keyframes fadeIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
     </style>

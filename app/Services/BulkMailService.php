@@ -9,9 +9,24 @@ use Illuminate\Support\Facades\Mail;
 
 class BulkMailService
 {
-    public function timeoutSeconds(): int
+    public function defaultTimeoutSeconds(): int
     {
-        return max(1, (int) config('platform.bulk_mail_timeout', 10));
+        return $this->normalizeTimeout((int) config('platform.bulk_mail_timeout', 10));
+    }
+
+    public function minTimeoutSeconds(): int
+    {
+        return max(1, (int) config('platform.bulk_mail_timeout_min', 3));
+    }
+
+    public function maxTimeoutSeconds(): int
+    {
+        return max($this->minTimeoutSeconds(), (int) config('platform.bulk_mail_timeout_max', 120));
+    }
+
+    public function normalizeTimeout(int $seconds): int
+    {
+        return max($this->minTimeoutSeconds(), min($this->maxTimeoutSeconds(), $seconds));
     }
 
     /**
@@ -38,7 +53,7 @@ class BulkMailService
     /**
      * @return array{status: string, reason?: string, elapsed_ms?: int}
      */
-    public function sendToUser(User $user, string $subject, string $message): array
+    public function sendToUser(User $user, string $subject, string $message, ?int $timeoutSeconds = null): array
     {
         $email = trim((string) $user->email);
 
@@ -46,7 +61,7 @@ class BulkMailService
             return ['status' => 'skipped', 'reason' => 'invalid_email'];
         }
 
-        $timeout = $this->timeoutSeconds();
+        $timeout = $this->normalizeTimeout($timeoutSeconds ?? $this->defaultTimeoutSeconds());
         $previousSocketTimeout = ini_get('default_socket_timeout');
         ini_set('default_socket_timeout', (string) $timeout);
 

@@ -3,13 +3,10 @@
 
         <main class="w-full max-w-3xl px-4 flex flex-col items-center mt-[-10vh]">
 
-            <!-- Logo Icon (Goat Skull Graphic Placeholder) -->
             <div class="mb-4 relative">
-                <!-- Outer Glow -->
                 <x-layouts.icon class="w-50 h-50" />
             </div>
 
-            <!-- DoxMe Logo Text -->
             <div class="mb-5 flex items-baseline">
                 <span class="text-4xl md:text-[5.5rem] font-black text-white tracking-tighter"
                     style="font-family: 'Outfit', sans-serif;">Dox</span>
@@ -17,9 +14,6 @@
                     style="font-family: 'Outfit', sans-serif;">Me</span>
             </div>
 
-            <!-- Subtitle -->
-        
-            <!-- Search Bar -->
             <div class="w-full max-w-2xl mb-8">
                 <form action="#" method="GET" class="relative group">
                     <div class="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none">
@@ -37,7 +31,6 @@
                     with<br>total privacy. we dont track you.</span>
             </p>
 
-            <!-- Action Buttons -->
             <div class="flex flex-col sm:flex-row items-center gap-6 justify-center w-full">
 
                 
@@ -61,7 +54,6 @@
                     </a>
                 </div>
             </div>
-
 
             <x-internal-ads class="mt-12 max-w-xl" />
         </main>

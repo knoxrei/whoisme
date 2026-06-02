@@ -1,6 +1,5 @@
 <x-layouts.dashboard title="Submit Advertisement">
     <div class="max-w-3xl mx-auto">
-        <!-- Header -->
         <div class="mb-8 border-b border-red-900/30 pb-6">
             <h1 class="text-3xl font-black text-white tracking-tighter uppercase font-mono flex items-center gap-3">
                 <svg class="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z"></path></svg>
@@ -19,12 +18,10 @@
             </div>
         @endif
 
-        <!-- Form Box -->
         <div class="bg-[#0a0a0a] border border-white/5 rounded-sm p-6 shadow-2xl shadow-black">
             <form action="{{ route('advertiser.ads.store') }}" method="POST" enctype="multipart/form-data" class="space-y-6">
                 @csrf
 
-                <!-- Title -->
                 <div>
                     <label for="title" class="block text-[10px] font-black uppercase tracking-widest text-gray-400 mb-2">Campaign Title</label>
                     <input type="text" id="title" name="title" required value="{{ old('title') }}" placeholder="e.g. Summer Privacy Sale" 
@@ -32,7 +29,6 @@
                     <p class="text-[10px] text-gray-600 mt-1 font-mono">A descriptive title for your internal dashboard tracking.</p>
                 </div>
 
-                <!-- Contact -->
                 <div>
                     <label for="contact" class="block text-[10px] font-black uppercase tracking-widest text-gray-400 mb-2">Contact Info (Telegram / Tox / Email)</label>
                     <input type="text" id="contact" name="contact" required value="{{ old('contact') }}" placeholder="e.g. @username or email@proton.me" 
@@ -40,7 +36,6 @@
                     <p class="text-[10px] text-gray-600 mt-1 font-mono">So the admin can contact you if there's an issue with your ad.</p>
                 </div>
 
-                <!-- Target URL -->
                 <div>
                     <label for="target_url" class="block text-[10px] font-black uppercase tracking-widest text-gray-400 mb-2">Target URL</label>
                     <input type="url" id="target_url" name="target_url" required value="{{ old('target_url') }}" placeholder="https://your-secure-site.com" 
@@ -48,7 +43,6 @@
                     <p class="text-[10px] text-gray-600 mt-1 font-mono">Where users will be redirected upon clicking your ad.</p>
                 </div>
 
-                <!-- Banner Upload -->
                 <div>
                     <label class="block text-[10px] font-black uppercase tracking-widest text-gray-400 mb-2">Ad Creative (Banner)</label>
                     <div class="border-2 border-dashed border-white/10 rounded-sm p-8 text-center bg-[#111] hover:bg-[#151515] hover:border-red-500/50 transition-all relative group cursor-pointer" onclick="document.getElementById('image').click()">
@@ -69,7 +63,6 @@
                     </div>
                 </div>
 
-                <!-- Submission Actions -->
                 <div class="flex items-center justify-between pt-6 border-t border-white/5 mt-8">
                     <p class="text-[10px] text-gray-500 font-mono flex items-center gap-2">
                         <svg class="w-4 h-4 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
@@ -85,7 +78,6 @@
         </div>
     </div>
 
-    <!-- Simple image preview script -->
     <script>
         function previewImage(event) {
             const reader = new FileReader();
@@ -106,5 +98,5 @@
             document.getElementById('image-preview-container').classList.add('hidden');
             document.getElementById('image-preview').src = '#';
         }
-    </script>
+</script>
 </x-layouts.dashboard>

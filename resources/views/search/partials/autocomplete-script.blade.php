@@ -1,5 +1,3 @@
-{{-- Reusable Autocomplete Script --}}
-{{-- Accepts: $inputId, $boxId, $listId --}}
 <script>
 (function () {
     var inputId  = @json($inputId ?? 'search-input');
@@ -10,7 +8,6 @@
         var urlObj = new URL(suggestUrl);
         suggestUrl = urlObj.pathname + urlObj.search;
     } catch (e) {
-        // Keep suggestUrl as is if URL constructor fails
     }
 
     var input = document.getElementById(inputId);

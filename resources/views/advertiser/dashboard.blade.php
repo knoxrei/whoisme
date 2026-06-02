@@ -1,6 +1,5 @@
 <x-layouts.dashboard :title="'Advertiser Dashboard'">
     <div class="space-y-8 max-w-7xl mx-auto">
-        <!-- Header Banner (Ultra Minimalist Red & Black) -->
         <div class="border border-red-900/30 bg-[#0a0a0a] p-8 rounded-sm relative overflow-hidden">
             <div class="absolute right-0 top-0 bottom-0 w-1/3 bg-gradient-to-l from-red-950/10 to-transparent pointer-events-none"></div>
             <div class="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-center">
@@ -27,9 +26,7 @@
             </div>
         </div>
 
-        <!-- System Stats Grid (Pure Text & Border) -->
         <div class="grid grid-cols-2 lg:grid-cols-3 gap-4">
-            <!-- Stat 1: Total Spend -->
             <div class="p-5 bg-[#0a0a0a] border border-red-900/20 rounded-sm">
                 <div class="flex items-center justify-between mb-3">
                     <span class="text-[9px] font-black text-gray-500 uppercase tracking-widest">Total Spent</span>
@@ -40,7 +37,6 @@
                 <p class="text-xl font-mono font-bold text-white">${{ number_format($totalSpent, 2) }}</p>
             </div>
 
-            <!-- Stat 2: Total Impressions -->
             <div class="p-5 bg-[#0a0a0a] border border-red-900/20 rounded-sm">
                 <div class="flex items-center justify-between mb-3">
                     <span class="text-[9px] font-black text-gray-500 uppercase tracking-widest">Total Impressions</span>
@@ -51,7 +47,6 @@
                 <p class="text-xl font-mono font-bold text-white">{{ number_format($totalImpressions) }}</p>
             </div>
 
-            <!-- Stat 3: Total Clicks -->
             <div class="p-5 bg-[#0a0a0a] border border-red-900/20 rounded-sm">
                 <div class="flex items-center justify-between mb-3">
                     <span class="text-[9px] font-black text-gray-500 uppercase tracking-widest">Total Clicks</span>
@@ -66,9 +61,7 @@
             </div>
         </div>
 
-        <!-- Dynamic Content: Active Campaigns & Chart -->
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <!-- Left 2-Columns: Campaigns Table -->
             <div class="lg:col-span-2 space-y-6">
                 <div class="p-6 border border-red-900/20 bg-[#050505] rounded-sm">
                     <div class="flex items-center justify-between mb-5">
@@ -109,7 +102,6 @@
                 </div>
             </div>
 
-            <!-- Banners Inventory list -->
             <div class="p-6 border border-red-900/20 bg-[#050505] rounded-sm mt-6">
                 <div class="flex items-center justify-between mb-5">
                     <h2 class="text-xs font-black text-red-500 uppercase tracking-widest flex items-center gap-2">
@@ -170,7 +162,6 @@
             </div>
         </div>
 
-            <!-- Right Column: Chart -->
             <div class="space-y-6">
                 <div class="p-6 border border-red-900/20 bg-[#050505] rounded-sm">
                     <h2 class="text-xs font-black text-red-500 uppercase tracking-widest mb-4 flex items-center gap-2">
@@ -183,7 +174,6 @@
         </div>
     </div>
 
-    <!-- Load ApexCharts -->
     @push('scripts')
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
     <script>
@@ -235,6 +225,6 @@
             var chart = new ApexCharts(document.querySelector("#performance-chart"), options);
             chart.render();
         });
-    </script>
+</script>
     @endpush
 </x-layouts.dashboard>

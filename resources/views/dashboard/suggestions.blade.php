@@ -1,6 +1,5 @@
 <x-layouts.dashboard :title="$title" :role="$role">
     <div class="space-y-8 max-w-7xl mx-auto">
-        <!-- Title & Filter Panel -->
         <div class="border border-red-900/40 bg-gradient-to-b from-red-950/10 to-[#0a0a0a] p-6 rounded-sm flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
             <div>
                 <h1 class="text-xl font-black text-white tracking-tight uppercase">
@@ -13,9 +12,7 @@
                 </p>
             </div>
             
-            <!-- Filters -->
             <div class="flex flex-wrap gap-2 font-mono text-[10px]">
-                <!-- Base parameters -->
                 @php
                     $baseParams = [];
                     if (!$isStaff) {
@@ -44,7 +41,6 @@
             </div>
         @endif
 
-        <!-- Dynamic User Context Tabs (Only visible to non-staff) -->
         @if(!$isStaff)
             <div class="flex border-b border-red-900/20 font-mono text-xs">
                 <a href="{{ route('dashboard.suggestions', ['tab' => 'incoming', 'status' => $currentStatus]) }}" 
@@ -58,7 +54,6 @@
             </div>
         @endif
 
-        <!-- Audit Table -->
         <div class="p-6 border border-red-900/20 bg-[#050505] rounded-sm">
             <div class="overflow-x-auto">
                 <table class="w-full text-left font-mono">
@@ -81,7 +76,6 @@
                     <tbody class="divide-y divide-red-900/10">
                         @forelse($suggestions as $edit)
                             <tr class="text-xs">
-                                <!-- Col 1 & 2 logic -->
                                 @if($isStaff || $currentTab === 'incoming')
                                     <td class="py-4 pr-4 align-top">
                                         <span class="text-gray-300 font-bold block">@ {{ $edit->user->username ?? 'Anonymous' }}</span>
@@ -115,7 +109,6 @@
                                         @endif
                                     </td>
                                 @else
-                                    <!-- Outgoing Tab: Showing our suggested edits on other pastes -->
                                     <td class="py-4 pr-4 align-top">
                                         @if($edit->pastebin)
                                             <a href="{{ route('pastebin.show', $edit->pastebin->slug) }}" class="text-gray-300 font-bold hover:text-red-500 transition-colors duration-150 block truncate max-w-sm">
@@ -147,7 +140,6 @@
                                 <td class="py-4 text-[10px] text-gray-500 align-top">{{ $edit->created_at->diffForHumans() }}</td>
                                 <td class="py-4 text-right align-top">
                                     <div class="flex justify-end gap-2">
-                                        <!-- Actions only visible if status is pending AND the user is staff or the incoming owner of the paste -->
                                         @if($edit->status === 'pending' && $edit->pastebin && ($isStaff || $edit->pastebin->user_id === auth()->id()))
                                             <form action="{{ route('pastebin.edit.approve', $edit) }}" method="POST">
                                                 @csrf
@@ -178,7 +170,6 @@
                 </table>
             </div>
 
-            <!-- Pagination -->
             {{ $suggestions->links() }}
         </div>
     </div>

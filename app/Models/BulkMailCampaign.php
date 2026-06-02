@@ -12,6 +12,7 @@ class BulkMailCampaign extends Model
         'subject',
         'message',
         'verified_only',
+        'timeout_seconds',
         'total_recipients',
         'sent_count',
         'skipped_count',

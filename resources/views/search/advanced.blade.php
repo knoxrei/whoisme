@@ -1,10 +1,8 @@
 <x-layouts.app :title="$title">
     <div class="min-h-screen  text-gray-200 font-mono py-12 px-4">
         
-        <!-- Center Box Container -->
         <div class="max-w-4xl mx-auto border-2 border-red-950/30 p-6 md:p-8 relative">
           
-            <!-- Page Title -->
             <div class="mb-6 flex items-center justify-between border-b border-red-950/20 pb-4">
                 <div class="flex items-center gap-2">
                     <h2 class="text-sm font-black uppercase tracking-[0.2em] text-white">Advanced Search </h2>
@@ -12,10 +10,8 @@
                 <a href="{{ route('search.index') }}" class="text-[9px] font-bold text-gray-500 hover:text-red-500 uppercase tracking-widest transition-colors">&lt;&lt; Search Home</a>
             </div>
 
-            <!-- Form -->
             <form action="{{ route('search.index') }}" method="GET" class="space-y-6">
                 
-                <!-- Main Query Input -->
                 <div>
                     <label class="block text-[10px] uppercase font-bold tracking-wider text-red-500 mb-2">Search Terms / Keywords</label>
                     <input type="text" name="q" placeholder="Type key terms, double-quoted phrases, or boolean terms..." autocomplete="off" required
@@ -25,16 +21,13 @@
                     </p>
                 </div>
 
-                <!-- Parameters Grid -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <!-- Author Signatures -->
                     <div>
                         <label class="block text-[10px] uppercase font-bold tracking-wider text-gray-400 mb-2">Author Name / Signatures</label>
                         <input type="text" name="author" placeholder="e.g. TreixNox" autocomplete="off"
                             class="w-full bg-[#050505] border border-red-950/40 text-gray-200 rounded px-3 py-2 text-xs focus:outline-none focus:border-red-600 transition-colors">
                     </div>
 
-                    <!-- Date range selector -->
                     <div>
                         <label class="block text-[10px] uppercase font-bold tracking-wider text-gray-400 mb-2">Index Timeframe (Age)</label>
                         <select name="date" class="w-full bg-[#050505] border border-red-950/40 text-gray-300 text-xs rounded p-2 focus:outline-none focus:border-red-600">
@@ -45,7 +38,6 @@
                         </select>
                     </div>
 
-                    <!-- Sort strategy selection -->
                     <div>
                         <label class="block text-[10px] uppercase font-bold tracking-wider text-gray-400 mb-2">Ranking Algorithm Mode</label>
                         <select name="sort" class="w-full bg-[#050505] border border-red-950/40 text-gray-300 text-xs rounded p-2 focus:outline-none focus:border-red-600">
@@ -58,7 +50,6 @@
                         </select>
                     </div>
 
-                    <!-- Content length ranges -->
                     <div>
                         <label class="block text-[10px] uppercase font-bold tracking-wider text-gray-400 mb-2">Byte Size Parameters</label>
                         <div class="flex gap-2 items-center">
@@ -71,7 +62,6 @@
                     </div>
                 </div>
 
-                <!-- Submit / Control Section -->
                 <div class="border-t border-red-950/20 pt-6 flex justify-end gap-3">
                     <button type="reset" class="text-[10px] font-bold uppercase tracking-widest text-gray-500 hover:text-white px-4 py-2 transition-colors duration-150">
                         Reset Defaults

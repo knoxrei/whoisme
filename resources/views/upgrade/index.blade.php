@@ -12,10 +12,7 @@
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
             @foreach($roles as $role)
                 <div class="relative group">
-                    <!-- Glow effect -->
-
                     <div class="relative flex flex-col h-full  border border-white/5  p-8 overflow-hidden">
-                        <!-- Top Banner -->
                         <div class="absolute top-0 right-0 p-4 opacity-5 transform translate-x-4 -translate-y-4">
                             <x-layouts.logo class="w-32 h-32" />
                         </div>
@@ -31,7 +28,6 @@
                             </div>
                         </div>
 
-                        <!-- Benefits List -->
                         <ul class="flex-1 space-y-4 mb-10">
                             <li class="flex items-center gap-3 text-sm">
                                 <svg class="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -120,7 +116,6 @@
                 </div>
             @endforeach
         </div>
-
 
     </div>
 </x-layouts.app>

@@ -19,7 +19,6 @@
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <!-- Bitcoin -->
                 <div class="bg-[#0a0a0a] border border-white/5 p-6 rounded-sm hover:border-orange-500/30 transition-colors">
                     <div class="flex items-center gap-4 mb-4">
                         <div class="w-10 h-10 rounded-full bg-orange-500/10 flex items-center justify-center text-orange-500">
@@ -32,7 +31,6 @@
                     </div>
                 </div>
 
-                <!-- Ethereum -->
                 <div class="bg-[#0a0a0a] border border-white/5 p-6 rounded-sm hover:border-purple-500/30 transition-colors">
                     <div class="flex items-center gap-4 mb-4">
                         <div class="w-10 h-10 rounded-full bg-purple-500/10 flex items-center justify-center text-purple-500">
@@ -45,7 +43,6 @@
                     </div>
                 </div>
 
-                <!-- USDT (ERC-20) -->
                 <div class="bg-[#0a0a0a] border border-white/5 p-6 rounded-sm hover:border-green-500/30 transition-colors">
                     <div class="flex items-center gap-4 mb-4">
                         <div class="w-10 h-10 rounded-full bg-green-500/10 flex items-center justify-center text-green-500">
@@ -58,7 +55,6 @@
                     </div>
                 </div>
 
-                <!-- Solana -->
                 <div class="bg-[#0a0a0a] border border-white/5 p-6 rounded-sm hover:border-teal-500/30 transition-colors">
                     <div class="flex items-center gap-4 mb-4">
                         <div class="w-10 h-10 rounded-full bg-teal-500/10 flex items-center justify-center text-teal-500">

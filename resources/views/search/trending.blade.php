@@ -1,11 +1,9 @@
 <x-layouts.app :title="$title">
     <div class="min-h-screen  text-gray-200 font-mono py-12 px-4">
         
-        <!-- Main Box Container -->
         <div class="max-w-7xl mx-auto border border-red-950/20  p-6 relative">
             
 
-            <!-- Page Title -->
             <div class="mb-6 flex flex-col md:flex-row items-start md:items-center justify-between border-b border-red-950/30 pb-4 gap-4">
                 <div class="flex items-center gap-3">
                     <div>
@@ -23,7 +21,6 @@
                 </div>
             </div>
 
-            <!-- Table Feed -->
             <div class="overflow-x-auto border border-red-950/25 rounded-sm">
                 <table class="w-full text-left border-collapse">
                     <thead>
@@ -39,13 +36,11 @@
                     <tbody class="divide-y divide-red-950/10 text-[10px]">
                         @forelse($pastes as $paste)
                             <tr class="hover:bg-red-950/5 transition-colors duration-100">
-                                <!-- Title -->
                                 <td class="py-3.5 px-4 font-bold text-gray-200 max-w-xs truncate">
                                     <a href="{{ route('pastebin.show', $paste->slug) }}" class="hover:text-red-500 hover:underline">
                                         {{ $paste->title }}
                                     </a>
                                 </td>
-                                <!-- Author -->
                                 <td class="py-3.5 px-4 text-gray-400 font-bold">
                                     @if($paste->user_id)
                                     <a href="{{ route('profile.show', $paste->user->username) }}" class="hover:text-red-500 hover:underline">
@@ -55,21 +50,17 @@
                                     {{ $paste->author_name }}
                                     @endif
                                 </td>
-                                <!-- Views -->
                                 <td class="py-3.5 px-4 text-center font-bold text-gray-300">
                                     {{ number_format($paste->views_count) }}
                                 </td>
-                                <!-- Downloads -->
                                 <td class="py-3.5 px-4 text-center font-bold text-gray-300">
                                     {{ number_format($paste->download_count) }}
                                 </td>
-                                <!-- Hotness Score -->
                                 <td class="py-3.5 px-4 text-center select-none">
                                     <span class="inline-flex items-center gap-1 bg-red-950/35 border border-red-900/40 text-red-500 px-2 py-0.5 rounded-sm font-bold uppercase tracking-wider text-[8px]">
                                          {{ number_format($paste->hotness) }}
                                     </span>
                                 </td>
-                                <!-- Created Date -->
                                 <td class="py-3.5 px-4 text-right text-gray-500">
                                     {{ $paste->created_at->diffForHumans() }}
                                 </td>

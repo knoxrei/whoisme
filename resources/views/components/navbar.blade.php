@@ -1,14 +1,11 @@
 <nav class="sticky top-0 z-50 flex flex-col">
-    <!-- Top Main Bar -->
     <div class="bg-[#050505] border-b border-white/5 py-3.5 px-4 md:px-12">
         <div class="max-w-7xl mx-auto flex items-center justify-between">
-            <!-- Logo & Main Navigation -->
             <div class="flex items-center gap-10">
                 <a href="/" class="hover:opacity-80 transition-all active:scale-95">
                     <x-layouts.logo />
                 </a>
 
-                <!-- Desktop Nav (Primary) -->
                 <div class="hidden lg:flex items-center gap-6">
                     <a href="{{ route('welcome') }}"
                         class="text-[11px] {{ request()->routeIs('welcome') || request()->routeIs('search.index') ? 'text-red-600' : 'text-gray-500' }} font-bold uppercase tracking-[0.2em] hover:text-red-500 transition-colors flex items-center gap-2">
@@ -28,17 +25,13 @@
                 </div>
             </div>
 
-            <!-- Right Menu -->
             <div class="flex items-center gap-4">
 
-                <!-- Vertical Divider -->
                 <div class="hidden sm:block w-[1px] h-6 bg-white/5"></div>
 
-                <!-- Auth/Guest Section -->
                 <div class="flex items-center gap-6">
                     @guest
                         <div class="flex items-center gap-4">
-                            <!-- Anonymous Identity -->
                             @if (session('anonuser'))
                                 <div class="hidden md:flex flex-col items-end leading-none">
                                     <span class="text-[9px] uppercase tracking-widest text-gray-600 font-black mb-1">Session Identity</span>
@@ -59,7 +52,6 @@
                             </div>
                         </div>
                     @else
-                        <!-- Authenticated User -->
                         <div class="flex items-center gap-4">
                             <div class="hidden md:flex flex-col items-end leading-none">
                                 <span class="text-[9px] uppercase tracking-widest text-red-600 font-black mb-1">Authenticated</span>
@@ -95,7 +87,6 @@
         </div>
     </div>
 
-    <!-- Bottom Secondary Bar (Desktop only) — Links + Pastebins -->
     <div class="hidden lg:block bg-[#050505] border-b border-white/5 py-2 px-6 md:px-12">
         <div class="max-w-7xl mx-auto flex items-center justify-center gap-12">
             <a href="{{ route('pastebin.list') }}"
@@ -129,11 +120,6 @@
         </div>
     </div>
 </nav>
-<!-- ═══════════════════════════════════════════════════════════
-     MOBILE BOTTOM NAVBAR — visible only on mobile (<lg)
-═══════════════════════════════════════════════════════════ -->
-
-<!-- More Menu Panel (hidden by default, shown above bottom nav) -->
 <div id="mobile-more-panel" class="lg:hidden hidden fixed bottom-[56px] left-0 right-0 z-50 border-t border-red-900/20" style="background:#050505;">
     <div class="grid grid-cols-2 border-b border-white/5">
 
@@ -200,7 +186,6 @@
 <div class="lg:hidden fixed bottom-0 left-0 right-0 z-50 border-t border-red-900/20" id="mobile-bottom-nav" style="background:#050505;">
     <div class="flex items-center justify-around px-2 py-2 safe-area-bottom">
 
-        <!-- Home / Search -->
         <a href="{{ route('welcome') }}"
             class="flex flex-col items-center gap-1 px-3 py-1.5 {{ request()->routeIs('welcome') || request()->routeIs('search.index') ? 'text-red-500' : 'text-gray-600' }}">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -209,7 +194,6 @@
             <span class="text-[8px] font-black uppercase tracking-widest">Search</span>
         </a>
 
-        <!-- Dashboard (auth) / Login (guest) -->
         @auth
             <a href="{{ route('dashboard') }}"
                 class="flex flex-col items-center gap-1 px-3 py-1.5 {{ request()->routeIs('dashboard') ? 'text-red-500' : 'text-gray-600' }}">
@@ -228,7 +212,6 @@
             </a>
         @endauth
 
-        <!-- New Paste (CENTER) -->
         <a href="{{ route('pastebin.create') }}"
             class="flex flex-col items-center gap-1 -mt-4">
             <div class="w-12 h-12 rounded-full bg-red-600 flex items-center justify-center border-2 border-[#050505]">
@@ -239,7 +222,6 @@
             <span class="text-[8px] font-black uppercase tracking-widest {{ request()->routeIs('pastebin.create') ? 'text-red-500' : 'text-gray-600' }}">New</span>
         </a>
 
-        <!-- Profile (auth) / Join (guest) -->
         @auth
             <a href="{{ route('profile.show', auth()->user()->username) }}"
                 class="flex flex-col items-center gap-1 px-3 py-1.5 {{ request()->routeIs('profile.show') && request()->route('username') === auth()->user()->username ? 'text-red-500' : 'text-gray-600' }}">
@@ -259,7 +241,6 @@
             </a>
         @endauth
 
-        <!-- More toggle -->
         <button id="mobile-more-btn" onclick="toggleMoreMenu()" type="button"
             class="flex flex-col items-center gap-1 px-3 py-1.5 text-gray-600">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -284,7 +265,6 @@
         }
     }
 
-    // Close panel when clicking a link inside it
     morePanel.querySelectorAll('a').forEach(function(el) {
         el.addEventListener('click', function() {
             morePanel.classList.add('hidden');
@@ -292,7 +272,6 @@
         });
     });
 
-    // Close panel when scrolling
     document.addEventListener('scroll', function() {
         if (morePanelOpen) {
             morePanel.classList.add('hidden');
@@ -301,14 +280,13 @@
     }, { passive: true });
 </script>
 
-<!-- Add bottom padding to page body on mobile so content isn't hidden behind bottom nav -->
 <style>
     @media (max-width: 1023px) {
         main {
             padding-bottom: 5rem !important;
         }
     }
-    /* Safe area for modern phones with home indicator */
+    
     .safe-area-bottom {
         padding-bottom: max(0.5rem, env(safe-area-inset-bottom));
     }

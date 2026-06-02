@@ -3,7 +3,6 @@
         
         <div class="max-w-7xl mx-auto border border-red-950/20 p-6 relative">
 
-            <!-- Page Title -->
             <div class="mb-6 flex flex-col md:flex-row items-start md:items-center justify-between border-b border-red-950/30 pb-4 gap-4">
                 <div class="flex items-center gap-3">
                     <div>
@@ -21,7 +20,6 @@
                 </div>
             </div>
 
-            <!-- Table Feed -->
             <div class="overflow-x-auto border border-red-950/25 rounded-sm mb-6">
                 <table class="w-full text-left border-collapse">
                     <thead>
@@ -48,7 +46,6 @@
                 </table>
             </div>
 
-            <!-- Load More Button -->
             <div id="load-more-wrap" class="flex flex-col items-center gap-3 {{ $nextCursor ? '' : 'hidden' }}">
                 <button
                     id="load-more-btn"

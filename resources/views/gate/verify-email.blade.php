@@ -9,7 +9,6 @@
                 </div>
             </div>
 
-            <!-- Verification System Announcement Banner -->
             <div class="mb-6 bg-red-950/15 border border-red-900/20 text-gray-400 p-4 rounded-sm font-mono text-[10px] leading-relaxed text-left">
                 <span class="text-red-500 font-black uppercase tracking-wider block mb-1">SYSTEM NOTICE:</span>
                 Please allow up to <span class="text-white font-bold">1 minute</span> for the encryption key to route to your terminal. If the transmission is not received within 1 minute, please verify your <span class="text-white font-bold">Spam / Junk Inbox folder</span>.

@@ -15,14 +15,15 @@ class SendBulkMailToUserJob implements ShouldQueue
 
     public int $tries = 1;
 
-    public int $timeout = 15;
-
     public function __construct(
         public int $userId,
         public int $campaignId,
         public string $subject,
         public string $message,
-    ) {}
+        public int $timeoutSeconds = 10,
+    ) {
+        $this->timeout = $timeoutSeconds + 5;
+    }
 
     public function handle(BulkMailService $bulkMailService): void
     {
@@ -44,7 +45,8 @@ class SendBulkMailToUserJob implements ShouldQueue
             return;
         }
 
-        $outcome = $bulkMailService->sendToUser($user, $this->subject, $this->message);
+        $timeout = $campaign->timeout_seconds ?: $this->timeoutSeconds;
+        $outcome = $bulkMailService->sendToUser($user, $this->subject, $this->message, $timeout);
         $this->recordOutcome($outcome['status'] === 'sent' ? 'sent' : 'skipped');
     }
 

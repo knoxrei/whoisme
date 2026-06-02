@@ -3,10 +3,8 @@
         <form action="{{ route('pastebin.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
             <div class="flex flex-col lg:flex-row min-h-screen relative">
-                <!-- Main Content Area (Left) -->
                 <div id="main-content"
                     class="flex-1 flex flex-col p-4 lg:p-8 bg-[#050505] transition-all duration-300 relative">
-                    <!-- Sidebar Toggle Button (Professional Handle) -->
                     <button type="button" id="toggle-sidebar"
                         class="hidden lg:flex absolute right-0 top-1/2 -translate-y-1/2 translate-x-1/2 z-50 items-center justify-center w-13 h-12 bg-red-600 border border-red-500 rounded-full hover:bg-red-700 transition-all shadow-lg shadow-red-900/40 group">
                         <svg id="toggle-icon" class="w-4 h-4 text-white transition-transform duration-300" fill="none"
@@ -42,7 +40,6 @@
                     </div>
                 </div>
 
-                <!-- Sidebar (Right) -->
                 <aside id="sidebar"
                     class="w-full lg:w-96 bg-[#0a0a0a] border-l border-gray-900 p-6 lg:p-8 space-y-8 overflow-y-auto transition-all duration-300 transform translate-x-0 relative">
                     <div class="space-y-6">
@@ -126,7 +123,6 @@
                             </button>
                         </div>
 
-                        <!-- Markdown Support Guide -->
                         <div class="pt-6 border-t border-gray-900 space-y-4">
                             <div class="flex items-center gap-2">
                                 <svg class="w-4 h-4 text-red-500" fill="currentColor" viewBox="0 0 24 24">
@@ -170,7 +166,6 @@
     </div>
 
     <script>
-        // Gallery selection limit
         document.getElementById('image').addEventListener('change', function () {
             if (this.files.length > 5) {
                 alert("You can only upload a maximum of 5 images");
@@ -178,7 +173,6 @@
             }
         });
 
-        // Sidebar Toggle Logic
         const toggleBtn = document.getElementById('toggle-sidebar');
         const sidebar = document.getElementById('sidebar');
         const mainContent = document.getElementById('main-content');
@@ -189,7 +183,6 @@
             isCollapsed = !isCollapsed;
 
             if (isCollapsed) {
-                // Collapse sidebar
                 sidebar.style.width = '0px';
                 sidebar.style.padding = '0px';
                 sidebar.style.overflow = 'hidden';
@@ -197,8 +190,7 @@
                 toggleIcon.style.transform = 'rotate(180deg)';
                 mainContent.classList.add('max-w-full');
             } else {
-                // Expand sidebar
-                sidebar.style.width = ''; // Resets to CSS default
+                sidebar.style.width = '';
                 sidebar.style.padding = '';
                 sidebar.style.overflow = 'auto';
                 sidebar.style.borderLeft = '';
@@ -206,5 +198,5 @@
                 mainContent.classList.remove('max-w-full');
             }
         });
-    </script>
+</script>
 </x-layouts.app>

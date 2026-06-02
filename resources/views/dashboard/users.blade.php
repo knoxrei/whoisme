@@ -1,6 +1,5 @@
 <x-layouts.dashboard :title="$title" :role="$role">
     <div class="space-y-8 max-w-7xl mx-auto">
-        <!-- Title & Filter Panel -->
         <div class="border border-red-900/40 bg-gradient-to-b from-red-950/10 to-[#0a0a0a] p-6 rounded-sm flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
             <div>
                 <h1 class="text-xl font-black text-white tracking-tight uppercase">
@@ -11,7 +10,6 @@
                 </p>
             </div>
             
-            <!-- Filters -->
             <form method="GET" action="{{ route('dashboard.users') }}" class="flex flex-wrap items-center gap-3 font-mono text-[10px]">
                 <div class="relative">
                     <input type="text" name="q" value="{{ $search }}" placeholder="Search username/email..." 
@@ -56,7 +54,6 @@
             </div>
         @endif
 
-        <!-- User Accounts Table -->
         <div class="p-6 border border-red-900/20 bg-[#050505] rounded-sm">
             <div class="overflow-x-auto">
                 <table class="w-full text-left font-mono">
@@ -75,7 +72,6 @@
                             <tr class="text-xs">
                                 <td class="py-4 pr-4 align-middle">
                                     <div class="flex items-center gap-3">
-                                        <!-- Avatar -->
                                         <div class="w-8 h-8 rounded-full border border-red-900/20 overflow-hidden bg-[#050505] flex-shrink-0">
                                             <img src="{{ $u->avatar_url }}" class="w-full h-full object-cover" alt="avatar">
                                         </div>
@@ -100,7 +96,6 @@
                                 <td class="py-4 text-[10px] text-gray-500 align-middle">{{ $u->created_at->format('d M Y') }}</td>
                                 <td class="py-4 text-right align-middle">
                                     <div class="flex justify-end gap-2">
-                                        <!-- Edit Trigger -->
                                         @if($u->can_edit)
                                             <button type="button" 
                                                 onclick="openEditModal(this)"
@@ -116,7 +111,6 @@
                                             </button>
                                         @endif
 
-                                        <!-- Ban/Unban Trigger -->
                                         @if($u->can_ban)
                                             @if($u->is_banned)
                                                 <form id="ban-form-{{ $u->id }}" action="{{ route('dashboard.users.toggle-ban', $u) }}" method="POST" class="inline">
@@ -139,7 +133,6 @@
                                             @endif
                                         @endif
 
-                                        <!-- Delete Trigger -->
                                         @if($u->can_delete)
                                             <form id="delete-form-{{ $u->id }}" action="{{ route('dashboard.users.delete', $u) }}" method="POST" class="inline">
                                                 @csrf
@@ -165,12 +158,10 @@
                 </table>
             </div>
 
-            <!-- Pagination -->
             {{ $users->links() }}
         </div>
     </div>
 
-    <!-- Edit User Modal -->
     <div id="edit-user-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black/80 backdrop-blur-md p-4">
         <div class="border border-red-900/40 bg-gradient-to-b from-red-950/10 to-[#0a0a0a] rounded-sm max-w-lg w-full p-6 space-y-6 relative">
             <div class="flex justify-between items-center border-b border-red-900/10 pb-4">
@@ -247,7 +238,6 @@
         </div>
     </div>
 
-    <!-- Create Advertiser Modal -->
     <div id="create-advertiser-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black/80 backdrop-blur-md p-4">
         <div class="border border-red-900/40 bg-gradient-to-b from-red-950/10 to-[#0a0a0a] rounded-sm max-w-lg w-full p-6 space-y-6 relative">
             <div class="flex justify-between items-center border-b border-red-900/10 pb-4">
@@ -313,11 +303,9 @@
             const website = button.getAttribute('data-website') || '';
             const bio = button.getAttribute('data-bio') || '';
 
-            // Update form action url
             const form = document.getElementById('edit-user-form');
             form.action = `/dashboard/users/${id}/update`;
 
-            // Fill modal fields
             document.getElementById('modal-username').value = username;
             document.getElementById('modal-email').value = email;
             document.getElementById('modal-role').value = role;
@@ -326,7 +314,6 @@
             document.getElementById('modal-website').value = website;
             document.getElementById('modal-bio').value = bio;
 
-            // Show modal
             const modal = document.getElementById('edit-user-modal');
             modal.classList.remove('hidden');
         }
@@ -343,5 +330,5 @@
         function closeCreateAdvertiserModal() {
             document.getElementById('create-advertiser-modal').classList.add('hidden');
         }
-    </script>
+</script>
 </x-layouts.dashboard>

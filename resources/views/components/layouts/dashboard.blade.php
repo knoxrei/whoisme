@@ -47,7 +47,7 @@
             color: #FF4500;
         }
 
-        /* Custom scrollbar */
+        
         ::-webkit-scrollbar {
             width: 5px;
         }
@@ -60,7 +60,7 @@
             background: #222;
         }
 
-        /* Hamburger lines */
+        
         .hamburger-line {
             display: block;
             width: 20px;
@@ -68,7 +68,7 @@
             background: currentColor;
         }
 
-        /* Mobile header */
+        
         #dashboard-mobile-header {
             background: #050505;
         }
@@ -76,12 +76,9 @@
 </head>
 
 <body class="antialiased overflow-hidden flex flex-col h-screen">
-    <!-- Global Top Navbar -->
     <x-navbar />
 
-    <!-- Mobile Dashboard Header Bar (visible only on mobile) -->
     <div id="dashboard-mobile-header" class="lg:hidden flex items-center justify-between px-4 py-3 border-b border-white/5 z-30 flex-shrink-0">
-        <!-- Hamburger Button -->
         <button
             id="sidebar-toggle-btn"
             onclick="toggleSidebar()"
@@ -93,7 +90,6 @@
             <span class="hamburger-line line-3"></span>
         </button>
 
-        <!-- Current Page Label -->
         <div class="flex items-center gap-2">
             <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span>
             <span class="text-[9px] font-black uppercase tracking-[0.2em] text-gray-500 font-mono">
@@ -112,7 +108,6 @@
             </span>
         </div>
 
-        <!-- Right side: user avatar shortcut -->
         <a href="{{ route('profile.show', auth()->user()->username) }}" class="shrink-0">
             <img src="{{ asset('storage/' . auth()->user()->identification->avatar_path) }}"
                 alt="{{ auth()->user()->username }}"
@@ -120,7 +115,6 @@
         </a>
     </div>
 
-    <!-- Sidebar Backdrop Overlay (mobile only) -->
     <div
         id="sidebar-backdrop"
         onclick="closeSidebar()"
@@ -129,12 +123,10 @@
     ></div>
 
     <div class="flex flex-1 overflow-hidden bg-[#050505]">
-        <!-- Sidebar -->
         <aside id="sidebar"
             class="hidden fixed inset-y-0 left-0 z-40 w-72 lg:w-64 lg:block lg:static lg:inset-0 glass border-r border-white/5 pt-4"
             style="top: 0;">
             <div class="flex flex-col h-full">
-                <!-- Sidebar Mobile Header (branding inside sidebar) -->
                 <div class="lg:hidden flex items-center justify-between px-4 pt-6 pb-4 border-b border-white/5 mb-2">
                     <a href="/" class="hover:opacity-80 transition-all active:scale-95">
                         <x-layouts.logo />
@@ -146,7 +138,6 @@
                     </button>
                 </div>
 
-                <!-- Navigation Links -->
                 <nav class="flex-1 overflow-y-auto py-4 lg:py-6 space-y-1 px-3">
                     <div class="px-3 mb-2 text-xs font-semibold tracking-wider text-gray-500 uppercase">
                         Menu
@@ -247,7 +238,6 @@
                     @endif
                 </nav>
 
-                <!-- Sidebar Footer -->
                 <div class="p-4 border-t border-white/5">
                     <form method="POST" action="{{ route('logout') }}">
                         @csrf
@@ -264,7 +254,6 @@
             </div>
         </aside>
 
-        <!-- Main Content Area -->
         <main class="flex-1 flex flex-col min-w-0 overflow-hidden bg-[#050505]">
             <div class="flex-1 overflow-y-auto p-8 custom-scrollbar flex flex-col justify-between">
                 <div>
@@ -276,10 +265,8 @@
         </main>
     </div>
 
-    <!-- Global Cyberpunk Modal Container -->
     <div id="global-action-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4" style="background-color: rgba(0,0,0,0.85);" data-modal-container>
         <div class="relative w-full max-w-md bg-[#0a0a0a] border rounded-sm overflow-hidden" id="global-modal-box" data-modal-box style="border-color: rgba(153, 27, 27, 0.4);">
-            <!-- Modal Header -->
             <div class="flex items-center justify-between px-6 py-4 border-b bg-[#111]" id="global-modal-header" style="border-color: rgba(153, 27, 27, 0.2);">
                 <h3 class="text-xs font-black uppercase tracking-[0.2em] font-mono text-red-500" id="global-modal-title">
                     SYSTEM ALERT
@@ -291,12 +278,10 @@
                 </button>
             </div>
 
-            <!-- Modal Content -->
             <div class="p-6 md:p-8 text-xs text-gray-300 font-mono leading-relaxed" id="global-modal-body">
                 SYSTEM MESSAGE BODY
             </div>
 
-            <!-- Modal Footer -->
             <div class="px-6 py-4 border-t bg-[#050505] flex justify-end gap-3" id="global-modal-footer" style="border-color: rgba(153, 27, 27, 0.1);">
                 <button type="button" onclick="closeModal('global-action-modal')" class="text-[9px] font-black uppercase tracking-widest text-gray-500 hover:text-white px-4 py-2 transition-colors duration-150" id="global-cancel-btn">Cancel</button>
                 <button type="button" class="text-[9px] font-black uppercase tracking-widest px-4 py-2 border rounded-sm bg-red-950/20 text-red-500 border-red-900/30 hover:bg-red-600 hover:text-white transition-colors duration-150" id="global-confirm-btn">Proceed</button>
@@ -305,7 +290,6 @@
     </div>
 
     <script>
-        // Sidebar toggle (no animation)
         var sidebar = document.getElementById('sidebar');
         var backdrop = document.getElementById('sidebar-backdrop');
         var sidebarOpen = false;
@@ -337,15 +321,15 @@
                 el.addEventListener('click', closeSidebar);
             });
         }
-        
+
         function openModal(id) {
             const modal = document.getElementById(id);
             if (!modal) return;
-            
+
             modal.classList.remove('hidden');
-            void modal.offsetWidth; // Trigger reflow
+            void modal.offsetWidth;
             modal.classList.remove('opacity-0');
-            
+
             const box = modal.querySelector('[data-modal-box]');
             if (box) {
                 box.classList.remove('scale-95');
@@ -357,39 +341,38 @@
         function closeModal(id) {
             const modal = document.getElementById(id);
             if (!modal) return;
-            
+
             modal.classList.add('opacity-0');
             const box = modal.querySelector('[data-modal-box]');
             if (box) {
                 box.classList.remove('scale-100');
                 box.classList.add('scale-95');
             }
-            
+
             setTimeout(() => {
                 modal.classList.add('hidden');
                 document.body.classList.remove('overflow-hidden');
             }, 200);
         }
 
-        // Global Modal Confirmation Helper
         window.confirmAction = function(message, onConfirm, title = 'SYSTEM ALERT') {
             const modal = document.getElementById('global-action-modal');
             const modalTitle = document.getElementById('global-modal-title');
             const modalBody = document.getElementById('global-modal-body');
             const confirmBtn = document.getElementById('global-confirm-btn');
-            
+
             if (!modal || !modalBody || !confirmBtn) return;
-            
+
             modalTitle.innerText = title;
             modalBody.innerText = message;
-            
+
             confirmBtn.onclick = function() {
                 onConfirm();
                 closeModal('global-action-modal');
             };
-            
+
             openModal('global-action-modal');
         };
-    </script>
+</script>
 </body>
 </html>

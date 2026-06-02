@@ -1,7 +1,6 @@
 @if ($paginator->hasPages())
     <nav role="navigation" aria-label="{{ __('Pagination Navigation') }}" class="mt-6 pt-6 border-t border-red-900/10">
 
-        {{-- Mobile: simple prev/next --}}
         <div class="flex gap-2 items-center justify-between sm:hidden font-mono text-[10px]">
             @if ($paginator->onFirstPage())
                 <span class="px-3 py-1 border border-red-900/10 text-gray-700 uppercase tracking-widest rounded-sm cursor-not-allowed">
@@ -24,10 +23,8 @@
             @endif
         </div>
 
-        {{-- Desktop: full pagination with page numbers --}}
         <div class="hidden sm:flex sm:items-center sm:justify-between font-mono text-[10px]">
 
-            {{-- Showing X–Y of Z --}}
             <div>
                 <span class="text-gray-600 uppercase tracking-widest">Showing</span>
                 @if ($paginator->firstItem())
@@ -40,10 +37,8 @@
                 <span class="text-gray-300 font-bold">{{ $paginator->total() }}</span>
             </div>
 
-            {{-- Page links --}}
             <div class="flex items-center gap-1">
 
-                {{-- Prev --}}
                 @if ($paginator->onFirstPage())
                     <span class="px-3 py-1 border border-red-900/10 text-gray-700 uppercase tracking-widest rounded-sm cursor-not-allowed">
                         Prev
@@ -54,14 +49,11 @@
                     </a>
                 @endif
 
-                {{-- Page numbers --}}
                 @foreach ($elements as $element)
-                    {{-- Ellipsis --}}
                     @if (is_string($element))
                         <span class="px-2 py-1 text-gray-600">{{ $element }}</span>
                     @endif
 
-                    {{-- Page number links --}}
                     @if (is_array($element))
                         @foreach ($element as $page => $url)
                             @if ($page == $paginator->currentPage())
@@ -78,7 +70,6 @@
                     @endif
                 @endforeach
 
-                {{-- Next --}}
                 @if ($paginator->hasMorePages())
                     <a href="{{ $paginator->nextPageUrl() }}" rel="next" class="px-3 py-1 border border-red-900/30 text-gray-400 hover:text-white hover:border-red-600 uppercase tracking-widest rounded-sm transition-colors duration-150">
                         Next

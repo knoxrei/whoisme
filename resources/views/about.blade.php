@@ -9,7 +9,6 @@
             </div>
 
             <div class="space-y-12">
-                <!-- Our Mission -->
                 <section class="border border-red-500 p-8 rounded-sm relative overflow-hidden group">
                     <div class="absolute inset-0 bg-gradient-to-br from-red-600/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
                     <h2 class="text-xl font-bold text-white mb-4 flex items-center gap-3 uppercase tracking-widest font-mono">
@@ -21,7 +20,6 @@
                     </p>
                 </section>
 
-                <!-- Architecture & Security -->
                 <section class="border border-red-500 p-8 rounded-sm relative overflow-hidden group">
                     <div class="absolute inset-0 bg-gradient-to-br from-red-600/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
                     <h2 class="text-xl font-bold text-white mb-4 flex items-center gap-3 uppercase tracking-widest font-mono">
@@ -33,7 +31,6 @@
                     </p>
                 </section>
 
-                <!-- The Team -->
                 <section class="border border-red-500 p-8 rounded-sm relative overflow-hidden group">
                     <div class="absolute inset-0 bg-gradient-to-br from-red-600/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
                     <h2 class="text-xl font-bold text-white mb-4 flex items-center gap-3 uppercase tracking-widest font-mono">

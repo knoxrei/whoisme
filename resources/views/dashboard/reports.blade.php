@@ -1,6 +1,5 @@
 <x-layouts.dashboard :title="$title" :role="$role">
     <div class="space-y-8 max-w-7xl mx-auto">
-        <!-- Title & Filter Panel -->
         <div class="border border-red-900/40 bg-gradient-to-b from-red-950/10 to-[#0a0a0a] p-6 rounded-sm flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
             <div>
                 <h1 class="text-xl font-black text-white tracking-tight uppercase">
@@ -11,7 +10,6 @@
                 </p>
             </div>
             
-            <!-- Filters -->
             <div class="flex flex-wrap gap-2 font-mono text-[10px]">
                 <a href="{{ route('dashboard.reports') }}" class="px-3 py-1.5 border {{ is_null($currentStatus) ? 'border-red-600 bg-red-950/20 text-red-500 font-black' : 'border-red-900/20 text-gray-500 hover:text-white' }} uppercase tracking-widest rounded-sm">
                     All
@@ -40,7 +38,6 @@
             </div>
         @endif
 
-        <!-- Reports Table -->
         <div class="p-6 border border-red-900/20 bg-[#050505] rounded-sm">
             <div class="overflow-x-auto">
                 <table class="w-full text-left font-mono">
@@ -88,7 +85,6 @@
                                 <td class="py-4 text-right align-top">
                                     <div class="flex justify-end gap-2 flex-wrap">
                                         @if($report->status === 'pending')
-                                            {{-- Dismiss Button --}}
                                             <form action="{{ route('dashboard.reports.dismiss', $report->id) }}" method="POST">
                                                 @csrf
                                                 <button type="submit" class="text-[9px] font-black bg-gray-950/20 hover:bg-gray-700 hover:text-white text-gray-400 px-3 py-1 border border-gray-900/30 uppercase tracking-widest rounded-sm transition-colors duration-150">
@@ -96,7 +92,6 @@
                                                 </button>
                                             </form>
 
-                                            {{-- Edit Thread Button (opens modal) --}}
                                             @if($report->pastebin)
                                                 <button
                                                     type="button"
@@ -106,7 +101,6 @@
                                                 </button>
                                             @endif
 
-                                            {{-- Delete Thread Button --}}
                                             @if($report->pastebin)
                                                 <form action="{{ route('pastebin.destroy', $report->pastebin) }}" method="POST" onsubmit="return confirm('WARNING: Are you absolutely sure you want to permanently erase this thread from the database? This cannot be undone.');">
                                                     @csrf
@@ -133,15 +127,12 @@
                 </table>
             </div>
 
-            <!-- Pagination -->
             {{ $reports->links() }}
         </div>
     </div>
 
-    <!-- Instant Edit Thread Modal -->
     <div id="edit-thread-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/80 backdrop-blur-sm p-4">
         <div class="bg-[#0a0a0a] border border-yellow-900/40 rounded-sm w-full max-w-2xl shadow-2xl">
-            <!-- Modal Header -->
             <div class="flex items-center justify-between px-6 py-4 border-b border-yellow-900/20">
                 <div>
                     <h2 class="text-sm font-black text-yellow-400 uppercase tracking-widest">Instant Edit Thread</h2>
@@ -150,11 +141,9 @@
                 <button onclick="closeEditModal()" class="text-gray-500 hover:text-white transition-colors text-lg font-bold leading-none">&times;</button>
             </div>
 
-            <!-- Modal Form -->
             <form id="edit-thread-form" method="POST" action="">
                 @csrf
                 <div class="px-6 py-5 space-y-4">
-                    <!-- Title -->
                     <div>
                         <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1.5">Thread Title</label>
                         <input
@@ -168,7 +157,6 @@
                         />
                     </div>
 
-                    <!-- Description -->
                     <div>
                         <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1.5">Description <span class="text-gray-600 normal-case tracking-normal">(optional)</span></label>
                         <input
@@ -181,7 +169,6 @@
                         />
                     </div>
 
-                    <!-- Content -->
                     <div>
                         <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1.5">Thread Content</label>
                         <textarea
@@ -195,7 +182,6 @@
                     </div>
                 </div>
 
-                <!-- Modal Footer -->
                 <div class="px-6 py-4 border-t border-yellow-900/20 flex justify-end gap-3">
                     <button type="button" onclick="closeEditModal()" class="text-[10px] font-black text-gray-500 hover:text-white uppercase tracking-widest px-4 py-2 border border-gray-900/30 rounded-sm transition-colors">
                         Cancel
@@ -226,14 +212,12 @@
             modal.classList.remove('flex');
         }
 
-        // Close modal on backdrop click
         document.getElementById('edit-thread-modal').addEventListener('click', function(e) {
             if (e.target === this) closeEditModal();
         });
 
-        // Close modal on Escape key
         document.addEventListener('keydown', function(e) {
             if (e.key === 'Escape') closeEditModal();
         });
-    </script>
+</script>
 </x-layouts.dashboard>

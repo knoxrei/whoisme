@@ -20,18 +20,15 @@
         $seoImage = $ogImage ?? asset('storage/avatars/default.png');
         $seoUrl = $canonicalUrl ?? request()->url();
 
-        // Cap external Admate ads to a maximum of 4
         $externalCount = 4;
     @endphp
 
-    <!-- SEO Meta Tags -->
     @if($seoDescription)
         <meta name="description" content="{{ $seoDescription }}">
     @endif
     <meta name="keywords" content="{{ $seoKeywords }}">
     <link rel="canonical" href="{{ $seoUrl }}">
 
-    <!-- Open Graph / Facebook / Discord / Telegram -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="{{ $seoUrl }}">
     <meta property="og:title" content="{{ $title ?? 'No have title' }} - {{ config('app.name') }}">
@@ -43,7 +40,6 @@
     @endif
     <meta property="og:site_name" content="{{ config('app.name') }}">
 
-    <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:url" content="{{ $seoUrl }}">
     <meta name="twitter:title" content="{{ $title ?? 'No have title' }} - {{ config('app.name') }}">
@@ -65,7 +61,6 @@
         <script src="http://admate3tczgp6digew7jpzcosq52rs7anru53imwqimron27emq7dbqd.onion/js/get-banners.js"></script>
     @endif
 
-    <!-- Styles / Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <style>
         div[id^="banner-place-468-"] {
@@ -89,12 +84,9 @@
 <body class="bg-[#050505]">
     <x-navbar />
 
-
-
     <main class="flex-grow flex flex-col min-h-screen">
         {{ $slot }}
 
-        <!-- Bottom Sponsored Network Links (Admate Only) -->
         @if($externalCount > 0)
         <div class="ad-banners-container w-full max-w-7xl mx-auto px-4 py-4 mt-auto flex flex-col items-center gap-2">
             <div class="w-full flex items-center justify-center gap-4">
@@ -121,15 +113,13 @@
 
     <script>
         document.addEventListener("DOMContentLoaded", function() {
-            // Check after 2.5 seconds if Admate successfully populated the placeholders
             setTimeout(function() {
                 document.querySelectorAll('.admate-placeholder').forEach(function(el) {
                     if (typeof getBanners === 'undefined' || !el.innerHTML || el.innerHTML.trim() === "") {
                         el.style.display = 'none';
                     }
                 });
-                
-                // If a parent row now has zero visible elements, hide the parent row completely
+
                 document.querySelectorAll('.ad-banners-container').forEach(function(container) {
                     const hasVisibleAds = Array.from(container.querySelectorAll('.flex-wrap > *')).some(el => el.style.display !== 'none');
                     if (!hasVisibleAds) {
@@ -138,12 +128,10 @@
                 });
             }, 2500);
         });
-    </script>
+</script>
 
-    <!-- Global Cyberpunk Modal Container -->
     <div id="global-action-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 opacity-0 transition-opacity duration-200" style="backdrop-filter: blur(8px); background-color: rgba(0, 0, 0, 0.85);" data-modal-container>
         <div class="relative w-full max-w-md bg-[#0a0a0a] border rounded-sm overflow-hidden transform scale-95 transition-transform duration-200 ease-out shadow-2xl shadow-black/90" id="global-modal-box" data-modal-box style="border-color: rgba(153, 27, 27, 0.4);">
-            <!-- Modal Header -->
             <div class="flex items-center justify-between px-6 py-4 border-b bg-[#111]" id="global-modal-header" style="border-color: rgba(153, 27, 27, 0.2);">
                 <h3 class="text-xs font-black uppercase tracking-[0.2em] font-mono text-red-500" id="global-modal-title">
                     SYSTEM ALERT
@@ -155,12 +143,10 @@
                 </button>
             </div>
 
-            <!-- Modal Content -->
             <div class="p-6 md:p-8 text-xs text-gray-300 font-mono leading-relaxed" id="global-modal-body">
                 SYSTEM MESSAGE BODY
             </div>
 
-            <!-- Modal Footer -->
             <div class="px-6 py-4 border-t bg-[#050505] flex justify-end gap-3" id="global-modal-footer" style="border-color: rgba(153, 27, 27, 0.1);">
                 <button type="button" onclick="closeModal('global-action-modal')" class="text-[9px] font-black uppercase tracking-widest text-gray-500 hover:text-white px-4 py-2 transition-colors duration-150" id="global-cancel-btn">Cancel</button>
                 <button type="button" class="text-[9px] font-black uppercase tracking-widest px-4 py-2 border rounded-sm bg-red-950/20 text-red-500 border-red-900/30 hover:bg-red-600 hover:text-white transition-colors duration-150" id="global-confirm-btn">Proceed</button>
@@ -168,16 +154,15 @@
         </div>
     </div>
 
-    <!-- Reusable Modal Animation and Global Javascript Handler Service -->
     <script>
         function openModal(id) {
             const modal = document.getElementById(id);
             if (!modal) return;
-            
+
             modal.classList.remove('hidden');
-            void modal.offsetWidth; // Trigger reflow
+            void modal.offsetWidth;
             modal.classList.remove('opacity-0');
-            
+
             const box = modal.querySelector('[data-modal-box]');
             if (box) {
                 box.classList.remove('scale-95');
@@ -189,21 +174,20 @@
         function closeModal(id) {
             const modal = document.getElementById(id);
             if (!modal) return;
-            
+
             modal.classList.add('opacity-0');
             const box = modal.querySelector('[data-modal-box]');
             if (box) {
                 box.classList.remove('scale-100');
                 box.classList.add('scale-95');
             }
-            
+
             setTimeout(() => {
                 modal.classList.add('hidden');
                 document.body.classList.remove('overflow-hidden');
             }, 200);
         }
 
-        // Programmatic Global Dialog Window API
         window.doxmeModal = function(options = {}) {
             const modal = document.getElementById('global-action-modal');
             const box = document.getElementById('global-modal-box');
@@ -211,15 +195,13 @@
             const bodyEl = document.getElementById('global-modal-body');
             const cancelBtn = document.getElementById('global-cancel-btn');
             const confirmBtn = document.getElementById('global-confirm-btn');
-            
+
             if (!modal) return;
 
-            // Reset standard theme style mappings
             box.style.borderColor = 'rgba(153, 27, 27, 0.4)';
             titleEl.className = 'text-xs font-black uppercase tracking-[0.2em] font-mono text-red-500';
             confirmBtn.className = 'text-[9px] font-black uppercase tracking-widest px-4 py-2 border rounded-sm bg-red-950/20 text-red-500 border-red-900/30 hover:bg-red-600 hover:text-white transition-colors duration-150';
 
-            // Apply selected visual styles
             const theme = options.type || 'danger';
             if (theme === 'success') {
                 box.style.borderColor = 'rgba(22, 101, 52, 0.4)';
@@ -238,7 +220,7 @@
             titleEl.textContent = options.title || 'SYSTEM NOTICE';
             bodyEl.innerHTML = options.content || '';
             confirmBtn.textContent = options.confirmText || 'Proceed';
-            
+
             if (options.cancelText === false) {
                 cancelBtn.classList.add('hidden');
             } else {
@@ -253,7 +235,6 @@
                 closeModal('global-action-modal');
             };
 
-            // Toggle show
             modal.classList.remove('hidden');
             void modal.offsetWidth;
             modal.classList.remove('opacity-0');
@@ -262,7 +243,6 @@
             document.body.classList.add('overflow-hidden');
         };
 
-        // Close bindings: ESC key and backdrop click
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') {
                 const openModals = document.querySelectorAll('[data-modal-container]:not(.hidden)');
@@ -279,10 +259,9 @@
                 });
             });
         });
-        
-    </script>
-      <!-- Histats.com  START  (aync)-->
-<script type="text/javascript">var _Hasync= _Hasync|| [];
+
+</script>
+      <script type="text/javascript">var _Hasync= _Hasync|| [];
 _Hasync.push(['Histats.start', '1,5027683,4,0,0,0,00010000']);
 _Hasync.push(['Histats.fasi', '1']);
 _Hasync.push(['Histats.track_hits', '']);
@@ -292,7 +271,6 @@ hs.src = ('//s10.histats.com/js15_as.js');
 (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(hs);
 })();</script>
 <noscript><a href="/" target="_blank"><img  src="//sstatic1.histats.com/0.gif?5027683&101" alt="" border="0"></a></noscript>
-<!-- Histats.com  END  -->
 </body>
 
 </html>

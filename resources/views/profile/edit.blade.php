@@ -21,7 +21,6 @@
                 @csrf
                 @method('PUT')
 
-                <!-- Avatar Upload -->
                 <div class="bg-[#0a0a0a] border border-red-900/30 p-5 rounded-sm">
                     <h2 class="text-sm font-black text-red-500 uppercase tracking-[0.2em] mb-5 border-b border-red-900/20 pb-2">Avatar Profile</h2>
                     
@@ -45,7 +44,6 @@
                     </div>
                 </div>
 
-                <!-- Account Info -->
                 <div class="bg-[#0a0a0a] border border-red-900/30 p-5 rounded-sm space-y-5">
                     <h2 class="text-sm font-black text-red-500 uppercase tracking-[0.2em] mb-5 border-b border-red-900/20 pb-2">Account Information</h2>
 
@@ -110,7 +108,6 @@
                 </div>
             </form>
 
-            {{-- ── Email & Verification Section (outside the main form) ── --}}
             @php
                 $pendingEmailVerif = session('pending_email_verification');
                 $isVerified = !is_null($user->email_verified_at);
@@ -119,7 +116,6 @@
             <div class="bg-[#0a0a0a] border border-red-900/30 p-5 rounded-sm mt-6">
                 <h2 class="text-sm font-black text-red-500 uppercase tracking-[0.2em] mb-5 border-b border-red-900/20 pb-2">Email & Verification</h2>
 
-                {{-- Current email status --}}
                 <div class="mb-5 flex items-center gap-3">
                     @if($hasEmail)
                         <div class="flex-1 bg-[#050505] border border-red-900/20 rounded-sm px-3 py-2 text-xs font-mono text-gray-300">
@@ -140,7 +136,6 @@
                     @endif
                 </div>
 
-                {{-- If OTP was sent, show confirm form --}}
                 @if($pendingEmailVerif && $pendingEmailVerif['user_id'] === auth()->id())
                     <div class="mb-5 p-4 bg-blue-950/20 border border-blue-700/30 rounded-sm">
                         <p class="text-[11px] text-blue-400 font-mono mb-3">
@@ -159,7 +154,6 @@
                     </div>
                 @endif
 
-                {{-- Send / Resend verification button --}}
                 @if(!$isVerified)
                     <form action="{{ route('profile.send.verify.email') }}" method="POST" class="flex items-end gap-3">
                         @csrf

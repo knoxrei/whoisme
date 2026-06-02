@@ -1,6 +1,5 @@
 <x-layouts.dashboard :title="$title" :role="$role">
     <div class="space-y-8 max-w-7xl mx-auto">
-        <!-- Title & Filter Panel -->
         <div class="border border-red-900/40 bg-gradient-to-b from-red-950/10 to-[#0a0a0a] p-6 rounded-sm flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
             <div>
                 <h1 class="text-xl font-black text-white tracking-tight uppercase">
@@ -11,7 +10,6 @@
                 </p>
             </div>
             
-            <!-- Filters -->
             <div class="flex flex-wrap gap-2 font-mono text-[10px]">
                 <a href="{{ route('dashboard.upgrades') }}" class="px-3 py-1.5 border {{ is_null($currentStatus) ? 'border-red-600 bg-red-950/20 text-red-500 font-black' : 'border-red-900/20 text-gray-500 hover:text-white' }} uppercase tracking-widest rounded-sm">
                     All
@@ -40,7 +38,6 @@
             </div>
         @endif
 
-        <!-- Upgrade Requests Table -->
         <div class="p-6 border border-red-900/20 bg-[#050505] rounded-sm">
             <div class="overflow-x-auto">
                 <table class="w-full text-left font-mono">
@@ -110,7 +107,6 @@
                 </table>
             </div>
 
-            <!-- Pagination -->
             {{ $requests->links() }}
         </div>
     </div>

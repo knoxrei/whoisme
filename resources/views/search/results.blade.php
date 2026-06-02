@@ -1,7 +1,6 @@
 <x-layouts.app :title="$title">
     <div class="min-h-screen bg-[#050505] text-gray-200 font-mono pb-16">
         
-        <!-- Top Search Bar Header -->
         <header class="border-b border-red-950/30 py-4 px-4 sticky top-0 z-30 shadow-md">
             <div class="max-w-6xl mx-auto flex flex-col md:flex-row items-center gap-4">
                 <a href="{{ route('search.index') }}" class="flex items-center gap-2 select-none shrink-0">
@@ -17,7 +16,6 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                             </svg>
                         </div>
-                        <!-- Autocomplete dropdown -->
                         <div id="results-ac-box" class="absolute left-0 right-0 top-full mt-1 bg-[#0d0d0d] border border-red-900/30 rounded shadow-2xl z-50 hidden overflow-hidden">
                             <ul id="results-ac-list" class="divide-y divide-red-950/10 max-h-48 overflow-y-auto"></ul>
                         </div>
@@ -44,19 +42,15 @@
             </div>
         </header>
 
-        <!-- Main Body Grid Layout -->
         <div class="max-w-6xl mx-auto px-4 py-6 grid grid-cols-1 lg:grid-cols-4 gap-8">
             
-            <!-- Left Column: Search Stats & Results -->
             <main class="lg:col-span-3">
-                <!-- Search Diagnostics Stats -->
                 <div class="mb-6 text-[10px] text-gray-500 uppercase tracking-widest flex items-center gap-4">
                     <span>Found <span id="result-count">{{ $count }}</span> result{{ $count > 1 ? 's' : '' }}</span>
                     <span>•</span>
                     <span>Analyzed in {{ $executionTime }} ms</span>
                 </div>
 
-                <!-- Results Listing -->
                 <div id="results-feed" class="space-y-6">
                     @forelse($results as $result)
                         @include('search.partials.result-rows', ['results' => collect([$result])])
@@ -73,7 +67,6 @@
                     @endforelse
                 </div>
 
-                <!-- Load More Button -->
                 <div id="load-more-wrap" class="mt-8 flex justify-center {{ $nextCursor ? '' : 'hidden' }}">
                     <button
                         id="load-more-btn"
@@ -95,7 +88,6 @@
                 </div>
             </main>
 
-            <!-- Right Column: Sidebar Quick Filters -->
             <aside class="space-y-6">
                 <div class="bg-[#0a0a0a] border border-red-950/20 p-5 rounded-sm shadow-md">
                     <h4 class="text-[11px] font-black uppercase tracking-[0.2em] text-red-500 border-b border-red-950/30 pb-2 mb-4">

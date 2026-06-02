@@ -1,7 +1,6 @@
 <x-layouts.app :title="$title">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 font-mono text-gray-300">
         
-        <!-- Premium UI/UX Header Section -->
         <div class="border-b border-red-950/40 pb-6 mb-12 flex flex-col md:flex-row md:items-end justify-between gap-4">
             <div>
                 <h1 class="text-xl md:text-2xl font-black text-white uppercase tracking-wider" style="font-family: 'Outfit', sans-serif;">
@@ -12,7 +11,6 @@
                 </p>
             </div>
             
-            <!-- Lightweight Realtime Stats Header Bar -->
             <div class="flex flex-wrap items-center gap-x-4 gap-y-2 text-[9px] font-bold text-gray-600 border-l border-red-950/30 pl-0 md:pl-4 uppercase tracking-widest">
                 <div>Staff: <span class="text-red-500 font-black">{{ $staff->total() }}</span></div>
                 <div class="hidden sm:block text-red-950/30">•</div>
@@ -26,7 +24,6 @@
 
         <div class="space-y-16">
             
-            <!-- 1. STAFF & MODERATORS TABLE -->
             <section class="space-y-4">
                 <div class="flex items-center justify-between border-b border-red-950/20 pb-2">
                     <div class="text-[11px] font-black text-red-500 uppercase tracking-[0.25em] flex items-center gap-2">
@@ -85,7 +82,6 @@
                 @endif
             </section>
 
-            <!-- 2. PREMIUM USERS TABLE -->
             <section class="space-y-4">
                 <div class="flex items-center justify-between border-b border-red-950/20 pb-2">
                     <div class="text-[11px] font-black text-yellow-500 uppercase tracking-[0.25em] flex items-center gap-2">
@@ -142,7 +138,6 @@
                 @endif
             </section>
 
-            <!-- 3. ADVERTISERS TABLE -->
             <section class="space-y-4">
                 <div class="flex items-center justify-between border-b border-red-950/20 pb-2">
                     <div class="text-[11px] font-black text-blue-400 uppercase tracking-[0.25em] flex items-center gap-2">
@@ -198,7 +193,6 @@
                 @endif
             </section>
 
-            <!-- 4. MEMBERS TABLE -->
             <section class="space-y-4">
                 <div class="flex items-center justify-between border-b border-red-950/20 pb-2">
                     <div class="text-[11px] font-black text-gray-400 uppercase tracking-[0.25em] flex items-center gap-2">

@@ -8,6 +8,7 @@ use App\Models\BulkMailCampaign;
 use App\Services\BulkMailService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class BulkMailController extends Controller
 {
@@ -39,7 +40,9 @@ class BulkMailController extends Controller
             'role' => $role,
             'totalWithEmail' => $this->bulkMailService->countRecipients(false),
             'totalVerified' => $this->bulkMailService->countRecipients(true),
-            'timeoutSeconds' => $this->bulkMailService->timeoutSeconds(),
+            'defaultTimeoutSeconds' => $this->bulkMailService->defaultTimeoutSeconds(),
+            'minTimeoutSeconds' => $this->bulkMailService->minTimeoutSeconds(),
+            'maxTimeoutSeconds' => $this->bulkMailService->maxTimeoutSeconds(),
             'campaigns' => $campaigns,
             'activeCampaign' => $activeCampaign,
         ]);
@@ -49,13 +52,19 @@ class BulkMailController extends Controller
     {
         $this->authorizeOwner();
 
+        $minTimeout = $this->bulkMailService->minTimeoutSeconds();
+        $maxTimeout = $this->bulkMailService->maxTimeoutSeconds();
+
         $validated = $request->validate([
             'subject' => 'required|string|max:255',
             'message' => 'required|string|max:10000',
             'verified_only' => 'sometimes|boolean',
+            'timeout_seconds' => ['required', 'integer', Rule::between($minTimeout, $maxTimeout)],
         ]);
 
         $verifiedOnly = $request->boolean('verified_only');
+        $timeoutSeconds = $this->bulkMailService->normalizeTimeout((int) $validated['timeout_seconds']);
+
         $userIds = $this->bulkMailService
             ->recipientsQuery($verifiedOnly)
             ->pluck('id')
@@ -70,6 +79,7 @@ class BulkMailController extends Controller
             'subject' => $validated['subject'],
             'message' => $validated['message'],
             'verified_only' => $verifiedOnly,
+            'timeout_seconds' => $timeoutSeconds,
             'total_recipients' => count($userIds),
             'status' => 'queued',
         ]);
@@ -80,12 +90,15 @@ class BulkMailController extends Controller
                 $campaign->id,
                 $validated['subject'],
                 $validated['message'],
+                $timeoutSeconds,
             );
         }
 
+        $workerTimeout = $timeoutSeconds + 5;
+
         return redirect()
             ->route('dashboard.bulk-mail')
-            ->with('success', 'Broadcast queued for '.count($userIds).' recipients. Make sure `php artisan queue:work` is running.');
+            ->with('success', 'Broadcast queued for '.number_format(count($userIds)).' recipients (timeout: '.$timeoutSeconds.'s per email). Run: php artisan queue:work --timeout='.$workerTimeout);
     }
 
     protected function authorizeOwner(): void
