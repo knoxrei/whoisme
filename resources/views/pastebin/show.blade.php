@@ -139,7 +139,6 @@
                             
                             @if(isset($isBurned) && $isBurned)
                                 <div class="mb-8 p-4 bg-red-950/20 border-2 border-dashed border-red-600 rounded-sm text-red-500 font-mono text-xs flex items-start gap-3">
-                                    <div class="flex-shrink-0 text-lg">⚠️</div>
                                     <div class="space-y-1">
                                         <h4 class="font-black tracking-widest uppercase text-red-600">MAIN CLEARANCE EXPIRED: BURN AFTER READING</h4>
                                         <p class="text-gray-400 text-[10px] leading-relaxed">
@@ -271,19 +270,15 @@
                             @if(isset($revisions) && $revisions->count() > 0)
                             <div class="mt-12 pt-8 border-t border-red-900/10">
                                 <div class="text-[10px] font-black text-red-500 uppercase mb-5 tracking-[0.2em] flex items-center gap-3">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                                     Asset Revision History
                                 </div>
                                 <div class="space-y-3">
                                     @foreach($revisions as $rev)
-                                        <div class="bg-black/40 border border-red-900/10 p-4 rounded-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                                        <div class="border border-red-900/10 p-4 rounded-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                                             <div class="flex items-center gap-4">
-                                                <div class="w-8 h-8 bg-red-950/20 border border-red-900/20 flex items-center justify-center text-red-500 font-black text-[10px]">
-                                                    {{ substr($rev->user->username ?? '?', 0, 1) }}
-                                                </div>
+                                            
                                                 <div>
                                                     <div class="text-[11px] font-bold text-gray-300">
-                                                        <span class="text-red-500 uppercase text-[9px] font-black tracking-widest mr-2 border border-red-900/20 px-1.5">REVISION</span>
                                                         {{ $rev->title }}
                                                     </div>
                                                     <div class="text-[9px] text-gray-600 font-mono mt-1 uppercase tracking-tighter">
