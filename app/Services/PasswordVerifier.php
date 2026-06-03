@@ -14,14 +14,22 @@ class PasswordVerifier
     {
         $hash = $user->getAuthPassword();
 
-        if ($hash === null || $hash === '') {
+        if (empty($hash)) {
             return false;
         }
 
-        if (Hash::check($plainPassword, $hash)) {
+        // Native password_verify handles multiple algorithms (bcrypt, argon2id, etc.)
+        // based on the hash prefix, and it doesn't throw on mismatch.
+        if (password_verify($plainPassword, $hash)) {
             return true;
         }
 
-        return password_verify($plainPassword, $hash);
+        // Fallback to Laravel's Hash::check for any custom hasher logic,
+        // but catch exceptions like "This password does not use the Argon2id algorithm".
+        try {
+            return Hash::check($plainPassword, $hash);
+        } catch (\Throwable $e) {
+            return false;
+        }
     }
 }

@@ -31,20 +31,35 @@ class PasswordVerificationTest extends TestCase
         config(['hashing.driver' => 'argon2id']);
 
         $password = 'password123';
+        // Create a bcrypt hash manually
         $bcryptHash = password_hash($password, PASSWORD_BCRYPT);
 
         $user = User::factory()->create();
-        // Manually set a bcrypt hash, bypassing the 'hashed' cast if possible or just setting it directly
+        // Manually set a bcrypt hash, bypassing the 'hashed' cast
         $user->forceFill(['password' => $bcryptHash])->save();
 
         $verifier = new PasswordVerifier();
         
-        // This is expected to fail or throw based on the bug report
-        try {
-            $result = $verifier->verify($user, $password);
-            $this->assertTrue($result, 'Failed to verify bcrypt password');
-        } catch (\RuntimeException $e) {
-            $this->fail('Caught RuntimeException: ' . $e->getMessage());
-        }
+        // This should now work without throwing an exception
+        $this->assertTrue($verifier->verify($user, $password), 'Failed to verify bcrypt password');
+    }
+
+    public function test_it_returns_false_for_invalid_password()
+    {
+        $user = User::factory()->create([
+            'password' => 'correct_password',
+        ]);
+
+        $verifier = new PasswordVerifier();
+        $this->assertFalse($verifier->verify($user, 'wrong_password'));
+    }
+
+    public function test_it_handles_empty_hash()
+    {
+        $user = User::factory()->create();
+        $user->forceFill(['password' => ''])->save();
+
+        $verifier = new PasswordVerifier();
+        $this->assertFalse($verifier->verify($user, 'password'));
     }
 }
