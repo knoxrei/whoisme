@@ -79,7 +79,7 @@
     </style>
 </head>
 
-<body class="bg-neutral-950 text-neutral-200 antialiased">
+<body class="bg-black text-gray-300 antialiased">
     <x-navbar />
 
     <main class="flex-grow flex flex-col min-h-screen">
@@ -89,14 +89,14 @@
         <div class="ad-banners-container w-full max-w-7xl mx-auto px-4 py-4 mt-auto flex flex-col items-center gap-2">
             <div class="w-full flex items-center justify-center gap-4">
                 <div class="h-[1px] bg-red-950/20 flex-grow"></div>
-                <span class="text-xs text-neutral-600 whitespace-nowrap select-none">
+                <span class="text-xs text-gray-600 whitespace-nowrap select-none">
                     Sponsored
                 </span>
                 <div class="h-[1px] bg-red-950/20 flex-grow"></div>
             </div>
             <div class="flex flex-wrap justify-center items-center gap-4 w-full">
                 @for($i = 1; $i <= $externalCount; $i++)
-                    <div id="banner-place-468-{{ $i }}" class="admate-placeholder w-full max-w-[468px] min-h-[60px] flex items-center justify-center border border-red-950/30 hover:border-red-600/50 bg-[#0a0a0a]/30 rounded transition-all duration-150"></div>
+                    <div id="banner-place-468-{{ $i }}" class="admate-placeholder w-full max-w-[468px] min-h-[60px] flex items-center justify-center border border-red-950/40 hover:border-red-800 bg-black rounded-sm"></div>
                 @endfor
             </div>
         </div>
@@ -129,9 +129,9 @@
 </script>
 
     <div id="global-action-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 opacity-0 transition-opacity duration-200" style="backdrop-filter: blur(8px); background-color: rgba(0, 0, 0, 0.85);" data-modal-container>
-        <div class="relative w-full max-w-md bg-[#0a0a0a] border rounded-sm overflow-hidden transform scale-95 transition-transform duration-200 ease-out shadow-2xl shadow-black/90" id="global-modal-box" data-modal-box style="border-color: rgba(153, 27, 27, 0.4);">
-            <div class="flex items-center justify-between px-6 py-4 border-b bg-[#111]" id="global-modal-header" style="border-color: rgba(153, 27, 27, 0.2);">
-                <h3 class="text-sm font-medium text-neutral-200" id="global-modal-title">
+        <div class="relative w-full max-w-md bg-black border border-red-900/40 rounded-sm overflow-hidden transform scale-95 transition-transform duration-200 ease-out" id="global-modal-box" data-modal-box>
+            <div class="flex items-center justify-between px-6 py-4 border-b border-red-950/40 bg-black" id="global-modal-header">
+                <h3 class="text-sm font-medium text-white" id="global-modal-title">
                     Confirm
                 </h3>
                 <button type="button" onclick="closeModal('global-action-modal')" class="text-gray-500 hover:text-white transition-colors duration-150">
@@ -141,10 +141,10 @@
                 </button>
             </div>
 
-            <div class="p-6 md:p-8 text-sm text-neutral-300 leading-relaxed" id="global-modal-body"></div>
+            <div class="p-6 md:p-8 text-sm text-gray-400 leading-relaxed" id="global-modal-body"></div>
 
-            <div class="px-6 py-4 border-t border-neutral-800 bg-neutral-950 flex justify-end gap-3" id="global-modal-footer">
-                <button type="button" onclick="closeModal('global-action-modal')" class="text-sm text-neutral-500 hover:text-neutral-200 px-4 py-2 transition-colors" id="global-cancel-btn">Cancel</button>
+            <div class="px-6 py-4 border-t border-red-950/40 bg-black flex justify-end gap-3" id="global-modal-footer">
+                <button type="button" onclick="closeModal('global-action-modal')" class="text-sm text-gray-500 hover:text-white px-4 py-2 transition-colors" id="global-cancel-btn">Cancel</button>
                 <button type="button" class="text-sm px-4 py-2 rounded-md bg-red-700 text-white hover:bg-red-600 transition-colors" id="global-confirm-btn">Confirm</button>
             </div>
         </div>

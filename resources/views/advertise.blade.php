@@ -1,41 +1,37 @@
 <x-layouts.app title="Advertise with Us">
-    <div class="min-h-screen bg-[#050505] text-gray-300 py-16 px-6 font-sans">
+    <div class="text-gray-300 py-12 px-4">
         <main class="w-full max-w-5xl mx-auto">
-
-            <div class="mb-12 border-b border-red-900/30 pb-6 text-center md:text-left">
-                <h1 class="text-4xl md:text-6xl font-black text-white tracking-tighter mb-4"
-                    style="font-family: 'Outfit', sans-serif;">
+            <header class="mb-10 border-b border-red-900/30 pb-6">
+                <h1 class="text-3xl md:text-4xl font-bold text-white tracking-tight mb-2">
                     Advertise on <span class="text-red-600">DoxMe</span>
                 </h1>
-                <p class="text-gray-400 text-sm leading-relaxed font-mono">
-                    Get your message in front of a highly targeted, privacy-conscious audience. Launch powerful
-                    campaigns that appear directly on our search results and across all pastebins.
+                <p class="text-sm text-gray-500 leading-relaxed max-w-2xl">
+                    Reach a privacy-focused audience. Campaigns appear in search results and across pastebins.
                 </p>
-            </div>
+            </header>
 
             <div class="mb-20">
-                <div class="flex flex-col items-center mb-8">
-                    <h2 class="text-2xl font-black text-white tracking-tighter uppercase mb-2">Advertising Plans</h2>
-                    <p class="text-gray-500 font-mono text-xs text-center max-w-xl">Simple, transparent pricing for
-                        maximum exposure.</p>
+                <div class="mb-6">
+                    <h2 class="text-lg font-semibold text-white mb-1">Advertising plans</h2>
+                    <p class="text-sm text-gray-500">Simple pricing for maximum exposure.</p>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <div
-                        class="bg-[#0a0a0a] border border-white/5 p-8 rounded-sm hover:border-red-500/30 flex flex-col items-center text-center transition-colors">
+                        class="bg-black border border-red-950/40 p-6 rounded-sm hover:border-red-900/60 flex flex-col items-center text-center transition-colors">
                         <div class="text-red-500 font-black text-4xl mb-2">$10</div>
                         <div class="text-white font-bold uppercase tracking-widest text-sm mb-4">1 Week</div>
                         <p class="text-xs text-gray-400 font-mono leading-relaxed">Perfect for short-term campaigns and
                             immediate visibility.</p>
                     </div>
                     <div
-                        class="bg-[#111111] border border-red-900/50 p-8 rounded-sm hover:border-red-500 flex flex-col items-center text-center transition-colors">
+                        class="bg-black border border-red-800/50 p-6 rounded-sm hover:border-red-600 flex flex-col items-center text-center transition-colors">
                         <div class="text-red-500 font-black text-4xl mb-2">$25</div>
                         <div class="text-white font-bold uppercase tracking-widest text-sm mb-4">1 Month</div>
                         <p class="text-xs text-gray-400 font-mono leading-relaxed">Our most popular plan. Maintain a
                             strong presence all month.</p>
                     </div>
                     <div
-                        class="bg-[#0a0a0a] border border-white/5 p-8 rounded-sm hover:border-red-500/30 flex flex-col items-center text-center transition-colors">
+                        class="bg-black border border-red-950/40 p-6 rounded-sm hover:border-red-900/60 flex flex-col items-center text-center transition-colors">
                         <div class="text-red-500 font-black text-4xl mb-2">$45</div>
                         <div class="text-white font-bold uppercase tracking-widest text-sm mb-4">2 Months</div>
                         <p class="text-xs text-gray-400 font-mono leading-relaxed">Long-term domination. Secure your
@@ -46,7 +42,7 @@
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-20">
                 <div
-                    class="bg-[#0a0a0a] border border-white/5 p-8 rounded-sm hover:border-red-500/30 transition-colors">
+                    class="bg-black border border-red-950/40 p-6 rounded-sm hover:border-red-900/60 transition-colors">
                     <div
                         class="w-12 h-12 bg-red-950/20 rounded flex items-center justify-center text-red-500 mb-6 border border-red-900/30">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -59,7 +55,7 @@
                         the DoxMe search results, capturing users at their highest intent.</p>
                 </div>
                 <div
-                    class="bg-[#0a0a0a] border border-white/5 p-8 rounded-sm hover:border-red-500/30 transition-colors">
+                    class="bg-black border border-red-950/40 p-6 rounded-sm hover:border-red-900/60 transition-colors">
                     <div
                         class="w-12 h-12 bg-red-950/20 rounded flex items-center justify-center text-red-500 mb-6 border border-red-900/30">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -72,7 +68,7 @@
                         active pastebin, guaranteeing thousands of daily impressions.</p>
                 </div>
                 <div
-                    class="bg-[#0a0a0a] border border-white/5 p-8 rounded-sm hover:border-red-500/30 transition-colors">
+                    class="bg-black border border-red-950/40 p-6 rounded-sm hover:border-red-900/60 transition-colors">
                     <div
                         class="w-12 h-12 bg-red-950/20 rounded flex items-center justify-center text-red-500 mb-6 border border-red-900/30">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -87,15 +83,13 @@
             </div>
 
             <div class="mb-20">
-                <div class="flex flex-col items-center mb-8">
-                    <h2 class="text-2xl font-black text-white tracking-tighter uppercase mb-2">Exclusive Advertiser
-                        Suite</h2>
-                    <p class="text-gray-500 font-mono text-xs text-center max-w-xl">Take full control of your campaigns
-                        with our custom-built, cyber-aesthetic Advertiser Dashboard.</p>
+                <div class="mb-6">
+                    <h2 class="text-lg font-semibold text-white mb-1">Advertiser dashboard</h2>
+                    <p class="text-sm text-gray-500">Manage campaigns, banners, and basic analytics.</p>
                 </div>
 
-                <div class="rounded-lg border border-white/10 bg-[#0a0a0a] overflow-hidden shadow-2xl">
-                    <div class="bg-[#111] border-b border-white/5 px-4 py-3 flex items-center gap-2">
+                <div class="rounded-sm border border-red-950/40 bg-black overflow-hidden">
+                    <div class="border-b border-red-950/40 px-4 py-3 flex items-center gap-2">
                         <div class="w-3 h-3 rounded-full bg-red-500/80"></div>
                         <div class="w-3 h-3 rounded-full bg-yellow-500/80"></div>
                         <div class="w-3 h-3 rounded-full bg-green-500/80"></div>
@@ -108,7 +102,7 @@
 
                     <div class="flex flex-col md:flex-row min-h-[440px]">
                         <div
-                            class="w-full md:w-48 border-r border-white/5 bg-[#050505] p-4 flex flex-col gap-2 flex-shrink-0">
+                            class="w-full md:w-48 border-r border-red-950/40 bg-black p-4 flex flex-col gap-2 flex-shrink-0">
                             <div
                                 class="px-3 py-2 bg-red-600/10 text-red-500 text-xs font-bold flex items-center gap-2 border border-red-900/30">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -135,8 +129,8 @@
                             </div>
                         </div>
 
-                        <div class="flex-1 p-6 bg-[#080808]">
-                            <div class="flex justify-between items-center mb-6 border-b border-white/5 pb-4">
+                        <div class="flex-1 p-6 bg-black">
+                            <div class="flex justify-between items-center mb-6 border-b border-red-950/40 pb-4">
                                 <h3 class="text-white font-bold uppercase tracking-widest text-sm">Campaign Overview
                                 </h3>
                                 <a href="#submit-ad-section"
@@ -146,12 +140,12 @@
                             </div>
 
                             <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
-                                <div class="bg-[#111] p-4 border border-white/5 rounded-sm">
+                                <div class="bg-black p-4 border border-red-950/40 rounded-sm">
                                     <div class="text-[9px] text-gray-500 uppercase tracking-widest font-mono mb-1">
                                         Active Ads</div>
                                     <div class="text-2xl text-white font-black">{{ $activeCount }}</div>
                                 </div>
-                                <div class="bg-[#111] p-4 border border-white/5 rounded-sm">
+                                <div class="bg-black p-4 border border-red-950/40 rounded-sm">
                                     <div class="text-[9px] text-gray-500 uppercase tracking-widest font-mono mb-1">Total
                                         Impressions</div>
                                     <div class="text-2xl text-red-500 font-black">
@@ -164,7 +158,7 @@
                                         @endif
                                     </div>
                                 </div>
-                                <div class="bg-[#111] p-4 border border-white/5 rounded-sm">
+                                <div class="bg-black p-4 border border-red-950/40 rounded-sm">
                                     <div class="text-[9px] text-gray-500 uppercase tracking-widest font-mono mb-1">Total
                                         Clicks</div>
                                     <div class="text-2xl text-amber-400 font-black">
@@ -177,7 +171,7 @@
                                         @endif
                                     </div>
                                 </div>
-                                <div class="bg-[#111] p-4 border border-white/5 rounded-sm">
+                                <div class="bg-black p-4 border border-red-950/40 rounded-sm">
                                     <div class="text-[9px] text-gray-500 uppercase tracking-widest font-mono mb-1">Avg
                                         CTR</div>
                                     <div class="text-2xl text-green-400 font-black">{{ $avgCtr }}%</div>
@@ -198,7 +192,7 @@
                                 </div>
                             @endif
 
-                            <div class="bg-[#111] border border-white/5 rounded-sm overflow-hidden">
+                            <div class="bg-black border border-red-950/40 rounded-sm overflow-hidden">
                                 <div
                                     class="flex justify-between items-center text-[10px] text-gray-400 font-mono border-b border-white/5 px-4 py-2.5">
                                     <span class="font-black uppercase tracking-widest">Active Banner Ads</span>
@@ -242,12 +236,10 @@
                 </div>
             </div>
 
-            <div id="submit-ad-section" class="border-t border-white/5 pt-16">
-                <div class="flex flex-col items-center mb-10">
-                    <h2 class="text-2xl font-black text-white tracking-tighter uppercase mb-2">Submit Your Ad Request
-                    </h2>
-                    <p class="text-gray-500 font-mono text-xs text-center max-w-xl">Fill out the form below. Once
-                        approved, your ad campaign will be scheduled for launch.</p>
+            <div id="submit-ad-section" class="border-t border-red-950/40 pt-12 mt-12">
+                <div class="mb-8">
+                    <h2 class="text-lg font-semibold text-white mb-1">Submit ad request</h2>
+                    <p class="text-sm text-gray-500">Once approved, your campaign will be scheduled for launch.</p>
                 </div>
 
                 @if(session('success'))
@@ -268,7 +260,7 @@
                     </div>
                 @endif
 
-                <div class="bg-[#0a0a0a] border border-white/5 rounded-sm p-8 max-w-3xl mx-auto">
+                <div class="bg-black border border-red-950/40 rounded-sm p-6 max-w-3xl mx-auto">
                     <form action="{{ route('advertise.store') }}" method="POST" enctype="multipart/form-data"
                         class="space-y-6">
                         @csrf
@@ -279,7 +271,7 @@
                                 Title</label>
                             <input type="text" id="title" name="title" required value="{{ old('title') }}"
                                 placeholder="e.g. Summer Privacy Sale"
-                                class="w-full bg-[#111] border border-white/10 rounded-sm px-4 py-3 text-sm text-white focus:outline-none focus:border-red-500 font-mono">
+                                class="w-full bg-black border border-red-950/40 rounded-sm px-4 py-3 text-sm text-white focus:outline-none focus:border-red-600 font-mono">
                         </div>
 
                         <div>
@@ -288,7 +280,7 @@
                                 Info (Telegram / Tox / Email)</label>
                             <input type="text" id="contact" name="contact" required value="{{ old('contact') }}"
                                 placeholder="e.g. @username or email@proton.me"
-                                class="w-full bg-[#111] border border-white/10 rounded-sm px-4 py-3 text-sm text-white focus:outline-none focus:border-red-500 font-mono">
+                                class="w-full bg-black border border-red-950/40 rounded-sm px-4 py-3 text-sm text-white focus:outline-none focus:border-red-600 font-mono">
                             <p class="text-[10px] text-gray-600 mt-1 font-mono">So the admin can contact you if there's
                                 an issue with your ad.</p>
                         </div>
@@ -299,13 +291,13 @@
                                 URL</label>
                             <input type="url" id="target_url" name="target_url" required value="{{ old('target_url') }}"
                                 placeholder="https://your-secure-site.com"
-                                class="w-full bg-[#111] border border-white/10 rounded-sm px-4 py-3 text-sm text-white focus:outline-none focus:border-red-500 font-mono">
+                                class="w-full bg-black border border-red-950/40 rounded-sm px-4 py-3 text-sm text-white focus:outline-none focus:border-red-600 font-mono">
                         </div>
 
                         <div>
                             <label class="block text-[10px] font-black uppercase tracking-widest text-gray-400 mb-2">Ad
                                 Creative (Banner)</label>
-                            <div class="border-2 border-dashed border-white/10 rounded-sm p-8 text-center bg-[#111] hover:border-red-500/50 cursor-pointer"
+                            <div class="border border-dashed border-red-950/50 rounded-sm p-8 text-center bg-black hover:border-red-800 cursor-pointer"
                                 onclick="document.getElementById('image').click()">
                                 <input type="file" id="image" name="image" accept="image/*" class="hidden" required
                                     onchange="previewAdImage(event)">
