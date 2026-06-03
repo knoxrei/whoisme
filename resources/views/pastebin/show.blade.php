@@ -106,10 +106,9 @@
                         </div>
                     </div>
 
-                    <div class="mt-5 border-t border-red-900/10 pt-5">
-                        <div class="text-[9px] font-black text-red-500 uppercase tracking-[0.2em] mb-2 flex items-center gap-2">
-                            <span class="w-2 h-2 rounded-full bg-red-600"></span>
-                            Online Now (<span id="visitor-count">{{ $visitorCount ?? count($visitors) }}</span>)
+                    <div class="mt-5 border-t border-neutral-800 pt-5">
+                        <div class="text-xs text-neutral-500 mb-2">
+                            On this paste (<span id="visitor-count" class="text-neutral-300 tabular-nums">{{ $visitorCount ?? count($visitors) }}</span>)
                         </div>
                         <div id="visitor-list" class="text-[10px] text-gray-400 font-mono leading-relaxed break-words">
                             @if(count($visitors) > 0)
@@ -730,6 +729,7 @@
 
         const PASTEBIN_SLUG = @json($pastebin->slug);
         const VISIT_URL     = '{{ route("pastebin.visit", ":slug") }}'.replace(':slug', PASTEBIN_SLUG);
+        const ROOT_TRACK_URL = @json(route('visitors.root.track'));
         const CSRF_TOKEN    = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') ?? '';
 
         function buildVisitorItem(visitor) {
@@ -757,26 +757,27 @@
         }
 
         async function heartbeat() {
+            const headers = {
+                'Accept': 'application/json',
+                'X-CSRF-TOKEN': CSRF_TOKEN,
+            };
+
             try {
-                const res = await fetch(VISIT_URL, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json',
-                        'X-CSRF-TOKEN': CSRF_TOKEN,
-                    },
-                });
+                const res = await fetch(VISIT_URL, { method: 'POST', headers, credentials: 'same-origin' });
                 if (res.ok) {
-                    const data = await res.json();
-                    updateVisitorList(data);
+                    updateVisitorList(await res.json());
                 }
-            } catch (e) {
-            }
+            } catch (e) {}
+
+            if (!ROOT_TRACK_URL) return;
+            try {
+                await fetch(ROOT_TRACK_URL, { method: 'POST', headers, credentials: 'same-origin' });
+            } catch (e) {}
         }
 
         document.addEventListener('DOMContentLoaded', () => {
             heartbeat();
-            setInterval(heartbeat, 30000);
+            setInterval(heartbeat, 45000);
         });
 </script>
     <style>

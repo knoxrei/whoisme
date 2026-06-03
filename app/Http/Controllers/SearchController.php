@@ -172,13 +172,10 @@ class SearchController extends Controller
     public function trackRootVisit(Request $request): \Illuminate\Http\JsonResponse
     {
         VisitorTracker::trackRoot();
-        $visitorSnapshot = VisitorTracker::getRootVisitorSnapshot();
-        $visitors = $visitorSnapshot['visitors'];
 
-        return response()->json([
-            'visitors' => $visitors,
-            'count'    => $visitorSnapshot['count'],
-        ]);
+        return response()->json(
+            VisitorTracker::snapshotForApi(VisitorTracker::getRootVisitorSnapshot())
+        );
     }
 
     /**
@@ -186,12 +183,8 @@ class SearchController extends Controller
      */
     public function getRootVisitors(Request $request): \Illuminate\Http\JsonResponse
     {
-        $visitorSnapshot = VisitorTracker::getRootVisitorSnapshot();
-        $visitors = $visitorSnapshot['visitors'];
-
-        return response()->json([
-            'visitors' => $visitors,
-            'count'    => $visitorSnapshot['count'],
-        ]);
+        return response()->json(
+            VisitorTracker::snapshotForApi(VisitorTracker::getRootVisitorSnapshot())
+        );
     }
 }

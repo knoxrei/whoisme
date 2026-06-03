@@ -11,8 +11,9 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title> {{ $title ?? 'No have title' }} - {{ config('app.name') }}</title>
+    <title>{{ $title ?? config('app.name') }} — {{ config('app.name') }}</title>
 
     @php
         $seoDescription = $description ?? 'doxme - leak database, threat intelligence search engine, and secure pastebin terminal.';
@@ -50,13 +51,10 @@
         <meta name="twitter:image" content="{{ $seoImage }}">
     @endif
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-<link rel="manifest" href="/site.webmanifest">
-    @fonts
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
     @if($externalCount > 0)
         <script src="http://admate3tczgp6digew7jpzcosq52rs7anru53imwqimron27emq7dbqd.onion/js/get-banners.js"></script>
     @endif
@@ -81,7 +79,7 @@
     </style>
 </head>
 
-<body class="bg-[#050505]">
+<body class="bg-neutral-950 text-neutral-200 antialiased">
     <x-navbar />
 
     <main class="flex-grow flex flex-col min-h-screen">
@@ -91,8 +89,8 @@
         <div class="ad-banners-container w-full max-w-7xl mx-auto px-4 py-4 mt-auto flex flex-col items-center gap-2">
             <div class="w-full flex items-center justify-center gap-4">
                 <div class="h-[1px] bg-red-950/20 flex-grow"></div>
-                <span class="text-[8px] font-black text-red-500/70 uppercase tracking-[0.2em] whitespace-nowrap select-none font-mono">
-                    SPONSORED NETWORK LINKS
+                <span class="text-xs text-neutral-600 whitespace-nowrap select-none">
+                    Sponsored
                 </span>
                 <div class="h-[1px] bg-red-950/20 flex-grow"></div>
             </div>
@@ -133,8 +131,8 @@
     <div id="global-action-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 opacity-0 transition-opacity duration-200" style="backdrop-filter: blur(8px); background-color: rgba(0, 0, 0, 0.85);" data-modal-container>
         <div class="relative w-full max-w-md bg-[#0a0a0a] border rounded-sm overflow-hidden transform scale-95 transition-transform duration-200 ease-out shadow-2xl shadow-black/90" id="global-modal-box" data-modal-box style="border-color: rgba(153, 27, 27, 0.4);">
             <div class="flex items-center justify-between px-6 py-4 border-b bg-[#111]" id="global-modal-header" style="border-color: rgba(153, 27, 27, 0.2);">
-                <h3 class="text-xs font-black uppercase tracking-[0.2em] font-mono text-red-500" id="global-modal-title">
-                    SYSTEM ALERT
+                <h3 class="text-sm font-medium text-neutral-200" id="global-modal-title">
+                    Confirm
                 </h3>
                 <button type="button" onclick="closeModal('global-action-modal')" class="text-gray-500 hover:text-white transition-colors duration-150">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -143,13 +141,11 @@
                 </button>
             </div>
 
-            <div class="p-6 md:p-8 text-xs text-gray-300 font-mono leading-relaxed" id="global-modal-body">
-                SYSTEM MESSAGE BODY
-            </div>
+            <div class="p-6 md:p-8 text-sm text-neutral-300 leading-relaxed" id="global-modal-body"></div>
 
-            <div class="px-6 py-4 border-t bg-[#050505] flex justify-end gap-3" id="global-modal-footer" style="border-color: rgba(153, 27, 27, 0.1);">
-                <button type="button" onclick="closeModal('global-action-modal')" class="text-[9px] font-black uppercase tracking-widest text-gray-500 hover:text-white px-4 py-2 transition-colors duration-150" id="global-cancel-btn">Cancel</button>
-                <button type="button" class="text-[9px] font-black uppercase tracking-widest px-4 py-2 border rounded-sm bg-red-950/20 text-red-500 border-red-900/30 hover:bg-red-600 hover:text-white transition-colors duration-150" id="global-confirm-btn">Proceed</button>
+            <div class="px-6 py-4 border-t border-neutral-800 bg-neutral-950 flex justify-end gap-3" id="global-modal-footer">
+                <button type="button" onclick="closeModal('global-action-modal')" class="text-sm text-neutral-500 hover:text-neutral-200 px-4 py-2 transition-colors" id="global-cancel-btn">Cancel</button>
+                <button type="button" class="text-sm px-4 py-2 rounded-md bg-red-700 text-white hover:bg-red-600 transition-colors" id="global-confirm-btn">Confirm</button>
             </div>
         </div>
     </div>
@@ -217,9 +213,9 @@
                 confirmBtn.className = 'text-[9px] font-black uppercase tracking-widest px-4 py-2 border rounded-sm bg-yellow-950/20 text-yellow-500 border-yellow-900/30 hover:bg-yellow-600 hover:text-white transition-colors duration-150';
             }
 
-            titleEl.textContent = options.title || 'SYSTEM NOTICE';
+            titleEl.textContent = options.title || 'Confirm';
             bodyEl.innerHTML = options.content || '';
-            confirmBtn.textContent = options.confirmText || 'Proceed';
+            confirmBtn.textContent = options.confirmText || 'Confirm';
 
             if (options.cancelText === false) {
                 cancelBtn.classList.add('hidden');
@@ -261,7 +257,7 @@
         });
 
 </script>
-      <script type="text/javascript">var _Hasync= _Hasync|| [];
+   <script type="text/javascript">var _Hasync= _Hasync|| [];
 _Hasync.push(['Histats.start', '1,5027683,4,0,0,0,00010000']);
 _Hasync.push(['Histats.fasi', '1']);
 _Hasync.push(['Histats.track_hits', '']);
@@ -271,6 +267,8 @@ hs.src = ('//s10.histats.com/js15_as.js');
 (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(hs);
 })();</script>
 <noscript><a href="/" target="_blank"><img  src="//sstatic1.histats.com/0.gif?5027683&101" alt="" border="0"></a></noscript>
+
+    <x-site-visitor-heartbeat />
 </body>
 
 </html>

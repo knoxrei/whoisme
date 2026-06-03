@@ -1,9 +1,6 @@
-<footer class=" border-t border-white/5 bg-[#050505] py-8 mt-12 relative overflow-hidden z-10">
-    <div class="max-w-7xl mx-auto px-6 md:px-12 flex flex-col md:flex-row items-center justify-between gap-6 relative z-20">
-        <div class="flex items-center gap-3">
-          
-            <x-layouts.logo class="text-xs font-black text-gray-500 tracking-widest uppercase font-mono"/>
-        </div>
+<footer class="border-t border-neutral-900 bg-neutral-950 py-8 mt-12">
+    <div class="max-w-6xl mx-auto px-6 md:px-8 flex flex-col md:flex-row items-center justify-between gap-4">
+        <x-layouts.logo class="opacity-80" />
         
     @php
         $user = \App\Models\User::whereHas('identification', function($query) {
@@ -11,17 +8,11 @@
         })->first();
         $displayRichName = $user ? $user->identification->role->userStyle($user->username) : null;
     @endphp
-        <div class="text-gray-600 text-[10px] font-mono tracking-widest  flex flex-col md:flex-row items-center gap-4 md:gap-8">
-        
-        
-                <span class=" flex items-center gap-1">
-                &copy; {{ date('Y') }} DoxMe. 
-                @if($user)
-                    Powered by <a href="{{ route('profile.show', $user->username) }}" class="hover:text-red-500 transition-colors">{!! $displayRichName !!}</a>
-                @else
-                    No rules apply.
-                @endif
-            </span>
-        </div>
+        <p class="text-sm text-neutral-600 text-center md:text-right">
+            &copy; {{ date('Y') }} DoxMe
+            @if($user)
+                · <a href="{{ route('profile.show', $user->username) }}" class="hover:text-neutral-300 transition-colors">{!! $displayRichName !!}</a>
+            @endif
+        </p>
     </div>
 </footer>

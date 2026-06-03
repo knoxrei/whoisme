@@ -104,13 +104,9 @@ class PastebinController extends Controller
         Pastebin::where('slug', $slug)->firstOrFail();
         VisitorTracker::trackPastebin($slug);
 
-        $visitorSnapshot = VisitorTracker::getPastebinVisitorSnapshot($slug);
-        $visitors = $visitorSnapshot['visitors'];
-
-        return response()->json([
-            'visitors' => $visitors,
-            'count'    => $visitorSnapshot['count'],
-        ]);
+        return response()->json(
+            VisitorTracker::snapshotForApi(VisitorTracker::getPastebinVisitorSnapshot($slug))
+        );
     }
 
     /**
@@ -119,13 +115,10 @@ class PastebinController extends Controller
     public function getVisitors(string $slug): \Illuminate\Http\JsonResponse
     {
         Pastebin::where('slug', $slug)->firstOrFail();
-        $visitorSnapshot = VisitorTracker::getPastebinVisitorSnapshot($slug);
-        $visitors = $visitorSnapshot['visitors'];
 
-        return response()->json([
-            'visitors' => $visitors,
-            'count'    => $visitorSnapshot['count'],
-        ]);
+        return response()->json(
+            VisitorTracker::snapshotForApi(VisitorTracker::getPastebinVisitorSnapshot($slug))
+        );
     }
 
     public function store(PastebinRequest $request)

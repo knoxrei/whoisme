@@ -2,6 +2,7 @@
 
 use App\Http\Middleware\HandleAnonymousUser;
 use App\Http\Middleware\HandleRole;
+use App\Http\Middleware\TrackSiteVisitor;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -16,6 +17,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->append(\App\Http\Middleware\CheckRoleExpiration::class);
         $middleware->web(append: [
             HandleAnonymousUser::class,
+            TrackSiteVisitor::class,
             \App\Http\Middleware\UpdateLastActive::class,
         ]);
         $middleware->alias([

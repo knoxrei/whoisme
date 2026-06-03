@@ -21,6 +21,7 @@ from __future__ import annotations
 
 import argparse
 import html
+import json
 import os
 import re
 import smtplib
@@ -65,6 +66,51 @@ class MailConfig:
     from_name: str
     use_tls: bool
     use_ssl: bool
+
+
+@dataclass
+class ProgressState:
+    last_user_id: int | None
+    last_email: str | None
+    sent_count: int
+    failed_count: int
+
+
+def load_progress(path: Path) -> ProgressState | None:
+    if not path.exists():
+        return None
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+        return ProgressState(
+            last_user_id=data.get("last_user_id"),
+            last_email=data.get("last_email"),
+            sent_count=data.get("sent_count", 0),
+            failed_count=data.get("failed_count", 0),
+        )
+    except Exception as exc:
+        print(f"Warning: could not load progress file {path}: {exc}", file=sys.stderr)
+        return None
+
+
+def save_progress(path: Path, state: ProgressState) -> None:
+    try:
+        data = {
+            "last_user_id": state.last_user_id,
+            "last_email": state.last_email,
+            "sent_count": state.sent_count,
+            "failed_count": state.failed_count,
+        }
+        path.write_text(json.dumps(data, indent=2), encoding="utf-8")
+    except Exception as exc:
+        print(f"Warning: could not save progress to {path}: {exc}", file=sys.stderr)
+
+
+def clear_progress(path: Path) -> None:
+    if path.exists():
+        try:
+            path.unlink()
+        except Exception:
+            pass
 
 
 def load_env() -> dict[str, str]:
@@ -299,6 +345,15 @@ def parse_args() -> argparse.Namespace:
         action="store_true",
         help="List recipients and skips without sending mail",
     )
+    parser.add_argument(
+        "--resume",
+        action="store_true",
+        help="Resume from the last successful send if a progress file exists",
+    )
+    parser.add_argument(
+        "--progress-file",
+        help="Path to the progress file (default: scripts/.bulk_email_progress)",
+    )
     return parser.parse_args()
 
 
@@ -312,6 +367,15 @@ def main() -> int:
     env = load_env()
     mail_config = build_mail_config(env)
 
+    progress_path = Path(args.progress_file) if args.progress_file else SCRIPT_DIR / ".bulk_email_progress"
+    progress = None
+    if args.resume:
+        progress = load_progress(progress_path)
+        if progress:
+            print(f"Resuming from last progress: {progress.last_email or progress.last_user_id}")
+        else:
+            print("Notice: --resume specified but no valid progress file found. Starting from scratch.")
+
     try:
         recipients, skipped = resolve_recipients(env, args.verified_only, args.recipient)
     except ValueError as exc:
@@ -321,6 +385,21 @@ def main() -> int:
         print(f"Database error: {exc}", file=sys.stderr)
         return 1
 
+    start_index = 0
+    sent = 0
+    failed = 0
+    if progress:
+        sent = progress.sent_count
+        failed = progress.failed_count
+        for i, r in enumerate(recipients):
+            if (progress.last_user_id is not None and r.user_id == progress.last_user_id) or \
+               (progress.last_user_id is None and r.email == progress.last_email):
+                start_index = i + 1
+                break
+        
+        if start_index > 0:
+            print(f"Skipping {start_index} already processed recipients.")
+
     if skipped:
         print(f"Skipped {len(skipped)} invalid/null/duplicate entries:")
         for line in skipped[:20]:
@@ -328,40 +407,72 @@ def main() -> int:
         if len(skipped) > 20:
             print(f"  ... and {len(skipped) - 20} more")
 
-    if not recipients:
+    remaining_recipients = recipients[start_index:]
+    if not remaining_recipients:
+        if recipients and start_index >= len(recipients):
+            print("All recipients have already been processed.")
+            clear_progress(progress_path)
+            return 0
         print("No valid recipients to send to.")
         return 1
 
     mode = "TEST" if args.recipient else "BROADCAST"
     print(f"Mode: {mode}")
-    print(f"Valid recipients: {len(recipients)}")
+    print(f"Total recipients: {len(recipients)}")
+    if start_index > 0:
+        print(f"Remaining: {len(remaining_recipients)}")
     print(f"Timeout: {args.timeout}s per email")
 
     if args.dry_run:
         print("\nDry run — no emails sent.")
-        for recipient in recipients[:50]:
+        for recipient in remaining_recipients[:50]:
             print(f"  -> {recipient.username} <{recipient.email}>")
-        if len(recipients) > 50:
-            print(f"  ... and {len(recipients) - 50} more")
+        if len(remaining_recipients) > 50:
+            print(f"  ... and {len(remaining_recipients) - 50} more")
         return 0
 
-    sent = 0
-    failed = 0
+    total_to_send = len(recipients)
+    
+    try:
+        for current_idx, recipient in enumerate(remaining_recipients, start=start_index + 1):
+            label = f"{recipient.username} <{recipient.email}>"
+            html_body = render_email(recipient.username, args.subject, args.message)
 
-    for index, recipient in enumerate(recipients, start=1):
-        label = f"{recipient.username} <{recipient.email}>"
-        html_body = render_email(recipient.username, args.subject, args.message)
-
-        try:
-            send_email(mail_config, recipient, args.subject, html_body, args.timeout)
-            sent += 1
-            print(f"[{index}/{len(recipients)}] SENT  {label}")
-        except (smtplib.SMTPException, socket.timeout, TimeoutError, OSError) as exc:
-            failed += 1
-            print(f"[{index}/{len(recipients)}] SKIP  {label} ({exc})", file=sys.stderr)
+            try:
+                send_email(mail_config, recipient, args.subject, html_body, args.timeout)
+                sent += 1
+                print(f"[{current_idx}/{total_to_send}] SENT  {label}")
+                
+                # Update progress
+                save_progress(progress_path, ProgressState(
+                    last_user_id=recipient.user_id,
+                    last_email=recipient.email,
+                    sent_count=sent,
+                    failed_count=failed
+                ))
+                
+            except (smtplib.SMTPException, socket.timeout, TimeoutError, OSError) as exc:
+                failed += 1
+                print(f"[{current_idx}/{total_to_send}] SKIP  {label} ({exc})", file=sys.stderr)
+                # We still update progress even on skip/fail so we don't retry the same failing email
+                save_progress(progress_path, ProgressState(
+                    last_user_id=recipient.user_id,
+                    last_email=recipient.email,
+                    sent_count=sent,
+                    failed_count=failed
+                ))
+    except KeyboardInterrupt:
+        print("\nInterrupted by user. You can resume later using --resume.")
+        return 3
 
     print(f"\nDone. Sent: {sent}, Failed/Skipped: {failed}, Invalid (pre-filter): {len(skipped)}")
-    return 0 if failed == 0 else 2
+    
+    if failed == 0:
+        clear_progress(progress_path)
+        return 0
+    else:
+        print(f"Progress saved to {progress_path}. Use --resume to continue.")
+        return 2
 
 
 if __name__ == "__main__":

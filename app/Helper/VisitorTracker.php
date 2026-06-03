@@ -2,6 +2,7 @@
 
 namespace App\Helper;
 
+use App\Enum\Role;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 
@@ -76,6 +77,8 @@ class VisitorTracker
      */
     public static function trackPastebin(string $slug): void
     {
+        self::trackRoot();
+
         $cacheKey = "visitors:pastebin:{$slug}";
         self::upsertVisitor($cacheKey);
     }
@@ -245,5 +248,31 @@ class VisitorTracker
     public static function countRootVisitors(): int
     {
         return self::getRootVisitorSnapshot()['count'];
+    }
+
+    /**
+     * @param  array{visitors: array<int, array<string, mixed>>, count: int, is_overloaded?: bool}  $snapshot
+     * @return array{visitors: array<int, array<string, mixed>>, count: int, is_overloaded: bool}
+     */
+    public static function snapshotForApi(array $snapshot): array
+    {
+        $visitors = array_map(function (array $visitor): array {
+            if (($visitor['type'] ?? null) === 'member' && !empty($visitor['role'])) {
+                try {
+                    $role = Role::from($visitor['role']);
+                    $visitor['user_style'] = $role->userStyle('@' . $visitor['name']);
+                } catch (\ValueError) {
+                    // Keep base fields when role is unknown.
+                }
+            }
+
+            return $visitor;
+        }, $snapshot['visitors']);
+
+        return [
+            'visitors' => $visitors,
+            'count' => $snapshot['count'],
+            'is_overloaded' => (bool) ($snapshot['is_overloaded'] ?? false),
+        ];
     }
 }
