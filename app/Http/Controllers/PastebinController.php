@@ -81,7 +81,14 @@ class PastebinController extends Controller
         $visitors = $visitorSnapshot['visitors'];
         $visitorCount = $visitorSnapshot['count'];
 
-        return view('pastebin.show', compact('pastebin', 'title', 'pendingEdits', 'comments', 'contentMarkdown', 'isBurned', 'visitors', 'visitorCount'));
+        // Get revision history (approved edits)
+        $revisions = $pastebin->edits()
+            ->where('status', 'approved')
+            ->with(['user.identification', 'approvedBy.identification'])
+            ->latest()
+            ->get();
+
+        return view('pastebin.show', compact('pastebin', 'title', 'pendingEdits', 'comments', 'contentMarkdown', 'isBurned', 'visitors', 'visitorCount', 'revisions'));
     }
 
     public function unlock(Request $request, string $slug)

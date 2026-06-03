@@ -14,6 +14,7 @@ class PastebinEdit extends Model
         'content',
         'description',
         'status',
+        'approved_by',
     ];
 
     public function pastebin(): BelongsTo
@@ -24,5 +25,10 @@ class PastebinEdit extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function approvedBy(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'approved_by');
     }
 }

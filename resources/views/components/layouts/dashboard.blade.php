@@ -38,39 +38,26 @@
         }
 
         .sidebar-item:hover {
-            background: rgba(255, 255, 255, 0.03);
+            background: rgba(220, 38, 38, 0.05);
+            color: #fff;
         }
 
         .sidebar-item.active {
-            background: rgba(255, 69, 0, 0.1);
-            border-left: 3px solid #FF4500;
-            color: #FF4500;
+            background: rgba(220, 38, 38, 0.1);
+            border-left: 3px solid #dc2626;
+            color: #dc2626;
+            font-weight: 900;
         }
 
-        
-        ::-webkit-scrollbar {
-            width: 5px;
+        /* Sidebar scrollbar */
+        .sidebar-nav::-webkit-scrollbar {
+            width: 3px;
         }
-
-        ::-webkit-scrollbar-track {
-            background: #050505;
+        .sidebar-nav::-webkit-scrollbar-track {
+            background: transparent;
         }
-
-        ::-webkit-scrollbar-thumb {
-            background: #222;
-        }
-
-        
-        .hamburger-line {
-            display: block;
-            width: 20px;
-            height: 2px;
-            background: currentColor;
-        }
-
-        
-        #dashboard-mobile-header {
-            background: #050505;
+        .sidebar-nav::-webkit-scrollbar-thumb {
+            background: rgba(220, 38, 38, 0.1);
         }
     </style>
 </head>
@@ -78,11 +65,11 @@
 <body class="antialiased overflow-hidden flex flex-col h-screen">
     <x-navbar />
 
-    <div id="dashboard-mobile-header" class="lg:hidden flex items-center justify-between px-4 py-3 border-b border-white/5 z-30 flex-shrink-0">
+    <div id="dashboard-mobile-header" class="lg:hidden flex items-center justify-between px-4 py-3 border-b border-red-900/10 z-30 flex-shrink-0 bg-[#050505]">
         <button
             id="sidebar-toggle-btn"
             onclick="toggleSidebar()"
-            class="flex flex-col gap-1.5 p-2 text-gray-400 hover:text-red-500 transition-colors focus:outline-none"
+            class="flex flex-col gap-1.5 p-2 text-gray-500 hover:text-red-600 transition-colors focus:outline-none"
             aria-label="Toggle sidebar"
         >
             <span class="hamburger-line line-1"></span>
@@ -91,19 +78,16 @@
         </button>
 
         <div class="flex items-center gap-2">
-            <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span>
-            <span class="text-[9px] font-black uppercase tracking-[0.2em] text-gray-500 font-mono">
-                @if(request()->routeIs('dashboard')) Dashboard
-                @elseif(request()->routeIs('profile.edit')) Settings
-                @elseif(request()->routeIs('dashboard.pastes')) My Pastes
-                @elseif(request()->routeIs('dashboard.suggestions')) Suggestions
-                @elseif(request()->routeIs('dashboard.upgrades')) Upgrades
-                @elseif(request()->routeIs('dashboard.reports')) Reports
-                @elseif(request()->routeIs('dashboard.users')) Users
-                @elseif(request()->routeIs('admin.ads.*')) Ad Moderation
-                @elseif(request()->routeIs('advertiser.dashboard')) Ads Dashboard
-                @elseif(request()->routeIs('advertiser.ads.create')) Request Ad
-                @else Panel
+            <span class="w-1.5 h-1.5 rounded-full bg-red-600 animate-pulse"></span>
+            <span class="text-[9px] font-black uppercase tracking-[0.2em] text-gray-400 font-mono">
+                TERMINAL : @if(request()->routeIs('dashboard')) OVERVIEW
+                @elseif(request()->routeIs('profile.edit')) CONFIG
+                @elseif(request()->routeIs('dashboard.pastes')) ASSETS
+                @elseif(request()->routeIs('dashboard.suggestions')) PROPOSALS
+                @elseif(request()->routeIs('dashboard.upgrades')) CLEARANCE
+                @elseif(request()->routeIs('dashboard.reports')) INCIDENTS
+                @elseif(request()->routeIs('dashboard.users')) DATABASE
+                @else PANEL
                 @endif
             </span>
         </div>
@@ -111,143 +95,129 @@
         <a href="{{ route('profile.show', auth()->user()->username) }}" class="shrink-0">
             <img src="{{ asset('storage/' . auth()->user()->identification->avatar_path) }}"
                 alt="{{ auth()->user()->username }}"
-                class="w-7 h-7 rounded-sm border border-red-900/30">
+                class="w-7 h-7 rounded-sm border border-red-900/40 object-cover shadow-sm">
         </a>
     </div>
 
     <div
         id="sidebar-backdrop"
         onclick="closeSidebar()"
-        class="fixed inset-0 z-30 hidden lg:hidden"
-        style="background: rgba(0,0,0,0.75);"
+        class="fixed inset-0 z-30 hidden lg:hidden bg-black/80 backdrop-blur-sm"
     ></div>
 
     <div class="flex flex-1 overflow-hidden bg-[#050505]">
         <aside id="sidebar"
-            class="hidden fixed inset-y-0 left-0 z-40 w-72 lg:w-64 lg:block lg:static lg:inset-0 glass border-r border-white/5 pt-4"
+            class="hidden fixed inset-y-0 left-0 z-40 w-72 lg:w-64 lg:block lg:static lg:inset-0 bg-[#070707] border-r border-red-900/10 pt-4"
             style="top: 0;">
             <div class="flex flex-col h-full">
-                <div class="lg:hidden flex items-center justify-between px-4 pt-6 pb-4 border-b border-white/5 mb-2">
-                    <a href="/" class="hover:opacity-80 transition-all active:scale-95">
-                        <x-layouts.logo />
-                    </a>
-                    <button onclick="closeSidebar()" class="p-1.5 text-gray-500 hover:text-red-500 transition-colors">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div class="lg:hidden flex items-center justify-between px-6 py-4 border-b border-red-900/10 mb-2">
+                    <x-layouts.logo />
+                    <button onclick="closeSidebar()" class="p-2 text-gray-500 hover:text-red-600 transition-colors">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"/>
                         </svg>
                     </button>
                 </div>
 
-                <nav class="flex-1 overflow-y-auto py-4 lg:py-6 space-y-1 px-3">
-                    <div class="px-3 mb-2 text-xs font-semibold tracking-wider text-gray-500 uppercase">
-                        Menu
+                <nav class="sidebar-nav flex-1 overflow-y-auto py-6 space-y-1 px-4">
+                    <div class="px-3 mb-3 text-[9px] font-black tracking-[0.2em] text-gray-600 uppercase font-mono">
+                        Main Command
                     </div>
 
                     <a href="{{ route('dashboard') }}"
-                        class="sidebar-item {{ request()->routeIs('dashboard') ? 'active' : '' }} flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                        class="sidebar-item {{ request()->routeIs('dashboard') ? 'active' : '' }} flex items-center gap-3 px-4 py-2.5 rounded-sm text-xs font-bold uppercase tracking-widest transition-all">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
                         </svg>
-                        Dashboard
-                    </a>
-
-                    <a href="{{ route('profile.edit') }}"
-                        class="sidebar-item {{ request()->routeIs('profile.edit') ? 'active' : '' }} flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-400">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-                        </svg>
-                        Settings
+                        Overview
                     </a>
 
                     <a href="{{ route('dashboard.pastes') }}"
-                        class="sidebar-item {{ request()->routeIs('dashboard.pastes') ? 'active' : '' }} flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-400">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                        class="sidebar-item {{ request()->routeIs('dashboard.pastes') ? 'active' : '' }} flex items-center gap-3 px-4 py-2.5 rounded-sm text-xs font-bold uppercase tracking-widest text-gray-400 transition-all">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
                         </svg>
-                        My Pastes
+                        My Assets
                     </a>
 
                     <a href="{{ route('dashboard.suggestions') }}"
-                        class="sidebar-item {{ request()->routeIs('dashboard.suggestions') ? 'active' : '' }} flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-400 hover:text-red-500">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        class="sidebar-item {{ request()->routeIs('dashboard.suggestions') ? 'active' : '' }} flex items-center gap-3 px-4 py-2.5 rounded-sm text-xs font-bold uppercase tracking-widest text-gray-400 transition-all">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
                         </svg>
-                        Edit Suggestions
+                        Proposals
+                    </a>
+
+                    <a href="{{ route('profile.edit') }}"
+                        class="sidebar-item {{ request()->routeIs('profile.edit') ? 'active' : '' }} flex items-center gap-3 px-4 py-2.5 rounded-sm text-xs font-bold uppercase tracking-widest text-gray-400 transition-all">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                        </svg>
+                        Config
                     </a>
 
                     @if($roleValue && in_array($roleValue, ['owner', 'moderator']))
-                        <div class="pt-6 px-3 mb-2 text-xs font-semibold tracking-wider text-gray-500 uppercase">
-                            Administrative
+                        <div class="pt-8 px-3 mb-3 text-[9px] font-black tracking-[0.2em] text-gray-600 uppercase font-mono">
+                            Admin Root
                         </div>
                         <a href="{{ route('dashboard.upgrades') }}"
-                            class="sidebar-item {{ request()->routeIs('dashboard.upgrades') ? 'active' : '' }} flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-400 hover:text-red-500">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M9 11l3-3m0 0l3 3m-3-3v8m0-13a9 9 0 110 18 9 9 0 010-18z" />
+                            class="sidebar-item {{ request()->routeIs('dashboard.upgrades') ? 'active' : '' }} flex items-center gap-3 px-4 py-2.5 rounded-sm text-xs font-bold uppercase tracking-widest text-gray-400 transition-all">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 11l3-3m0 0l3 3m-3-3v8m0-13a9 9 0 110 18 9 9 0 010-18z" />
                             </svg>
-                            Manage Upgrades
+                            Upgrades
                         </a>
                         <a href="{{ route('dashboard.reports') }}"
-                            class="sidebar-item {{ request()->routeIs('dashboard.reports') ? 'active' : '' }} flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-400 hover:text-red-500">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            class="sidebar-item {{ request()->routeIs('dashboard.reports') ? 'active' : '' }} flex items-center gap-3 px-4 py-2.5 rounded-sm text-xs font-bold uppercase tracking-widest text-gray-400 transition-all">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                             </svg>
-                            Manage Reports
+                            Reports
                         </a>
                         <a href="{{ route('dashboard.users') }}"
-                            class="sidebar-item {{ request()->routeIs('dashboard.users') ? 'active' : '' }} flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-400 hover:text-blue-400">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                            class="sidebar-item {{ request()->routeIs('dashboard.users') ? 'active' : '' }} flex items-center gap-3 px-4 py-2.5 rounded-sm text-xs font-bold uppercase tracking-widest text-gray-400 transition-all">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
                             </svg>
-                            User Management
+                            Database
                         </a>
                         @if($roleValue && in_array($roleValue, ['owner']))
                         <a href="{{ route('admin.ads.moderation.index') }}"
-                            class="sidebar-item {{ request()->routeIs('admin.ads.*') ? 'active' : '' }} flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-400 hover:text-red-500">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            class="sidebar-item {{ request()->routeIs('admin.ads.*') ? 'active' : '' }} flex items-center gap-3 px-4 py-2.5 rounded-sm text-xs font-bold uppercase tracking-widest text-gray-400 transition-all">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                             </svg>
-                            Ad Moderation
+                            Ads Mod
                         </a>
                         @endif
                     @endif
 
                     @if($roleValue && in_array($roleValue, ['advertiser']))
-                        <div class="pt-6 px-3 mb-2 text-xs font-semibold tracking-wider text-gray-500 uppercase">
+                        <div class="pt-8 px-3 mb-3 text-[9px] font-black tracking-[0.2em] text-gray-600 uppercase font-mono">
                             Advertiser
                         </div>
                         <a href="{{ route('advertiser.dashboard') }}"
-                            class="sidebar-item {{ request()->routeIs('advertiser.dashboard') ? 'active' : '' }} flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-400 hover:text-red-500">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            class="sidebar-item {{ request()->routeIs('advertiser.dashboard') ? 'active' : '' }} flex items-center gap-3 px-4 py-2.5 rounded-sm text-xs font-bold uppercase tracking-widest text-gray-400 transition-all">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z"></path>
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z"></path>
                             </svg>
-                            Ads Dashboard
-                        </a>
-                        <a href="{{ route('advertiser.ads.create') }}"
-                            class="sidebar-item {{ request()->routeIs('advertiser.ads.create') ? 'active' : '' }} flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-400 hover:text-red-500">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-                            </svg>
-                            Request Ad
+                            Ad Ops
                         </a>
                     @endif
                 </nav>
 
-                <div class="p-4 border-t border-white/5">
+                <div class="p-6 border-t border-red-900/10">
                     <form method="POST" action="{{ route('logout') }}">
                         @csrf
                         <button type="submit"
-                            class="flex items-center w-full gap-3 px-4 py-3 rounded-xl text-sm font-medium text-red-400 hover:bg-red-500/10 transition-colors">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                            class="flex items-center w-full gap-3 px-4 py-2.5 rounded-sm text-xs font-black uppercase tracking-widest text-red-500 bg-red-950/10 hover:bg-red-600 hover:text-white transition-all">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
                             </svg>
-                            Logout
+                            Terminate
                         </button>
                     </form>
                 </div>
@@ -255,12 +225,12 @@
         </aside>
 
         <main class="flex-1 flex flex-col min-w-0 overflow-hidden bg-[#050505]">
-            <div class="flex-1 overflow-y-auto p-8 custom-scrollbar flex flex-col justify-between">
-                <div>
+            <div class="flex-1 overflow-y-auto p-6 lg:p-10 custom-scrollbar flex flex-col justify-between">
+                <div class="max-w-7xl mx-auto w-full">
                     {{ $slot }}
                 </div>
 
-                <x-internal-ads class="mt-8 pt-6" />
+                <x-internal-ads class="mt-12 pt-8 border-t border-red-900/5 max-w-7xl mx-auto w-full" />
             </div>
         </main>
     </div>

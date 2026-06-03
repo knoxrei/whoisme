@@ -42,7 +42,10 @@ class PastebinEditController extends Controller
             'description' => $edit->description,
         ]);
 
-        $edit->update(['status' => 'approved']);
+        $edit->update([
+            'status' => 'approved',
+            'approved_by' => auth()->id(),
+        ]);
 
         return back()->with('success', 'Edit suggestion approved and applied.');
     }

@@ -267,6 +267,42 @@
                                 </div>
                             </div>
                             @endif
+
+                            @if(isset($revisions) && $revisions->count() > 0)
+                            <div class="mt-12 pt-8 border-t border-red-900/10">
+                                <div class="text-[10px] font-black text-red-500 uppercase mb-5 tracking-[0.2em] flex items-center gap-3">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                                    Asset Revision History
+                                </div>
+                                <div class="space-y-3">
+                                    @foreach($revisions as $rev)
+                                        <div class="bg-black/40 border border-red-900/10 p-4 rounded-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                                            <div class="flex items-center gap-4">
+                                                <div class="w-8 h-8 bg-red-950/20 border border-red-900/20 flex items-center justify-center text-red-500 font-black text-[10px]">
+                                                    {{ substr($rev->user->username ?? '?', 0, 1) }}
+                                                </div>
+                                                <div>
+                                                    <div class="text-[11px] font-bold text-gray-300">
+                                                        <span class="text-red-500 uppercase text-[9px] font-black tracking-widest mr-2 border border-red-900/20 px-1.5">REVISION</span>
+                                                        {{ $rev->title }}
+                                                    </div>
+                                                    <div class="text-[9px] text-gray-600 font-mono mt-1 uppercase tracking-tighter">
+                                                        Suggested by <a href="{{ route('profile.show', $rev->user->username ?? 'Anonymous') }}" class="text-gray-400 hover:text-red-500">@ {{ $rev->user->username ?? 'Anonymous' }}</a>
+                                                        @if($rev->approvedBy)
+                                                            <span class="mx-2 text-red-900/30">|</span>
+                                                            Approved by <a href="{{ route('profile.show', $rev->approvedBy->username) }}" class="text-gray-400 hover:text-green-500">@ {{ $rev->approvedBy->username }}</a>
+                                                        @endif
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="text-[9px] text-gray-700 font-mono whitespace-nowrap">
+                                                {{ $rev->updated_at->format('Y-m-d H:i') }}
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                </div>
+                            </div>
+                            @endif
                         </div>
 
                         <footer class="bg-[#111] border-t border-red-900/30 px-3 md:px-6 py-3 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between rounded-b-sm mt-auto min-w-0">

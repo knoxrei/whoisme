@@ -1,25 +1,32 @@
 <x-layouts.dashboard :title="$title" :role="$role">
-    <div class="space-y-8 max-w-7xl mx-auto">
-        <div class="border border-red-900/40 bg-gradient-to-b from-red-950/10 to-[#0a0a0a] p-6 rounded-sm flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-            <div>
-                <h1 class="text-xl font-black text-white tracking-tight uppercase">My Cataloged Pastes</h1>
-                <p class="text-gray-500 text-xs font-mono mt-1">Directory of all pastes transmitted under this terminal signature.</p>
-            </div>
-            
-            <div class="flex gap-2 font-mono text-[10px]">
-                <a href="{{ route('dashboard.pastes') }}" class="px-3 py-1.5 border {{ is_null($currentVisibility) ? 'border-red-600 bg-red-950/20 text-red-500 font-black' : 'border-red-900/20 text-gray-500 hover:text-white' }} uppercase tracking-widest rounded-sm">
-                    All
-                </a>
-                <a href="{{ route('dashboard.pastes', ['visibility' => 'public']) }}" class="px-3 py-1.5 border {{ $currentVisibility === 'public' ? 'border-red-600 bg-red-950/20 text-red-500 font-black' : 'border-red-900/20 text-gray-500 hover:text-white' }} uppercase tracking-widest rounded-sm">
-                    Public
-                </a>
-                <a href="{{ route('dashboard.pastes', ['visibility' => 'private']) }}" class="px-3 py-1.5 border {{ $currentVisibility === 'private' ? 'border-red-600 bg-red-950/20 text-red-500 font-black' : 'border-red-900/20 text-gray-500 hover:text-white' }} uppercase tracking-widest rounded-sm">
-                    Private
-                </a>
+    <div class="space-y-6 max-w-7xl mx-auto">
+        <div class="border border-red-900/30 bg-[#050505] p-8 rounded-sm">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+                <div>
+                    <h1 class="text-2xl font-black text-white tracking-tighter uppercase flex items-center gap-3">
+                        <span class="w-2 h-8 bg-red-600"></span>
+                        Asset Catalog
+                    </h1>
+                    <p class="text-gray-500 text-xs font-mono mt-2 max-w-2xl leading-relaxed">
+                        Directory of all data transmissions cataloged under this terminal signature. Monitor engagement metrics and visibility status.
+                    </p>
+                </div>
+                
+                <div class="flex gap-1 bg-black/40 p-1 border border-red-900/10 rounded-sm font-mono text-[9px]">
+                    <a href="{{ route('dashboard.pastes') }}" class="px-4 py-2 {{ is_null($currentVisibility) ? 'bg-red-600 text-white font-black' : 'text-gray-500 hover:text-white' }} uppercase tracking-widest transition-all">
+                        All
+                    </a>
+                    <a href="{{ route('dashboard.pastes', ['visibility' => 'public']) }}" class="px-4 py-2 {{ $currentVisibility === 'public' ? 'bg-red-600 text-white font-black' : 'text-gray-500 hover:text-white' }} uppercase tracking-widest transition-all">
+                        Public
+                    </a>
+                    <a href="{{ route('dashboard.pastes', ['visibility' => 'private']) }}" class="px-4 py-2 {{ $currentVisibility === 'private' ? 'bg-red-600 text-white font-black' : 'text-gray-500 hover:text-white' }} uppercase tracking-widest transition-all">
+                        Private
+                    </a>
+                </div>
             </div>
         </div>
 
-        <div class="p-6 border border-red-900/20 bg-[#050505] rounded-sm">
+        <div class="p-6 border border-red-900/10 bg-[#050505] rounded-sm shadow-inner shadow-red-950/5">
             <div class="overflow-x-auto">
                 <table class="w-full text-left font-mono">
                     <thead>
