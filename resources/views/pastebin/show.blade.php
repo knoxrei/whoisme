@@ -3,8 +3,8 @@
     :description="$pastebin->description" 
     :ogImage="$pastebin->cover_path && $pastebin->cover_path !== 'defaultCover.png' ? asset('storage/' . $pastebin->cover_path) : ($pastebin->images->count() > 0 ? asset('storage/' . $pastebin->images->first()->image_path) : null)"
 >
-    <div class="min-h-screen text-gray-300 font-sans">
-        <div class="max-w-[1400px] mx-auto px-2 py-4 md:py-8">
+    <div class="min-h-screen w-full max-w-[100vw] overflow-x-hidden text-gray-300 font-sans">
+        <div class="w-full max-w-[1400px] mx-auto px-2 md:px-4 py-4 md:py-8 min-w-0">
             @if(session('success'))
                 <div class="mb-4 p-4 bg-green-950/20 border border-green-900/30 text-green-500 text-xs font-mono font-bold rounded-sm">
                     {{ session('success') }}
@@ -27,14 +27,14 @@
                 </div>
             @endif
             
-            <div class="bg-[#0a0a0a] border border-red-900/40 px-5 py-4 mb-2 flex items-center justify-between rounded-sm">
-                <div class="flex items-center gap-3">
-                    {!! $pastebin->visibility->badge() !!}
-                    <h1 class="text-white font-black text-lg md:text-xl tracking-tight  ">
+            <div class="bg-[#0a0a0a] border border-red-900/40 px-3 md:px-5 py-4 mb-2 flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between rounded-sm min-w-0">
+                <div class="flex items-start gap-3 min-w-0 flex-1">
+                    <span class="shrink-0">{!! $pastebin->visibility->badge() !!}</span>
+                    <h1 class="text-white font-black text-lg md:text-xl tracking-tight break-words min-w-0">
                         {{ $pastebin->title }}
                     </h1>
                 </div>
-                <div class="text-[10px] md:text-xs text-gray-500 font-bold tracking-widest">
+                <div class="text-[10px] md:text-xs text-gray-500 font-bold tracking-widest shrink-0 sm:text-right break-words">
                     by 
                     <span style="color: {{ $pastebin->user ? $pastebin->user->identification->role->color() : '#888' }}">
                         {{ $pastebin->author_name }}
@@ -44,9 +44,8 @@
                 </div>
             </div>
 
-            <div class="flex flex-col md:flex-row gap-2 ">
-                
-                <aside class="w-full md:w-64 flex-shrink-0 bg-[#0a0a0a] border border-red-900/30 rounded-sm">
+            <div class="flex flex-col md:flex-row gap-2 w-full min-w-0">
+                <aside class="w-full md:w-64 md:max-w-[16rem] flex-shrink-0 min-w-0 bg-[#0a0a0a] border border-red-900/30 rounded-sm">
                     <div class="sticky top-4 md:top-20 p-5 text-center">
                         <div class="mb-4">
                             <a href="{{ $pastebin->user ? route('profile.show', $pastebin->user->username) : '#' }}" class="text-white font-black text-lg hover:text-red-500 tracking-tighter block">
@@ -130,13 +129,13 @@
                 </div>
             </aside>
 
-                <main class="flex-1 flex flex-col gap-2">
-                    <div class="bg-[#050505] border border-red-900/30 rounded-sm flex flex-col min-h-[600px]">
+                <main class="flex-1 min-w-0 w-full flex flex-col gap-2">
+                    <div class="bg-[#050505] border border-red-900/30 rounded-sm flex flex-col min-h-[600px] min-w-0 max-w-full overflow-hidden">
                         <div class="bg-[#111] px-5 py-2.5 border-b border-red-900/30 flex justify-between items-center text-[10px] text-gray-500 font-mono">
                             {{ $pastebin->created_at->format('d-m-Y, H:i A') }}
                         </div>
 
-                        <div class="p-8 flex-1">
+                        <div class="p-4 md:p-8 flex-1 min-w-0 max-w-full overflow-hidden">
                             
                             @if(isset($isBurned) && $isBurned)
                                 <div class="mb-8 p-4 bg-red-950/20 border-2 border-dashed border-red-600 rounded-sm text-red-500 font-mono text-xs flex items-start gap-3">
@@ -156,29 +155,36 @@
                                 </div>
                             @endif
 
-                            <div class="mb-8" id="content-section-container">
+                            <div class="mb-8 min-w-0 max-w-full" id="content-section-container">
                                 <button id="minimize-fixed-btn" onclick="toggleMaximizeContent()" class="hidden fixed top-4 right-4 z-[1001] bg-[#111] border border-red-900/30 p-2.5 rounded-sm hover:border-red-600 text-gray-400 hover:text-white transition-colors shadow-2xl" title="Minimize">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 4v4m0 0H4m4 0l-5-5m11 1V4m0 0h4m-4 0l5-5M8 20v-4m0 0H4m4 0l5 5m11-1v4m0-4h4m-4 0l5 5"/></svg>
                                 </button>
 
                                 <style>
+                                    .markdown-body {
+                                        max-width: 100%;
+                                        overflow-wrap: anywhere;
+                                        word-break: break-word;
+                                    }
                                     .markdown-body h1 { font-size: 1.5rem; font-weight: 900; color: #fff; margin-bottom: 1rem; margin-top: 1.5rem; text-transform: uppercase; }
                                     .markdown-body h2 { font-size: 1.25rem; font-weight: 800; color: #fff; margin-bottom: 0.75rem; margin-top: 1.5rem; text-transform: uppercase; }
                                     .markdown-body h3 { font-size: 1.125rem; font-weight: 700; color: #fff; margin-bottom: 0.75rem; margin-top: 1.25rem; }
                                     .markdown-body p { margin-bottom: 1rem; }
-                                    .markdown-body a { color: #ef4444; text-decoration: underline; }
+                                    .markdown-body a { color: #ef4444; text-decoration: underline; overflow-wrap: anywhere; }
                                     .markdown-body a:hover { color: #dc2626; }
                                     .markdown-body ul { list-style-type: disc; padding-left: 1.5rem; margin-bottom: 1rem; }
                                     .markdown-body ol { list-style-type: decimal; padding-left: 1.5rem; margin-bottom: 1rem; }
                                     .markdown-body li { margin-bottom: 0.25rem; }
                                     .markdown-body blockquote { border-left: 2px solid rgba(153, 27, 27, 0.5); padding-left: 1rem; color: #9ca3af; font-style: italic; background-color: rgba(0,0,0,0.2); padding-top: 0.5rem; padding-bottom: 0.5rem; margin-bottom: 1rem; }
-                                    .markdown-body code { font-family: monospace; background-color: rgba(255,255,255,0.1); padding: 0.1rem 0.3rem; border-radius: 0.125rem; font-size: 0.9em; }
-                                    .markdown-body pre { background-color: #000; padding: 1rem; overflow-x: auto; border: 1px solid rgba(153, 27, 27, 0.2); border-radius: 0.25rem; margin-bottom: 1rem; }
-                                    .markdown-body pre code { background-color: transparent; padding: 0; }
+                                    .markdown-body code { font-family: monospace; background-color: rgba(255,255,255,0.1); padding: 0.1rem 0.3rem; border-radius: 0.125rem; font-size: 0.9em; word-break: break-all; }
+                                    .markdown-body pre { background-color: #000; padding: 1rem; max-width: 100%; overflow-x: auto; border: 1px solid rgba(153, 27, 27, 0.2); border-radius: 0.25rem; margin-bottom: 1rem; }
+                                    .markdown-body pre code { background-color: transparent; padding: 0; white-space: pre; word-break: normal; }
+                                    .markdown-body img { max-width: 100%; height: auto; }
                                     .markdown-body hr { border-color: rgba(153, 27, 27, 0.2); margin-top: 2rem; margin-bottom: 2rem; }
-                                    .markdown-body table { width: 100%; border-collapse: collapse; margin-bottom: 1rem; }
+                                    .markdown-body table { display: block; width: 100%; max-width: 100%; overflow-x: auto; border-collapse: collapse; margin-bottom: 1rem; }
                                     .markdown-body th, .markdown-body td { border: 1px solid rgba(153, 27, 27, 0.3); padding: 0.5rem; text-align: left; }
                                     .markdown-body th { background-color: rgba(153, 27, 27, 0.1); font-weight: bold; }
+                                    .markdown-body iframe, .markdown-body video { max-width: 100%; }
 
                                     
                                     #pastebin-content-wrapper {
@@ -197,12 +203,20 @@
                                         position: fixed;
                                         top: 0;
                                         left: 0;
-                                        width: 100vw;
+                                        right: 0;
+                                        width: 100%;
+                                        max-width: 100vw;
                                         height: 100vh;
+                                        height: 100dvh;
                                         z-index: 1000;
                                         background-color: #050505;
-                                        padding: 3rem;
+                                        padding: 1rem;
+                                        overflow-x: hidden;
                                         overflow-y: auto;
+                                        box-sizing: border-box;
+                                    }
+                                    @media (min-width: 768px) {
+                                        #content-section-container.maximized { padding: 2rem; }
                                     }
                                     #content-section-container.maximized #pastebin-content-wrapper {
                                         max-height: none !important;
@@ -221,10 +235,10 @@
                                         z-index: 10;
                                     }
                                 </style>
-                                <div id="pastebin-content-wrapper" class="collapsed markdown-body text-gray-300 p-6 font-mono text-xs overflow-x-auto leading-relaxed scrollbar-thin scrollbar-thumb-red-900 scrollbar-track-transparent">
+                                <div id="pastebin-content-wrapper" class="collapsed markdown-body text-gray-300 p-3 md:p-6 font-mono text-xs max-w-full overflow-x-auto leading-relaxed scrollbar-thin scrollbar-thumb-red-900 scrollbar-track-transparent">
                                     {!! $contentMarkdown !!}
                                 </div>
-                                <div id="view-full-btn-container" class="border-t border-red-900/10 bg-gradient-to-t from-[#050505] to-transparent -mt-16 pt-12 pb-3 flex justify-center gap-3 relative">
+                                <div id="view-full-btn-container" class="border-t border-red-900/10 bg-gradient-to-t from-[#050505] to-transparent -mt-16 pt-12 pb-3 flex flex-wrap justify-center gap-2 md:gap-3 relative">
                                     <button id="view-full-btn" onclick="toggleViewFull()" class="flex items-center gap-2 bg-[#0a0a0a] border border-red-900/30 hover:border-red-600 text-[9px] font-black uppercase tracking-[0.2em] text-red-500 hover:text-white px-5 py-2 rounded-sm transition-all duration-200 active:scale-95">
                                         <svg id="view-full-icon" class="w-3 h-3 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/></svg>
                                         <span id="view-full-text">View Full Content</span>
@@ -255,9 +269,8 @@
                             @endif
                         </div>
 
-                        <footer class="bg-[#111] border-t border-red-900/30 px-6 py-3 flex items-center justify-between rounded-b-sm mt-auto">
-                            
-                            <div class="flex gap-3">
+                        <footer class="bg-[#111] border-t border-red-900/30 px-3 md:px-6 py-3 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between rounded-b-sm mt-auto min-w-0">
+                            <div class="flex flex-wrap gap-2 md:gap-3">
                                  @auth
                                      @can('delete', $pastebin)
                                          <form id="delete-paste-form" action="{{ route('pastebin.destroy', $pastebin) }}" method="POST" class="inline">
@@ -280,7 +293,7 @@
                                 @endguest
                             </div>
 
-                            <div class="flex gap-3">
+                            <div class="flex flex-wrap gap-2 md:gap-3">
                                 <button onclick="openShareModal()" class="bg-[#0a0a0a] border border-red-900/20 text-[9px] font-black px-4 py-1.5 text-gray-500 hover:text-white hover:border-white/20 uppercase tracking-widest transition-colors duration-150">
                                     Share
                                 </button>
@@ -296,13 +309,22 @@
 
                     <x-internal-ads />
 
-                    <div class="bg-[#0a0a0a] border border-red-900/30 p-6 rounded-sm flex flex-col gap-6">
+                    <div class="bg-[#0a0a0a] border border-red-900/30 p-4 md:p-6 rounded-sm flex flex-col gap-6 min-w-0 max-w-full overflow-hidden">
                         <h3 class="text-xs font-black text-red-500 uppercase tracking-[0.2em] flex items-center gap-3">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg>
                             Discussion (Top 5 Recent)
                         </h3>
 
                         <style>
+                            .comment-content {
+                                max-width: 100%;
+                                overflow-wrap: anywhere;
+                                word-break: break-word;
+                            }
+                            .comment-content pre {
+                                max-width: 100%;
+                                overflow-x: auto;
+                            }
                             .comment-content blockquote {
                                 border-left: 2px solid rgba(153, 27, 27, 0.5);
                                 padding-left: 0.75rem;
@@ -325,7 +347,7 @@
                         @if(isset($comments) && count($comments) > 0)
                             <div class="space-y-4">
                                 @foreach($comments as $comment)
-                                    <div class="border border-red-900/20 p-4 rounded-sm flex gap-4">
+                                    <div class="border border-red-900/20 p-4 rounded-sm flex gap-4 min-w-0">
                                         <div class="w-8 h-8 overflow-hidden flex-shrink-0">
                                             @if($comment->user->identification->avatar_path)
                                                 <img src="{{ asset('storage/' . $comment->user->identification->avatar_path) }}" class="w-full h-full object-cover">
@@ -335,8 +357,8 @@
                                                 </div>
                                             @endif
                                         </div>
-                                        <div class="flex-1">
-                                            <div class="flex justify-between items-start mb-2">
+                                        <div class="flex-1 min-w-0">
+                                            <div class="flex flex-col gap-2 sm:flex-row sm:justify-between sm:items-start mb-2">
                                                 <a href="{{ route('profile.show', $comment->user->username) }}" class="text-[11px] font-black tracking-tighter">
                                                     {!! $comment->user->identification->role->userStyleWithBanner($comment->user->username, $comment->user->identification->custom_color ?? '#ffffff') !!}
                                                 </a>

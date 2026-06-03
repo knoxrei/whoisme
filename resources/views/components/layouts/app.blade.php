@@ -13,7 +13,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ $title ?? config('app.name') }} — {{ config('app.name') }}</title>
+    <title>{{ $title ?? config('app.name') }} - {{ config('app.name') }}</title>
 
     @php
         $seoDescription = $description ?? 'doxme - leak database, threat intelligence search engine, and secure pastebin terminal.';
@@ -82,7 +82,7 @@
 <body class="bg-black text-gray-300 antialiased">
     <x-navbar />
 
-    <main class="flex-grow flex flex-col min-h-screen">
+    <main class="flex-grow flex flex-col min-h-screen w-full max-w-[100vw] overflow-x-hidden">
         {{ $slot }}
 
         @if($externalCount > 0)
