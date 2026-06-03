@@ -9,8 +9,7 @@
                     <div class="mt-4 p-3 border border-red-900/30 bg-red-950/10 rounded-sm text-left">
                         <p class="text-[10px] text-gray-400 font-mono leading-relaxed">
                             Already registered on <strong class="text-red-500">{{ $legacyPlatformName }}</strong>?
-                            Use the same username and password to sign in here. Passwords are stored with
-                            <strong class="text-gray-300">Argon2</strong> encryption and remain compatible after migration.
+                            Use the same username and password to sign in here. 
                         </p>
                     </div>
                 @endif

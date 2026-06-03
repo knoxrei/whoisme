@@ -1,88 +1,111 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="utf-8">
-    <title>{{ subject }}</title>
-    <style>
-        body {
-            background-color: #050505;
-            color: #d1d5db;
-            font-family: 'Courier New', Courier, monospace;
-            margin: 0;
-            padding: 40px 20px;
-        }
-        .container {
-            max-width: 500px;
-            margin: 0 auto;
-            background-color: #0a0a0a;
-            border: 1px solid #991b1b;
-            border-radius: 2px;
-            overflow: hidden;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.8);
-        }
-        .header {
-            background-color: #111;
-            padding: 20px;
-            border-bottom: 1px solid rgba(153, 27, 27, 0.4);
-            text-align: center;
-        }
-        .header h1 {
-            color: #ef4444;
-            font-size: 16px;
-            font-weight: 900;
-            text-transform: uppercase;
-            letter-spacing: 0.25em;
-            margin: 0;
-        }
-        .content {
-            padding: 30px;
-            line-height: 1.6;
-        }
-        .content p {
-            font-size: 12px;
-            margin: 0 0 20px;
-        }
-        .message-body {
-            background-color: #050505;
-            border: 1px solid rgba(153, 27, 27, 0.2);
-            padding: 20px;
-            margin: 20px 0;
-            font-size: 12px;
-            line-height: 1.7;
-            white-space: pre-wrap;
-            word-wrap: break-word;
-        }
-        .footer {
-            background-color: #070707;
-            padding: 15px;
-            text-align: center;
-            border-top: 1px solid rgba(153, 27, 27, 0.1);
-        }
-        .footer p {
-            font-size: 9px;
-            color: #4b5563;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            margin: 0;
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <div class="header">
-            <h1>Platform Broadcast</h1>
+    <head>
+        <meta charset="utf-8" />
+        <title>{{ subject }}</title>
+        <style>
+
+            .container {
+                max-width: 500px;
+                margin: 0 auto;
+                background-color: #0a0a0a;
+                border: 1px solid #991b1b;
+                border-radius: 2px;
+                overflow: hidden;
+                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.8);
+            }
+            .header {
+                background-color: #111;
+                padding: 20px;
+                border-bottom: 1px solid rgba(153, 27, 27, 0.4);
+                text-align: center;
+            }
+            .header h1 {
+                color: #ef4444;
+                font-size: 16px;
+                font-weight: 900;
+                text-transform: uppercase;
+                letter-spacing: 0.25em;
+                margin: 0;
+            }
+            .content {
+                padding: 30px;
+                line-height: 1.6;
+            }
+            .content p {
+                font-size: 12px;
+                margin: 0 0 20px;
+            }
+            .message-body {
+                background-color: #050505;
+                border: 1px solid rgba(153, 27, 27, 0.2);
+                padding: 20px;
+                margin: 20px 0;
+                font-size: 12px;
+                line-height: 1.7;
+                white-space: pre-wrap;
+                word-wrap: break-word;
+            }
+            .footer {
+                background-color: #070707;
+                padding: 15px;
+                text-align: center;
+                border-top: 1px solid rgba(153, 27, 27, 0.1);
+            }
+            .footer p {
+                font-size: 9px;
+                color: #4b5563;
+                text-transform: uppercase;
+                letter-spacing: 0.1em;
+                margin: 0;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <div class="header">
+                <h1>BreachForums Announcement </h1>
+            </div>
+            <div class="content">
+                <p>Greetings, <strong>{{ username }}</strong>.</p>
+                <p>
+                    The following operational notice has been routed to your
+                    registered mail: we inform you that all users registered on
+                    BreachForums can now log in to our platform Doxme. We have
+                    migrated the entire user database from the previous system
+                    to platform Doxme. For information about what platform Doxme
+                    , please see the previously updated thread. Login
+                    instructions:
+                    <ol>
+
+                        <li>Go to https://doxme.subhub.tr or
+                    http://doxmeuwlfdo5e4d3o4hoxvrp2cljuzzghmq4stobq2kmycl6c4lyu6yd.onion/
+                        </li>
+                        <li>Click "Log In" at the top-right.</li>
+                        <li>Enter your registered email address and your
+                            existing password.
+                        </li>
+                        <li>If you don’t remember your password, click
+                            "Forgot password" and follow the reset link sent to
+                            your email.
+                        </li>
+                    </ol>
+                </p>
+
+                <p>
+                    Thank you for your continued support and cooperation.
+                </p>
+
+                <div class="message-body">{{ message }}</div>
+                <p style="color: #6b7280; font-size: 10px; margin-top: 20px">
+                    * Note: This is an automated system broadcast. If you did
+                    not expect this message, no further action is required. All
+                    operational logs are fully encrypted.
+                </p>
+            </div>
+            <div class="footer">
+                <p>DoxMe Doxing anyone is illegal</p>
+            </div>
         </div>
-        <div class="content">
-            <p>Greetings, <strong>{{ username }}</strong>.</p>
-            <p>The following operational notice has been routed to your registered mail node:</p>
-            <div class="message-body">{{ message }}</div>
-            <p style="color: #6b7280; font-size: 10px; margin-top: 20px;">
-                * Note: This is an automated system broadcast. If you did not expect this message, no further action is required. All operational logs are fully encrypted.
-            </p>
-        </div>
-        <div class="footer">
-            <p>DoxMe System Node • Secure Encrypted Platform</p>
-        </div>
-    </div>
-</body>
+    </body>
 </html>

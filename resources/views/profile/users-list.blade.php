@@ -2,14 +2,7 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 font-mono text-gray-300">
         
         <div class="border-b border-red-950/40 pb-6 mb-8 flex flex-col md:flex-row md:items-end justify-between gap-4">
-            <div>
-                <h1 class="text-xl md:text-2xl font-black text-white uppercase tracking-wider" style="font-family: 'Outfit', sans-serif;">
-                    Our <span class="text-red-500">Users</span>
-                </h1>
-                <p class="text-[10px] text-gray-500 mt-1.5 uppercase tracking-wider">
-                    Secure index of captured aliases and system entities ordered by reputation score.
-                </p>
-            </div>
+         
 
             <form method="GET" action="{{ route('profile.users-list') }}" class="flex flex-wrap items-center gap-2 font-mono text-[10px] w-full md:w-auto">
                 <input type="text" name="q" value="{{ $search ?? '' }}" placeholder="Search username or email..."
@@ -47,7 +40,7 @@
             <section class="space-y-4">
                 <div class="flex items-center justify-between border-b border-red-950/20 pb-2">
                     <div class="text-[11px] font-black text-red-500 uppercase tracking-[0.25em] flex items-center gap-2">
-                        <span class="text-red-900/50">[01]</span> SYSTEM STAFF & MODERATORS
+                        <span class="text-red-900/50">[01]</span> STAFF & MODERATORS
                     </div>
                 </div>
                 
@@ -161,7 +154,7 @@
             <section class="space-y-4">
                 <div class="flex items-center justify-between border-b border-red-950/20 pb-2">
                     <div class="text-[11px] font-black text-blue-400 uppercase tracking-[0.25em] flex items-center gap-2">
-                        <span class="text-blue-900/50">[03]</span> PROMOTED ADVERTISERS
+                        <span class="text-blue-900/50">[03]</span>  ADVERTISERS
                     </div>
                 </div>
                 
