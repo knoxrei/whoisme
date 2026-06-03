@@ -11,7 +11,7 @@
             </div>
 
             <p class="text-sm text-gray-500 text-center leading-relaxed mb-6 max-w-md">
-                Search public pastes and profiles. Minimal logging, encrypted transport.
+            Find anyone's identity here anonymously without worrying about any limitations. <span class="text-red-500 font-black">We do not track you, all data is fully encrypted.</span>
             </p>
 
             <div class="flex flex-wrap items-center justify-center gap-2 mb-8 text-sm">
@@ -65,11 +65,13 @@
                 </div>
             </form>
 
-            <nav class="w-full flex flex-wrap justify-center gap-x-4 gap-y-2 text-sm text-gray-500 mb-8 pb-8 border-b border-red-950/30">
-                <a href="{{ route('search.trending') }}" class="hover:text-red-500 transition-colors">Trending</a>
-                <a href="{{ route('search.recent') }}" class="hover:text-red-500 transition-colors">Recent</a>
-                <a href="{{ route('pastebin.create') }}" class="hover:text-red-500 transition-colors">New paste</a>
-            </nav>
+            <div class="w-full flex justify-center gap-4 text-[10px] font-bold uppercase tracking-widest border-t border-red-950/20 pt-6 mb-8">
+                <a href="{{ route('search.trending') }}" class="text-gray-500 hover:text-red-500 transition-colors">Trending Indexes</a>
+                <span class="text-red-950/50 select-none">|</span>
+                <a href="{{ route('search.recent') }}" class="text-gray-500 hover:text-red-500 transition-colors">Recent Feeds</a>
+                <span class="text-red-950/50 select-none">|</span>
+                <a href="{{ route('pastebin.create') }}" class="text-gray-500 hover:text-red-500 transition-colors">Publish Paste</a>
+            </div>
 
             <x-internal-ads class="mb-6 w-full" />
 
