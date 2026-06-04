@@ -6,8 +6,7 @@
             <div class="mb-6 flex flex-col md:flex-row items-start md:items-center justify-between border-b border-red-950/30 pb-4 gap-4">
                 <div class="flex items-center gap-3">
                     <div>
-                        <h2 class="text-sm font-black uppercase tracking-[0.2em] text-white">Realtime Public Feed</h2>
-                        <p class="text-[8px] text-gray-500 uppercase tracking-widest mt-0.5">Live index stream of public information releases</p>
+                        <h2 class="text-sm font-black  tracking-[0.2em] text-white">Recent Feeds</h2>
                     </div>
                 </div>
                 
