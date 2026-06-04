@@ -28,7 +28,7 @@
 
         @if($pinnedPastebins->isNotEmpty())
             <div class="border border-red-600/40 overflow-hidden rounded-sm mb-6" id="pinned-section">
-                <div class="bg-[#111] px-4 py-3 border-b border-red-600/40 flex items-center justify-between">
+                <div class=" px-4 py-3 border-b border-red-600/40 flex items-center justify-between">
                     <div class="flex items-center gap-2 text-xs font-black text-red-500 uppercase tracking-wider">
                         <svg class="w-3.5 h-3.5 text-red-500" fill="currentColor" viewBox="0 0 24 24">
                             <path d="M16 2l-1.41 1.41L16 5H8.83L7 3.17 5.59 4.58 7 6v2.17l-5 5V16h5v5l1 1 1-1v-5h5v-2.83l5-5V6l1.41-1.41L16 2zm-1 12H9v-1.17L13 8.83V6h-2V8H9V6H7v2.83l-4 4V14h12v-1.17l-4-4V8H9V6h6v2.83l4 4V14h-4z"/>
