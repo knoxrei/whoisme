@@ -150,7 +150,7 @@
 
                             @if($pastebin->cover_path && $pastebin->cover_path !== 'defaultCover.png')
                                 <div class="mb-8 border border-red-900/20 bg-[#050505] p-1 rounded-sm overflow-hidden">
-                                    <img src="{{ asset('storage/' . $pastebin->cover_path) }}" class="w-full max-h-[400px] object-cover" alt="cover">
+                                    <img src="{{ asset('storage/' . $pastebin->cover_path) }}" class="w-full h-auto block" alt="cover">
                                 </div>
                             @endif
 
