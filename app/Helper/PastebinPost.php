@@ -28,6 +28,13 @@ class PastebinPost
         // if has picture  ( arrray )
 
 
+        // Resolve anonymous author name from request attributes (set by HandleAnonymousUser middleware)
+        // or fallback to cookie, then a generic default.
+        $request = request();
+        $anonName = $request->attributes->get('anon_name')
+            ?? $request->cookie('anon_name')
+            ?? 'Anonymous';
+
         $pastebin = Pastebin::create([
             'title' => $validatedData['title'],
             'content' => $validatedData['content'],
@@ -36,7 +43,7 @@ class PastebinPost
             'description' => $validatedData['description'] ?? null,
             'cover_path' => $coverPath,
             'user_id' => null,
-            'author_name' => session('anonuser'),
+            'author_name' => $anonName,
             'password' => $validatedData['password'] ?? null,
             'visibility' => $validatedData['visibility'] ?? 'public',
             'is_self_destruct' => $validatedData['is_self_destruct'] ?? false,
