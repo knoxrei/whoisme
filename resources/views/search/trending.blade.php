@@ -15,7 +15,7 @@
                 <div class="flex items-center gap-3 text-[9px] uppercase font-bold tracking-widest text-gray-500">
                     <a href="{{ route('search.index') }}" class="hover:text-red-500 transition-colors">Home</a>
                     <span>•</span>
-                    <a href="{{ route('search.recent') }}" class="hover:text-red-500 transition-colors">Recent Feeds</a>
+                    <a href="{{ route('pastebin.list') }}" class="hover:text-red-500 transition-colors">Recent Feeds</a>
                     <span>•</span>
                     <a href="{{ route('search.advanced') }}" class="hover:text-red-500 transition-colors">Advanced Filters</a>
                 </div>

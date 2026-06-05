@@ -54,7 +54,9 @@ Route::get('/', [SearchController::class, 'index'])->name('welcome');
 Route::get('/search', [SearchController::class, 'index'])->name('search.index');
 Route::get('/advanced-search', [SearchController::class, 'advanced'])->name('search.advanced');
 Route::get('/trending', [SearchController::class, 'trending'])->name('search.trending');
-Route::get('/recent', [\App\Http\Controllers\PastebinListController::class, 'index'])->name('search.recent');
+Route::get('/recent', function () {
+    return redirect()->route('pastebin.list');
+})->name('search.recent');
 Route::get('/search/suggest', [SearchController::class, 'suggest'])->name('search.suggest');
 Route::get('/search/stats', [SearchController::class, 'stats'])->name('search.stats');
 

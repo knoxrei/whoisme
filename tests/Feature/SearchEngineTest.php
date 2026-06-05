@@ -107,8 +107,7 @@ class SearchEngineTest extends TestCase
         $trendingResponse->assertSee('Trending Paste Index');
 
         $recentResponse = $this->get(route('search.recent'));
-        $recentResponse->assertStatus(200);
-        $recentResponse->assertSee('Realtime Public Feed');
+        $recentResponse->assertRedirect(route('pastebin.list'));
     }
 
     /**

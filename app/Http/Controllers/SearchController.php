@@ -126,45 +126,6 @@ class SearchController extends Controller
         return view('search.trending', compact('title', 'pastes'));
     }
 
-    /**
-     * Recent Pastes Page — cursor-based feed with AJAX Load More support.
-     */
-    public function recent(Request $request)
-    {
-        $title  = 'Realtime Public Pastes';
-        $cursor = $request->input('cursor');
-
-        $query = Pastebin::query()
-            ->with(['user.identification'])
-            ->withCount('comments')
-            ->where('visibility', 'public')
-            ->whereNull('password')
-            ->where('is_self_destruct', false);
-
-        if ($cursor) {
-            $query->where('id', '<', $cursor);
-        }
-
-        $pastes = $query->orderBy('created_at', 'desc')
-            ->orderBy('id', 'desc') // stable secondary sort
-            ->limit(20)
-            ->get();
-
-        $nextCursor = null;
-        if ($pastes->count() === 20) {
-            $nextCursor = $pastes->last()->id;
-        }
-
-        if ($request->ajax() || $request->input('ajax')) {
-            $html = view('search.partials.recent-rows', compact('pastes'))->render();
-            return response()->json([
-                'html'        => $html,
-                'next_cursor' => $nextCursor,
-            ]);
-        }
-
-        return view('search.recent', compact('title', 'pastes', 'nextCursor'));
-    }
 
     /**
      * Track visitor heartbeat on root page (AJAX).

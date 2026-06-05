@@ -141,9 +141,41 @@
             </div>
         @endif
 
+        <div class="mb-6 border border-red-900/30 p-4 bg-[#0a0a0a] rounded-sm">
+            <form action="{{ route('pastebin.list') }}" method="GET" class="flex flex-col md:flex-row gap-4">
+                <div class="flex-grow">
+                    <input type="text" name="q" value="{{ $query }}" placeholder="Search title, description or content..." 
+                           class="w-full bg-[#050505] border border-red-900/30 text-gray-200 text-xs px-4 py-2 focus:outline-none focus:border-red-600 transition-colors rounded-sm">
+                </div>
+                <div class="flex gap-2">
+                    <select name="order_by" class="bg-[#050505] border border-red-900/30 text-gray-200 text-xs px-3 py-2 focus:outline-none focus:border-red-600 transition-colors rounded-sm">
+                        @foreach($allowedOrderBy as $key => $label)
+                            <option value="{{ $key }}" {{ $orderBy == $key ? 'selected' : '' }}>Order By: {{ $label }}</option>
+                        @endforeach
+                    </select>
+                    <select name="order_direction" class="bg-[#050505] border border-red-900/30 text-gray-200 text-xs px-3 py-2 focus:outline-none focus:border-red-600 transition-colors rounded-sm">
+                        <option value="desc" {{ $orderDirection == 'desc' ? 'selected' : '' }}>DESC</option>
+                        <option value="asc" {{ $orderDirection == 'asc' ? 'selected' : '' }}>ASC</option>
+                    </select>
+                    <button type="submit" class="bg-red-900/20 border border-red-900/40 hover:bg-red-900/40 text-red-500 text-xs font-black uppercase px-6 py-2 transition-all rounded-sm">
+                        Filter
+                    </button>
+                    @if($query || $orderBy !== 'created_at' || $orderDirection !== 'desc')
+                        <a href="{{ route('pastebin.list') }}" class="bg-gray-900/20 border border-gray-900/40 hover:bg-gray-900/40 text-gray-500 text-xs font-black uppercase px-4 py-2 transition-all rounded-sm flex items-center">
+                            Reset
+                        </a>
+                    @endif
+                </div>
+            </form>
+        </div>
+
         <div class="border border-red-900/30 overflow-hidden rounded-sm mb-6">
             <div class="px-4 py-3 border-b border-red-900/40 text-xs font-black text-red-500 uppercase tracking-wider">
-                Recent Pastebins
+                @if($query)
+                    Search Results for: "{{ $query }}"
+                @else
+                    Pastebin Index
+                @endif
             </div>
 
             @if($pastebins->isEmpty())

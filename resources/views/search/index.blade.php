@@ -68,7 +68,7 @@
             <div class="w-full flex justify-center gap-4 text-[10px] font-bold uppercase tracking-widest border-t border-red-950/20 pt-6 mb-8">
                 <a href="{{ route('search.trending') }}" class="text-gray-500 hover:text-red-500 transition-colors">Trending Indexes</a>
                 <span class="text-red-950/50 select-none">|</span>
-                <a href="{{ route('search.recent') }}" class="text-gray-500 hover:text-red-500 transition-colors">Recent Feeds</a>
+                <a href="{{ route('pastebin.list') }}" class="text-gray-500 hover:text-red-500 transition-colors">Recent Feeds</a>
                 <span class="text-red-950/50 select-none">|</span>
                 <a href="{{ route('pastebin.create') }}" class="text-gray-500 hover:text-red-500 transition-colors">Publish Paste</a>
             </div>
