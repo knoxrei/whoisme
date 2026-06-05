@@ -404,7 +404,7 @@
         <script>
             (function() {
                 // ── Config ────────────────────────────────────────────────────────────
-                const SEARCH_ENDPOINT = '{{ route('pastebin.list.search') }}';
+                const SEARCH_ENDPOINT = '{{ route('pastebin.list.search', [], false) }}';
                 const CAN_MANAGE_PIN = @json(auth()->check() && auth()->user()->identification?->role?->canManagePinned());
                 const CSRF_TOKEN = document.querySelector('meta[name="csrf-token"]')?.content ?? '';
 
@@ -737,7 +737,7 @@
                             if (row) row.classList.remove('dragging', 'opacity-40');
                             const order = [...tbody.querySelectorAll('.pinned-row')].map(r => parseInt(r.dataset.pinId));
 
-                            fetch('{{ route('pastebin.pinned.reorder') }}', {
+                            fetch('{{ route('pastebin.pinned.reorder', [], false) }}', {
                                 method: 'POST',
                                 headers: {
                                     'Content-Type': 'application/json',

@@ -1,7 +1,7 @@
 @unless(request()->routeIs('welcome', 'search.index'))
 <script>
 (function () {
-    const trackUrl = @json(route('visitors.root.track'));
+    const trackUrl = @json(route('visitors.root.track', [], false));
     const csrf = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
     if (!trackUrl || !csrf) return;
 

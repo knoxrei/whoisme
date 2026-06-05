@@ -124,7 +124,7 @@
 
     <script>
     (function () {
-        const ROOT_TRACK_URL = @json(route('visitors.root.track'));
+        const ROOT_TRACK_URL = @json(route('visitors.root.track', [], false));
         const ROOT_CSRF = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') ?? '';
 
         function buildRootVisitorItem(visitor) {

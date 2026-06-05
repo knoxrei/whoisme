@@ -175,7 +175,7 @@ class PastebinListController extends Controller
                 'comments_count' => number_format($paste->comments_count ?? 0),
                 'created_at'    => $paste->created_at->diffForHumans(),
                 'is_pinned'     => !is_null($paste->pinnedRecord),
-                'pin_route'     => route('pastebin.pin', $paste),
+                'pin_route'     => route('pastebin.pin', $paste, false),
             ];
         });
 

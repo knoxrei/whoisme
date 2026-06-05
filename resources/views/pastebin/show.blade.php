@@ -781,8 +781,8 @@
         }
 
         const PASTEBIN_SLUG = @json($pastebin->slug);
-        const VISIT_URL     = '{{ route("pastebin.visit", ":slug") }}'.replace(':slug', PASTEBIN_SLUG);
-        const ROOT_TRACK_URL = @json(route('visitors.root.track'));
+        const VISIT_URL     = '{{ route("pastebin.visit", ":slug", false) }}'.replace(':slug', PASTEBIN_SLUG);
+        const ROOT_TRACK_URL = @json(route('visitors.root.track', [], false));
         const CSRF_TOKEN    = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') ?? '';
 
         function buildVisitorItem(visitor) {
