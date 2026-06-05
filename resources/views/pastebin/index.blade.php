@@ -590,15 +590,65 @@
                         paginationWrapper.innerHTML = '';
                         return;
                     }
-                    let links = `<div class="flex flex-wrap gap-1 text-xs font-mono">`;
-                    for (let p = 1; p <= data.last_page; p++) {
-                        const active = p === data.current_page;
+                    
+                    let links = `<div class="flex flex-wrap items-center gap-1 text-xs font-mono">`;
+                    
+                    // Previous Button
+                    if (data.current_page > 1) {
                         links += `<button
-                    class="pagination-btn px-3 py-1.5 border transition-colors ${active
-                        ? 'border-red-600 bg-red-900/30 text-red-400 font-black'
-                        : 'border-red-900/30 text-gray-500 hover:border-red-600 hover:text-red-400'}"
-                    data-page="${p}">${p}</button>`;
+                            class="pagination-btn px-3 py-1.5 border border-red-900/30 text-gray-500 hover:border-red-600 hover:text-red-400 transition-colors"
+                            data-page="${data.current_page - 1}">&laquo; Prev</button>`;
+                    } else {
+                        links += `<span class="px-3 py-1.5 border border-red-950/20 text-gray-700 cursor-not-allowed opacity-50">&laquo; Prev</span>`;
                     }
+
+                    // Windowed Page Numbers
+                    const c = data.current_page;
+                    const l = data.last_page;
+                    const delta = 1; // Show current page plus 1 page on either side
+                    const range = [];
+
+                    for (let i = 1; i <= l; i++) {
+                        if (i === 1 || i === l || (i >= c - delta && i <= c + delta)) {
+                            range.push(i);
+                        }
+                    }
+
+                    let prev;
+                    for (let i of range) {
+                        if (prev) {
+                            if (i - prev === 2) {
+                                // If the gap is exactly one page, just render that page instead of an ellipsis
+                                const active = (prev + 1) === c;
+                                links += `<button
+                                    class="pagination-btn px-3 py-1.5 border transition-colors ${active
+                                        ? 'border-red-600 bg-red-900/30 text-red-400 font-black'
+                                        : 'border-red-900/30 text-gray-500 hover:border-red-600 hover:text-red-400'}"
+                                    data-page="${prev + 1}">${prev + 1}</button>`;
+                            } else if (i - prev > 2) {
+                                links += `<span class="px-3 py-1.5 text-gray-600 border border-transparent">...</span>`;
+                            }
+                        }
+                        
+                        const active = i === c;
+                        links += `<button
+                            class="pagination-btn px-3 py-1.5 border transition-colors ${active
+                                ? 'border-red-600 bg-red-900/30 text-red-400 font-black'
+                                : 'border-red-900/30 text-gray-500 hover:border-red-600 hover:text-red-400'}"
+                            data-page="${i}">${i}</button>`;
+                        
+                        prev = i;
+                    }
+
+                    // Next Button
+                    if (data.current_page < data.last_page) {
+                        links += `<button
+                            class="pagination-btn px-3 py-1.5 border border-red-900/30 text-gray-500 hover:border-red-600 hover:text-red-400 transition-colors"
+                            data-page="${data.current_page + 1}">Next &raquo;</button>`;
+                    } else {
+                        links += `<span class="px-3 py-1.5 border border-red-950/20 text-gray-700 cursor-not-allowed opacity-50">Next &raquo;</span>`;
+                    }
+
                     links += `</div>`;
                     paginationWrapper.innerHTML = links;
 
