@@ -169,7 +169,7 @@
                     {{-- Search input --}}
                     <div class="flex-grow relative">
                         <input type="text" id="search-input" value="{{ $query }}"
-                            placeholder="Search by title..." autocomplete="off"
+                            placeholder="Search by title (min. 4 chars)..." autocomplete="off"
                             class="w-full bg-[#050505] border border-red-900/30 text-gray-200 text-xs px-4 py-2 pr-10 focus:outline-none focus:border-red-600 transition-colors rounded-sm">
                         {{-- Spinner --}}
                         <div id="search-spinner" class="hidden absolute right-3 top-1/2 -translate-y-1/2">
@@ -475,7 +475,23 @@
 
                     clearTimeout(debounceTimer);
                     debounceTimer = setTimeout(() => {
-                        currentQuery = searchInput.value.trim();
+                        const val = searchInput.value.trim();
+                        let targetQuery = '';
+                        if (val.length >= 4) {
+                            targetQuery = val;
+                        } else if (val.length > 0) {
+                            searchSpinner.classList.add('hidden');
+                            updateClearBtn();
+                            return;
+                        }
+
+                        if (targetQuery === currentQuery) {
+                            searchSpinner.classList.add('hidden');
+                            updateClearBtn();
+                            return;
+                        }
+
+                        currentQuery = targetQuery;
                         currentPage = 1;
                         doSearch();
                     }, 400);

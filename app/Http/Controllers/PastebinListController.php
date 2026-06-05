@@ -28,7 +28,7 @@ class PastebinListController extends Controller
             ->whereNull('password')
             ->where('is_self_destruct', false);
 
-        if ($query) {
+        if ($query && strlen($query) >= 4) {
             $pastebinsQuery->where('title', 'like', "%{$query}%");
         }
 
@@ -144,7 +144,7 @@ class PastebinListController extends Controller
             ->whereNull('password')
             ->where('is_self_destruct', false);
 
-        if ($query !== '') {
+        if ($query !== '' && strlen($query) >= 4) {
             $pastebinsQuery->where('title', 'like', "%{$query}%");
         }
 
