@@ -118,7 +118,7 @@
                                         {{ number_format($paste->comments_count ?? 0) }}
                                     </td>
                                     <td class="p-4 text-right text-gray-500 text-[10px] tracking-wider">
-                                        {{ $paste->created_at->format('d-m-Y') }}
+                                        {{ $paste->created_at->diffForHumans() ?? '0 seconds ago'}}
                                     </td>
                                     @auth
                                         @if(auth()->user()->identification?->role?->canManagePinned())
