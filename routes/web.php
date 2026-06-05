@@ -66,6 +66,7 @@ Route::get('/visitors/root', [SearchController::class, 'getRootVisitors'])->name
 
 // Pastebin List
 Route::get('/pastebins', [\App\Http\Controllers\PastebinListController::class, 'index'])->name('pastebin.list');
+Route::get('/pastebins/search', [\App\Http\Controllers\PastebinListController::class, 'search'])->name('pastebin.list.search');
 
 
 Route::get('/support', function () {
