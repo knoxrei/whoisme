@@ -144,13 +144,13 @@ $ogImage = $pastebin->cover_path && $pastebin->cover_path !== 'defaultCover.png'
                 <!-- Left Profile Card -->
                 <aside class="w-full lg:w-52 flex-shrink-0 relative">
                     <!-- Background panel fills full height of the row -->
-                    <div class="absolute inset-0 border border-[#1e1e1e] bg-[#0d0d0d]"></div>
+                    <div class="absolute inset-0 border border-red-900/40 bg-[#050505]"></div>
                     <!-- Sticky inner content -->
                     <div class="sticky top-20 px-4 py-5 flex flex-col gap-4 relative z-10">
 
                         <!-- Avatar + Name -->
                         <div class="flex flex-col items-center text-center">
-                            <div class="w-16 h-16 overflow-hidden border border-[#222] mb-3 flex-shrink-0">
+                            <div class="w-16 h-16 overflow-hidden border border-red-900/30 mb-3 flex-shrink-0">
                                 @if($pastebin->user && $pastebin->user->identification->avatar_path)
                                 <img src="{{ asset('storage/' . $pastebin->user->identification->avatar_path) }}" class="w-full h-full object-cover" alt="avatar">
                                 @else
@@ -172,7 +172,7 @@ $ogImage = $pastebin->cover_path && $pastebin->cover_path !== 'defaultCover.png'
                         </div>
 
                         <!-- Divider -->
-                        <div class="border-t border-[#1a1a1a]"></div>
+                        <div class="border-t border-red-900/20"></div>
 
                         <!-- Stats -->
                         <div class="space-y-2">
@@ -201,7 +201,7 @@ $ogImage = $pastebin->cover_path && $pastebin->cover_path !== 'defaultCover.png'
                         </div>
 
                         <!-- Divider -->
-                        <div class="border-t border-[#1a1a1a]"></div>
+                        <div class="border-t border-red-900/20"></div>
 
                         <!-- Online Visitors -->
                         <div>
@@ -234,7 +234,7 @@ $ogImage = $pastebin->cover_path && $pastebin->cover_path !== 'defaultCover.png'
                 <main class="flex-1 min-w-0 flex flex-col gap-0.5">
 
                     <!-- Action Toolbar -->
-                    <div class="border border-[#1e1e1e] bg-[#0d0d0d] px-4 py-2 flex items-center justify-between">
+                    <div class="border border-red-900/40 bg-[#050505] px-4 py-2 flex items-center justify-between">
                         <div class="flex items-center gap-1">
                             @auth
                             @can('delete', $pastebin)
@@ -247,25 +247,25 @@ $ogImage = $pastebin->cover_path && $pastebin->cover_path !== 'defaultCover.png'
                             </form>
                             @endcan
                             @can('update', $pastebin)
-                            <button onclick="document.getElementById('edit-modal').classList.remove('hidden')" class="px-3 py-1 text-[10px] font-semibold text-gray-400 border border-[#222] hover:border-red-600 hover:text-white uppercase">Edit</button>
+                            <button onclick="document.getElementById('edit-modal').classList.remove('hidden')" class="px-3 py-1 text-[10px] font-semibold text-gray-400 border border-red-900/20 hover:border-red-600 hover:text-white uppercase">Edit</button>
                             @else
-                            <button onclick="document.getElementById('edit-modal').classList.remove('hidden')" class="px-3 py-1 text-[10px] font-semibold text-gray-400 border border-[#222] hover:border-red-600 hover:text-white uppercase">Suggest Edit</button>
+                            <button onclick="document.getElementById('edit-modal').classList.remove('hidden')" class="px-3 py-1 text-[10px] font-semibold text-gray-400 border border-red-900/20 hover:border-red-600 hover:text-white uppercase">Suggest Edit</button>
                             @endcan
                             @endauth
-                            <button onclick="document.getElementById('report-modal').classList.remove('hidden')" class="px-3 py-1 text-[10px] font-semibold text-gray-500 border border-[#222] hover:border-gray-600 hover:text-white uppercase">Report</button>
+                            <button onclick="document.getElementById('report-modal').classList.remove('hidden')" class="px-3 py-1 text-[10px] font-semibold text-gray-500 border border-red-900/20 hover:border-red-600 hover:text-white uppercase">Report</button>
                             @guest
-                            <a href="{{ route('login') }}" class="px-3 py-1 text-[10px] font-semibold text-gray-500 border border-[#222] hover:border-gray-600 hover:text-white uppercase">Suggest Edit</a>
+                            <a href="{{ route('login') }}" class="px-3 py-1 text-[10px] font-semibold text-gray-500 border border-red-900/20 hover:border-red-600 hover:text-white uppercase">Suggest Edit</a>
                             @endguest
                         </div>
                         <div class="flex items-center gap-1">
-                            <button onclick="openShareModal()" class="px-3 py-1 text-[10px] font-semibold text-gray-400 border border-[#222] hover:border-gray-500 hover:text-white uppercase">Share</button>
-                            <a href="{{ route('pastebin.raw', $pastebin->slug) }}" target="_blank" class="px-3 py-1 text-[10px] font-semibold text-gray-400 border border-[#222] hover:border-gray-500 hover:text-white uppercase">Raw</a>
+                            <button onclick="openShareModal()" class="px-3 py-1 text-[10px] font-semibold text-gray-400 border border-red-900/20 hover:border-red-600 hover:text-white uppercase">Share</button>
+                            <a href="{{ route('pastebin.raw', $pastebin->slug) }}" target="_blank" class="px-3 py-1 text-[10px] font-semibold text-gray-400 border border-red-900/20 hover:border-red-600 hover:text-white uppercase">Raw</a>
                             <a href="{{ route('pastebin.download', $pastebin->slug) }}" class="px-3 py-1 text-[10px] font-semibold text-red-500 border border-[#2a1a1a] hover:bg-red-600 hover:text-white hover:border-red-600 uppercase">Download</a>
                         </div>
                     </div>
 
                     <!-- Content Area -->
-                    <div class="border border-[#1e1e1e] bg-[#080808]" id="content-section-container">
+                    <div class="border border-red-900/40 bg-[#050505]" id="content-section-container">
 
                         <!-- Burn-After-Reading Alert -->
                         @if(isset($isBurned) && $isBurned)
@@ -286,7 +286,7 @@ $ogImage = $pastebin->cover_path && $pastebin->cover_path !== 'defaultCover.png'
                         @endif
 
                         <!-- Maximize Button -->
-                        <button id="minimize-fixed-btn" onclick="toggleMaximizeContent()" class="hidden fixed top-4 right-4 z-[1001] bg-[#111] border border-[#2a2a2a] p-2" title="Minimize">
+                        <button id="minimize-fixed-btn" onclick="toggleMaximizeContent()" class="hidden fixed top-4 right-4 z-[1001] bg-[#050505] border border-red-900/40 p-2" title="Minimize">
                             <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 4v4m0 0H4m4 0l-5-5m11 1V4m0 0h4m-4 0l5-5M8 20v-4m0 0H4m4 0l5 5m11-1v4m0-4h4m-4 0l5 5" />
                             </svg>
@@ -428,7 +428,7 @@ $ogImage = $pastebin->cover_path && $pastebin->cover_path !== 'defaultCover.png'
                                 background: #050505;
                                 padding: 1rem 0;
                                 margin-top: 1.5rem;
-                                border-top: 1px solid #1a1a1a;
+                                border-top: 1px solid rgba(153,27,27,0.3);
                                 z-index: 10;
                             }
                         </style>
@@ -438,14 +438,14 @@ $ogImage = $pastebin->cover_path && $pastebin->cover_path !== 'defaultCover.png'
                         </div>
 
                         <!-- View Full / Maximize Buttons -->
-                        <div id="view-full-btn-container" class="border-t border-[#141414] px-4 py-2 flex items-center gap-2 bg-[#080808]">
-                            <button id="view-full-btn" onclick="toggleViewFull()" class="flex items-center gap-1.5 text-[10px] font-semibold text-gray-400 hover:text-white uppercase border border-[#222] px-3 py-1 hover:border-gray-500">
+                        <div id="view-full-btn-container" class="border-t border-red-900/20 px-4 py-2 flex items-center gap-2 bg-[#050505]">
+                            <button id="view-full-btn" onclick="toggleViewFull()" class="flex items-center gap-1.5 text-[10px] font-semibold text-red-500 hover:text-white uppercase border border-red-900/30 px-3 py-1 hover:border-red-600">
                                 <svg id="view-full-icon" class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7" />
                                 </svg>
                                 <span id="view-full-text">Show Full</span>
                             </button>
-                            <button id="maximize-btn" onclick="toggleMaximizeContent()" class="flex items-center gap-1.5 text-[10px] font-semibold text-gray-500 hover:text-white uppercase border border-[#222] px-3 py-1 hover:border-gray-500">
+                            <button id="maximize-btn" onclick="toggleMaximizeContent()" class="flex items-center gap-1.5 text-[10px] font-semibold text-gray-500 hover:text-white uppercase border border-red-900/20 px-3 py-1 hover:border-red-600">
                                 <svg id="maximize-icon" class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
                                 </svg>
@@ -456,7 +456,7 @@ $ogImage = $pastebin->cover_path && $pastebin->cover_path !== 'defaultCover.png'
 
                     <!-- Gallery Images -->
                     @if($pastebin->images && $pastebin->images->count() > 0)
-                    <div class="border border-[#1e1e1e] bg-[#080808] px-5 py-4">
+                    <div class="border border-red-900/40 bg-[#050505] px-5 py-4">
                         <div class="text-[10px] font-semibold text-gray-500 uppercase tracking-widest mb-3 flex items-center gap-2">
                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
@@ -465,7 +465,7 @@ $ogImage = $pastebin->cover_path && $pastebin->cover_path !== 'defaultCover.png'
                         </div>
                         <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-2">
                             @foreach($pastebin->images as $image)
-                            <a href="{{ asset('storage/' . $image->image_path) }}" target="_blank" class="aspect-square border border-[#1e1e1e] overflow-hidden block">
+                            <a href="{{ asset('storage/' . $image->image_path) }}" target="_blank" class="aspect-square border border-red-900/20 overflow-hidden block">
                                 <img src="{{ asset('storage/' . $image->image_path) }}" class="w-full h-full object-cover" alt="evidence">
                             </a>
                             @endforeach
@@ -479,12 +479,12 @@ $ogImage = $pastebin->cover_path && $pastebin->cover_path !== 'defaultCover.png'
                     @endphp
 
                     @if($showBanners->isNotEmpty())
-                    <div class="border border-[#1e1e1e] bg-[#080808] px-5 py-3">
+                    <div class="border border-red-900/30 bg-[#050505] px-5 py-3">
                         <p class="text-[9px] text-gray-600 font-semibold uppercase tracking-widest text-center mb-3 select-none">Sponsored</p>
                         <div class="flex flex-wrap justify-center gap-3">
                             @foreach($showBanners as $banner)
                             <a href="{{ route('ads.click', $banner->id) }}" target="_blank"
-                                class="block w-full max-w-[466px] h-[58px] border border-[#1a1a1a] hover:border-[#333] overflow-hidden bg-black">
+                                class="block w-full max-w-[466px] h-[58px] border border-red-950/50 hover:border-red-600/50 overflow-hidden bg-black">
                                 <img src="{{ asset($banner->media_url) }}" alt="{{ $banner->title }}" class="w-full h-full object-cover opacity-75 hover:opacity-100">
                             </a>
                             @endforeach
@@ -493,8 +493,8 @@ $ogImage = $pastebin->cover_path && $pastebin->cover_path !== 'defaultCover.png'
                     @endif
 
                     <!-- Comments Section -->
-                    <div class="border border-[#1e1e1e] bg-[#080808]">
-                        <div class="px-5 py-3 border-b border-[#141414] flex items-center justify-between">
+                    <div class="border border-red-900/40 bg-[#050505]">
+                        <div class="px-5 py-3 border-b border-red-900/20 flex items-center justify-between">
                             <span class="text-[10px] font-semibold text-gray-500 uppercase tracking-widest">Comments</span>
                         </div>
 
@@ -511,15 +511,15 @@ $ogImage = $pastebin->cover_path && $pastebin->cover_path !== 'defaultCover.png'
                             .comment-content p:last-child { margin-bottom: 0; }
                         </style>
 
-                        <div class="divide-y divide-[#111]">
+                        <div class="divide-y divide-red-900/10">
                             @if(isset($comments) && count($comments) > 0)
                             @foreach($comments as $comment)
                             <div class="px-5 py-4 flex gap-3">
-                                <div class="w-7 h-7 overflow-hidden flex-shrink-0 border border-[#1e1e1e]">
+                                <div class="w-7 h-7 overflow-hidden flex-shrink-0 border border-red-900/20">
                                     @if($comment->user->identification->avatar_path)
                                     <img src="{{ asset('storage/' . $comment->user->identification->avatar_path) }}" class="w-full h-full object-cover" alt="">
                                     @else
-                                    <div class="w-full h-full flex items-center justify-center text-[10px] font-bold text-gray-600 bg-[#111]">
+                                    <div class="w-full h-full flex items-center justify-center text-[10px] font-bold text-gray-600 bg-[#0a0a0a]">
                                         {{ strtoupper(substr($comment->user->username, 0, 1)) }}
                                     </div>
                                     @endif
@@ -550,13 +550,13 @@ $ogImage = $pastebin->cover_path && $pastebin->cover_path !== 'defaultCover.png'
                         </div>
 
                         @auth
-                        <form action="{{ route('pastebin.comments.store', $pastebin) }}" method="POST" class="border-t border-[#141414] px-5 py-4">
+                        <form action="{{ route('pastebin.comments.store', $pastebin) }}" method="POST" class="border-t border-red-900/20 px-5 py-4">
                             @csrf
                             <div class="flex flex-col gap-2">
-                                <textarea id="comment-textarea" name="content" rows="3" placeholder="Write a comment..." required class="w-full bg-[#050505] border border-[#1e1e1e] px-3 py-2 text-[12px] font-mono text-gray-300 focus:outline-none focus:border-[#333] resize-none"></textarea>
+                                <textarea id="comment-textarea" name="content" rows="3" placeholder="Write a comment..." required class="w-full bg-[#000] border border-red-900/20 px-3 py-2 text-[12px] font-mono text-gray-300 focus:outline-none focus:border-red-600 resize-none"></textarea>
                                 @error('content') <span class="text-red-500 text-[10px]">{{ $message }}</span> @enderror
                                 <div class="flex justify-end">
-                                    <button type="submit" class="border border-[#2a1a1a] text-red-500 hover:bg-red-600 hover:text-white hover:border-red-600 px-5 py-1.5 text-[10px] font-semibold uppercase">Post</button>
+                                    <button type="submit" class="border border-red-900/40 text-red-500 hover:bg-red-600 hover:text-white hover:border-red-600 px-5 py-1.5 text-[10px] font-semibold uppercase">Post</button>
                                 </div>
                             </div>
                         </form>
@@ -571,7 +571,7 @@ $ogImage = $pastebin->cover_path && $pastebin->cover_path !== 'defaultCover.png'
                             }
                         </script>
                         @else
-                        <div class="border-t border-[#141414] px-5 py-4 text-[11px] text-gray-600 text-center">
+                        <div class="border-t border-red-900/20 px-5 py-4 text-[11px] text-gray-600 text-center">
                             <a href="{{ route('login') }}" class="text-red-500 hover:underline">Log in</a> to post a comment.
                         </div>
                         @endauth
@@ -580,15 +580,15 @@ $ogImage = $pastebin->cover_path && $pastebin->cover_path !== 'defaultCover.png'
                     <!-- Pending Suggestions Block -->
                     @if(auth()->check() && (auth()->id() === $pastebin->user_id || auth()->user()->canUsePremiumFeatures()))
                     @if(isset($pendingEdits) && count($pendingEdits) > 0)
-                    <div class="border border-[#2a1a1a] bg-[#080808]">
-                        <div class="px-5 py-3 border-b border-[#141414] flex items-center gap-2">
+                    <div class="border border-red-900/40 bg-[#050505]">
+                        <div class="px-5 py-3 border-b border-red-900/20 flex items-center gap-2">
                             <span class="w-1.5 h-1.5 bg-red-600 rounded-full inline-block"></span>
                             <span class="text-[10px] font-semibold text-gray-400 uppercase tracking-widest">Pending Edits ({{ count($pendingEdits) }})</span>
                         </div>
-                        <div class="divide-y divide-[#111]">
+                        <div class="divide-y divide-red-900/10">
                             @foreach($pendingEdits as $edit)
                             <div class="px-5 py-4 flex items-start gap-4">
-                                <div class="flex-shrink-0 w-8 h-8 border border-[#1e1e1e] flex items-center justify-center text-[10px] font-bold text-gray-500 bg-[#0a0a0a]">
+                                <div class="flex-shrink-0 w-8 h-8 border border-red-900/20 flex items-center justify-center text-[10px] font-bold text-gray-500 bg-[#0a0a0a]">
                                     {{ strtoupper(substr($edit->user->username, 0, 1)) }}
                                 </div>
                                 <div class="flex-1 min-w-0">
