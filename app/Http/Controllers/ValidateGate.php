@@ -15,7 +15,7 @@ class ValidateGate extends Controller
     public function register(Request $request)
     {
         $ref = $request->query('ref');
-        
+
         if (!$ref && session()->has('referrer_id')) {
             $referrer = User::find(session()->get('referrer_id'));
             if ($referrer) {
@@ -212,7 +212,7 @@ class ValidateGate extends Controller
             return redirect()->route('login')->with('error', 'Credentials do not match our records.');
         }
 
-        Auth::login($user, $request->boolean('remember'));
+        Auth::login($user);
         $user->update(['last_active' => now()]);
 
         session()->put('anonuser', $user->username);
