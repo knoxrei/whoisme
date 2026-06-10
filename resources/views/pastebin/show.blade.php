@@ -138,12 +138,99 @@ $ogImage = $pastebin->cover_path && $pastebin->cover_path !== 'defaultCover.png'
                 </div>
             </div>
 
-            <!-- Main Layout: Content + Right Sidebar -->
-            <div class="flex flex-col lg:flex-row gap-0.5 items-start">
+            <!-- Main Layout: Left Profile Card + Content -->
+            <div class="flex flex-col lg:flex-row gap-0.5 items-stretch">
 
-                <!-- Main Content Column -->
+                <!-- Left Profile Card -->
+                <aside class="w-full lg:w-52 flex-shrink-0 relative">
+                    <!-- Background panel fills full height of the row -->
+                    <div class="absolute inset-0 border border-[#1e1e1e] bg-[#0d0d0d]"></div>
+                    <!-- Sticky inner content -->
+                    <div class="sticky top-20 px-4 py-5 flex flex-col gap-4 relative z-10">
 
-                <!-- Main Content + Sidebar Wrapper -->
+                        <!-- Avatar + Name -->
+                        <div class="flex flex-col items-center text-center">
+                            <div class="w-16 h-16 overflow-hidden border border-[#222] mb-3 flex-shrink-0">
+                                @if($pastebin->user && $pastebin->user->identification->avatar_path)
+                                <img src="{{ asset('storage/' . $pastebin->user->identification->avatar_path) }}" class="w-full h-full object-cover" alt="avatar">
+                                @else
+                                <img src="{{ asset('storage/avatars/default.png') }}" class="w-full h-full object-cover" alt="avatar">
+                                @endif
+                            </div>
+                            <a href="{{ $pastebin->user ? route('profile.show', $pastebin->user->username) : '#' }}" class="block text-[12px] font-bold text-white hover:text-red-400 leading-tight mb-0.5">
+                                @if($pastebin->user)
+                                {!! $pastebin->user->identification->role->userStyleWithBanner($pastebin->author_name, $pastebin->user->identification->color_username ?? '#ffffff') !!}
+                                @else
+                                {{ $pastebin->author_name }}
+                                @endif
+                            </a>
+                            @if($pastebin->user)
+                            <div class="text-[9px] text-red-500 font-semibold uppercase tracking-widest">{{ $pastebin->user->identification->role->label() }}</div>
+                            @else
+                            <div class="text-[9px] text-gray-600 uppercase tracking-widest">Guest</div>
+                            @endif
+                        </div>
+
+                        <!-- Divider -->
+                        <div class="border-t border-[#1a1a1a]"></div>
+
+                        <!-- Stats -->
+                        <div class="space-y-2">
+                            @if($pastebin->user)
+                            <div class="flex justify-between text-[11px]">
+                                <span class="text-gray-600">Posts</span>
+                                <span class="text-gray-300 font-medium">{{ $pastebin->user->pastebins()->count() }}</span>
+                            </div>
+                            <div class="flex justify-between text-[11px]">
+                                <span class="text-gray-600">Followers</span>
+                                <span class="text-gray-300 font-medium">{{ $pastebin->user->followers()->count() }}</span>
+                            </div>
+                            <div class="flex justify-between text-[11px]">
+                                <span class="text-gray-600">Joined</span>
+                                <span class="text-gray-400">{{ $pastebin->user->created_at->format('M Y') }}</span>
+                            </div>
+                            @endif
+                            <div class="flex justify-between text-[11px]">
+                                <span class="text-gray-600">Views</span>
+                                <span class="text-red-500 font-medium">{{ number_format($pastebin->views_count) }}</span>
+                            </div>
+                            <div class="flex justify-between text-[11px]">
+                                <span class="text-gray-600">Downloads</span>
+                                <span class="text-gray-400">{{ number_format($pastebin->download_count ?? 0) }}</span>
+                            </div>
+                        </div>
+
+                        <!-- Divider -->
+                        <div class="border-t border-[#1a1a1a]"></div>
+
+                        <!-- Online Visitors -->
+                        <div>
+                            <div class="flex items-center gap-1.5 mb-2">
+                                <span class="w-1.5 h-1.5 rounded-full bg-green-500 flex-shrink-0"></span>
+                                <span class="text-[9px] font-semibold text-gray-500 uppercase tracking-widest">Online (<span id="visitor-count">{{ count($visitors) }}</span>)</span>
+                            </div>
+                            <div id="visitor-list" class="text-[11px] text-gray-500 font-mono leading-relaxed break-words">
+                                @if(count($visitors) > 0)
+                                @php
+                                $visitorLabels = collect($visitors)->map(function($visitor) {
+                                    if ($visitor['type'] === 'member') {
+                                        $role = \App\Enum\Role::from($visitor['role']);
+                                        return $role->userStyle('@' . $visitor['name']);
+                                    }
+                                    return '<span class="text-gray-600">' . e($visitor['name']) . '</span>';
+                                });
+                                @endphp
+                                {!! $visitorLabels->implode(', ') !!}
+                                @else
+                                <span class="text-gray-700">No active visitors</span>
+                                @endif
+                            </div>
+                        </div>
+
+                    </div>
+                </aside>
+
+                <!-- Main Content -->
                 <main class="flex-1 min-w-0 flex flex-col gap-0.5">
 
                     <!-- Action Toolbar -->
@@ -527,90 +614,6 @@ $ogImage = $pastebin->cover_path && $pastebin->cover_path !== 'defaultCover.png'
                     @endif
 
                 </main>
-
-                <!-- Right Sidebar -->
-                <aside class="w-full lg:w-56 flex-shrink-0">
-                    <div class="sticky top-20 flex flex-col gap-0.5">
-
-                        <!-- Author Card -->
-                        <div class="border border-[#1e1e1e] bg-[#0d0d0d] px-4 py-4">
-                            <div class="text-[9px] font-semibold text-gray-600 uppercase tracking-widest mb-3">Author</div>
-                            <div class="flex items-center gap-3 mb-3">
-                                <div class="w-10 h-10 overflow-hidden border border-[#1e1e1e] flex-shrink-0">
-                                    @if($pastebin->user && $pastebin->user->identification->avatar_path)
-                                    <img src="{{ asset('storage/' . $pastebin->user->identification->avatar_path) }}" class="w-full h-full object-cover" alt="avatar">
-                                    @else
-                                    <img src="{{ asset('storage/avatars/default.png') }}" class="w-full h-full object-cover" alt="avatar">
-                                    @endif
-                                </div>
-                                <div class="min-w-0">
-                                    <a href="{{ $pastebin->user ? route('profile.show', $pastebin->user->username) : '#' }}" class="block text-[12px] font-semibold text-white hover:text-red-400 truncate">
-                                        @if($pastebin->user)
-                                        {!! $pastebin->user->identification->role->userStyleWithBanner($pastebin->author_name, $pastebin->user->identification->color_username ?? '#ffffff') !!}
-                                        @else
-                                        {{ $pastebin->author_name }}
-                                        @endif
-                                    </a>
-                                    @if($pastebin->user)
-                                    <div class="text-[10px] text-red-500 font-medium">{{ $pastebin->user->identification->role->label() }}</div>
-                                    @else
-                                    <div class="text-[10px] text-gray-600">Guest</div>
-                                    @endif
-                                </div>
-                            </div>
-
-                            <div class="space-y-1.5 pt-3 border-t border-[#141414]">
-                                @if($pastebin->user)
-                                <div class="flex justify-between text-[11px]">
-                                    <span class="text-gray-600">Posts</span>
-                                    <span class="text-gray-300 font-medium">{{ $pastebin->user->pastebins()->count() }}</span>
-                                </div>
-                                <div class="flex justify-between text-[11px]">
-                                    <span class="text-gray-600">Followers</span>
-                                    <span class="text-gray-300 font-medium">{{ $pastebin->user->followers()->count() }}</span>
-                                </div>
-                                <div class="flex justify-between text-[11px]">
-                                    <span class="text-gray-600">Joined</span>
-                                    <span class="text-gray-400">{{ $pastebin->user->created_at->format('M Y') }}</span>
-                                </div>
-                                @endif
-                                <div class="flex justify-between text-[11px]">
-                                    <span class="text-gray-600">Views</span>
-                                    <span class="text-red-500 font-medium">{{ number_format($pastebin->views_count) }}</span>
-                                </div>
-                                <div class="flex justify-between text-[11px]">
-                                    <span class="text-gray-600">Downloads</span>
-                                    <span class="text-gray-400">{{ number_format($pastebin->download_count ?? 0) }}</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Online Visitors -->
-                        <div class="border border-[#1e1e1e] bg-[#0d0d0d] px-4 py-3">
-                            <div class="flex items-center gap-1.5 mb-2">
-                                <span class="w-1.5 h-1.5 rounded-full bg-green-500 flex-shrink-0"></span>
-                                <span class="text-[9px] font-semibold text-gray-500 uppercase tracking-widest">Online (<span id="visitor-count">{{ count($visitors) }}</span>)</span>
-                            </div>
-                            <div id="visitor-list" class="text-[11px] text-gray-500 font-mono leading-relaxed break-words">
-                                @if(count($visitors) > 0)
-                                @php
-                                $visitorLabels = collect($visitors)->map(function($visitor) {
-                                if ($visitor['type'] === 'member') {
-                                $role = \App\Enum\Role::from($visitor['role']);
-                                return $role->userStyle('@' . $visitor['name']);
-                                }
-                                return '<span class="text-gray-600">' . e($visitor['name']) . '</span>';
-                                });
-                                @endphp
-                                {!! $visitorLabels->implode(', ') !!}
-                                @else
-                                <span class="text-gray-700">No active visitors</span>
-                                @endif
-                            </div>
-                        </div>
-
-                    </div>
-                </aside>
 
             </div>
         </div>
