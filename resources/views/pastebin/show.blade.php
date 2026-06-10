@@ -269,20 +269,22 @@ $ogImage = $pastebin->cover_path && $pastebin->cover_path !== 'defaultCover.png'
 
                                 <style>
                                     .markdown-body {
-                                        font-size: 10px;
-                                        line-height: 1.5;
+                                        font-size: 11px !important;
+                                        line-height: 1.6 !important;
+                                        word-break: break-word;
+                                        overflow-wrap: anywhere;
                                     }
 
                                     .markdown-body p,
                                     .markdown-body li,
                                     .markdown-body td,
                                     .markdown-body th {
-                                        font-size: 10px;
+                                        font-size: 11px !important;
                                         margin-bottom: 0.75rem;
                                     }
 
                                     .markdown-body h1 {
-                                        font-size: 1.125rem;
+                                        font-size: 14px !important;
                                         font-weight: 900;
                                         color: #fff;
                                         margin-bottom: 0.75rem;
@@ -291,7 +293,7 @@ $ogImage = $pastebin->cover_path && $pastebin->cover_path !== 'defaultCover.png'
                                     }
 
                                     .markdown-body h2 {
-                                        font-size: 1rem;
+                                        font-size: 13px !important;
                                         font-weight: 800;
                                         color: #fff;
                                         margin-bottom: 0.5rem;
@@ -300,7 +302,7 @@ $ogImage = $pastebin->cover_path && $pastebin->cover_path !== 'defaultCover.png'
                                     }
 
                                     .markdown-body h3 {
-                                        font-size: 0.875rem;
+                                        font-size: 12px !important;
                                         font-weight: 700;
                                         color: #fff;
                                         margin-bottom: 0.5rem;
@@ -310,6 +312,7 @@ $ogImage = $pastebin->cover_path && $pastebin->cover_path !== 'defaultCover.png'
                                     .markdown-body a {
                                         color: #ef4444;
                                         text-decoration: underline;
+                                        word-break: break-all;
                                     }
 
                                     .markdown-body a:hover {
@@ -348,7 +351,8 @@ $ogImage = $pastebin->cover_path && $pastebin->cover_path !== 'defaultCover.png'
                                         background-color: rgba(255, 255, 255, 0.1);
                                         padding: 0.1rem 0.3rem;
                                         border-radius: 0.125rem;
-                                        font-size: 10px;
+                                        font-size: 10px !important;
+                                        word-break: break-all;
                                     }
 
                                     .markdown-body pre {
@@ -358,13 +362,16 @@ $ogImage = $pastebin->cover_path && $pastebin->cover_path !== 'defaultCover.png'
                                         border: 1px solid rgba(153, 27, 27, 0.2);
                                         border-radius: 0.25rem;
                                         margin-bottom: 1rem;
-                                        font-size: 11px;
+                                        font-size: 11px !important;
+                                        white-space: pre-wrap;
+                                        word-wrap: break-word;
                                     }
 
                                     .markdown-body pre code {
                                         background-color: transparent;
                                         padding: 0;
-                                        font-size: 11px;
+                                        font-size: 11px !important;
+                                        word-break: normal;
                                     }
 
                                     .markdown-body hr {
@@ -377,6 +384,8 @@ $ogImage = $pastebin->cover_path && $pastebin->cover_path !== 'defaultCover.png'
                                         width: 100%;
                                         border-collapse: collapse;
                                         margin-bottom: 1rem;
+                                        table-layout: fixed;
+                                        word-wrap: break-word;
                                     }
 
                                     .markdown-body th,
@@ -384,6 +393,7 @@ $ogImage = $pastebin->cover_path && $pastebin->cover_path !== 'defaultCover.png'
                                         border: 1px solid rgba(153, 27, 27, 0.3);
                                         padding: 0.5rem;
                                         text-align: left;
+                                        overflow-wrap: anywhere;
                                     }
 
                                     .markdown-body th {
