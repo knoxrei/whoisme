@@ -92,441 +92,299 @@ $ogImage = $pastebin->cover_path && $pastebin->cover_path !== 'defaultCover.png'
         <meta property="article:tag" content="{{ e($seoKeywords) }}">
     </x-slot:extraHead>
     <div class="min-h-screen text-gray-300 font-sans">
-        <div class="max-w-[1400px] mx-auto px-2 py-4 md:py-8">
+        <div class="max-w-[1280px] mx-auto px-4 py-6">
             @if(session('success'))
-            <div class="mb-4 p-4 bg-green-950/20 border border-green-900/30 text-green-500 text-xs font-mono font-bold rounded-sm">
+            <div class="mb-3 px-4 py-2.5 border-l-2 border-green-600 bg-[#0a0a0a] text-green-400 text-xs font-mono">
                 {{ session('success') }}
             </div>
             @endif
             @if(session('reputation_awarded'))
-            <div class="mb-4 p-3 bg-yellow-950/20 border border-yellow-700/40 text-yellow-400 text-xs font-mono font-bold rounded-sm flex items-center gap-2">
+            <div class="mb-3 px-4 py-2.5 border-l-2 border-yellow-600 bg-[#0a0a0a] text-yellow-400 text-xs font-mono">
                 {{ session('reputation_awarded') }}
             </div>
             @endif
             @if(session('info'))
-            <div class="mb-4 p-4 bg-blue-950/20 border border-blue-900/30 text-blue-400 text-xs font-mono font-bold rounded-sm">
+            <div class="mb-3 px-4 py-2.5 border-l-2 border-blue-600 bg-[#0a0a0a] text-blue-400 text-xs font-mono">
                 {{ session('info') }}
             </div>
             @endif
             @if(session('error'))
-            <div class="mb-4 p-4 bg-red-950/20 border border-red-900/30 text-red-500 text-xs font-mono font-bold rounded-sm">
+            <div class="mb-3 px-4 py-2.5 border-l-2 border-red-600 bg-[#0a0a0a] text-red-400 text-xs font-mono">
                 {{ session('error') }}
             </div>
             @endif
 
-            <!-- Breadcrumb/Header Bar -->
-            <div class="bg-[#0a0a0a] border border-red-900/40 px-5 py-4 mb-2 flex items-center justify-between rounded-sm">
-                <div class="flex items-center gap-3">
-                    {!! $pastebin->visibility->badge() !!}
-                    <h1 class="text-white font-black text-base md:text-lg tracking-tight">
-                        {{ $pastebin->title }}
-                    </h1>
-                </div>
-                <div class="text-[10px] md:text-xs text-gray-500 font-bold tracking-widest">
-                    by
-                    <span style="color: {{ $pastebin->user ? $pastebin->user->identification->role->color() : '#888' }}">
-                        {{ $pastebin->author_name }}
-                    </span>
-                    <span class="mx-2 text-red-900/40">|</span>
-                    {{ $pastebin->created_at->format('d-m-Y, H:i A') }}
+            <!-- Title Bar -->
+            <div class="border border-[#1e1e1e] bg-[#0d0d0d] px-5 py-3 mb-0.5">
+                <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-1">
+                    <div class="flex items-center gap-2.5 min-w-0">
+                        {!! $pastebin->visibility->badge() !!}
+                        <h1 class="text-white font-bold text-sm md:text-base truncate">
+                            {{ $pastebin->title }}
+                        </h1>
+                    </div>
+                    <div class="flex items-center gap-4 flex-shrink-0 text-[11px] text-gray-500">
+                        <span>
+                            by&nbsp;<a
+                                href="{{ $pastebin->user ? route('profile.show', $pastebin->user->username) : '#' }}"
+                                style="color: {{ $pastebin->user ? $pastebin->user->identification->role->color() : '#888' }}"
+                                class="font-semibold hover:underline">{{ $pastebin->author_name }}</a>
+                        </span>
+                        <span class="text-[#2a2a2a]">|</span>
+                        <span>{{ $pastebin->created_at->format('d M Y, H:i') }}</span>
+                        <span class="text-[#2a2a2a]">|</span>
+                        <span>{{ number_format($pastebin->views_count) }} views</span>
+                    </div>
                 </div>
             </div>
 
-            <!-- Main Thread Container -->
-            <div class="flex flex-col md:flex-row gap-2 ">
+            <!-- Main Layout: Content + Right Sidebar -->
+            <div class="flex flex-col lg:flex-row gap-0.5 items-start">
 
-                <!-- Left Sidebar (User Card Column) -->
-                <aside class="w-full md:w-64 flex-shrink-0 bg-[#0a0a0a] border border-red-900/30 rounded-sm">
-                    <div class="sticky top-4 md:top-20 p-5 text-center">
-                        <div class="mb-4">
-                            <a href="{{ $pastebin->user ? route('profile.show', $pastebin->user->username) : '#' }}" class="text-white font-black text-sm md:text-base hover:text-red-500 tracking-tighter block">
-                                @if($pastebin->user)
-                                {!! $pastebin->user->identification->role->userStyleWithBanner($pastebin->author_name, $pastebin->user->identification->color_username ?? '#ffffff') !!}
-                                @else
-                                {{ $pastebin->author_name }}
-                                @endif
-                            </a>
-                        </div>
+                <!-- Main Content Column -->
 
-                        <!-- Avatar -->
-                        <div class="mb-5 flex justify-center">
-                            <div class="w-32 h-32 overflow-hidden ">
-                                @if($pastebin->user && $pastebin->user->identification->avatar_path)
-                                <img src="{{ asset('storage/' . $pastebin->user->identification->avatar_path) }}" class="w-full h-full object-cover" alt="avatar">
-                                @else
-                                <img src="{{ asset('storage/avatars/default.png') }}" class="w-full h-full object-cover" alt="avatar">
-                                @endif
-                            </div>
-                        </div>
+                <!-- Main Content + Sidebar Wrapper -->
+                <main class="flex-1 min-w-0 flex flex-col gap-0.5">
 
-                        <!-- Role Badge -->
-                        <div class="mb-6 space-y-2">
-                            @if($pastebin->user)
-                            <div class="border border-red-900/20 bg-[#050505] py-1 text-[9px] font-black text-gray-500 uppercase tracking-[0.2em]">
-                                DoxMe Members
-                            </div>
-                            <div class="border border-red-600 bg-red-600/10 py-1.5 px-4 rounded-sm">
-                                <span class="text-red-500 font-black text-[10px] uppercase tracking-[0.2em]">
-                                    {{ $pastebin->user->identification->role->label() }}
-                                </span>
-                            </div>
+                    <!-- Action Toolbar -->
+                    <div class="border border-[#1e1e1e] bg-[#0d0d0d] px-4 py-2 flex items-center justify-between">
+                        <div class="flex items-center gap-1">
+                            @auth
+                            @can('delete', $pastebin)
+                            <form id="delete-paste-form" action="{{ route('pastebin.destroy', $pastebin) }}" method="POST" class="inline">
+                                @csrf
+                                @method('DELETE')
+                                <button type="button" onclick="confirmDelete()" class="px-3 py-1 text-[10px] font-semibold text-red-500 border border-[#2a1a1a] hover:bg-red-600 hover:text-white hover:border-red-600 uppercase">
+                                    Delete
+                                </button>
+                            </form>
+                            @endcan
+                            @can('update', $pastebin)
+                            <button onclick="document.getElementById('edit-modal').classList.remove('hidden')" class="px-3 py-1 text-[10px] font-semibold text-gray-400 border border-[#222] hover:border-red-600 hover:text-white uppercase">Edit</button>
                             @else
-                            <div class="border border-gray-800 bg-gray-900/50 py-1.5 px-4 rounded-sm">
-                                <span class="text-gray-500 font-black text-[10px] uppercase tracking-[0.2em]">GUEST</span>
-                            </div>
-                            @endif
+                            <button onclick="document.getElementById('edit-modal').classList.remove('hidden')" class="px-3 py-1 text-[10px] font-semibold text-gray-400 border border-[#222] hover:border-red-600 hover:text-white uppercase">Suggest Edit</button>
+                            @endcan
+                            @endauth
+                            <button onclick="document.getElementById('report-modal').classList.remove('hidden')" class="px-3 py-1 text-[10px] font-semibold text-gray-500 border border-[#222] hover:border-gray-600 hover:text-white uppercase">Report</button>
+                            @guest
+                            <a href="{{ route('login') }}" class="px-3 py-1 text-[10px] font-semibold text-gray-500 border border-[#222] hover:border-gray-600 hover:text-white uppercase">Suggest Edit</a>
+                            @endguest
                         </div>
-
-                        <!-- User Stats -->
-                        <div class="text-[10px] space-y-2 text-left px-1 border-t border-red-900/10 pt-5">
-                            @if($pastebin->user)
-                            <div class="flex justify-between items-center">
-                                <span class="text-gray-500 font-bold uppercase tracking-tighter">Posts:</span>
-                                <span class="text-white font-black">{{ $pastebin->user->pastebins()->count() }}</span>
-                            </div>
-                            <div class="flex justify-between items-center">
-                                <span class="text-gray-500 font-bold uppercase tracking-tighter">Followers:</span>
-                                <span class="text-white font-black">{{ $pastebin->user->followers()->count() }}</span>
-                            </div>
-                            <div class="flex justify-between items-center">
-                                <span class="text-gray-500 font-bold uppercase tracking-tighter">Joined:</span>
-                                <span class="text-white font-mono">{{ $pastebin->user->created_at->format('M Y') }}</span>
-                            </div>
-                            @endif
-                            <div class="flex justify-between items-center">
-                                <span class="text-gray-500 font-bold uppercase tracking-tighter">Views:</span>
-                                <span class="text-red-500 font-black">{{ number_format($pastebin->views_count) }}</span>
-                            </div>
-                        </div>
-
-                        {{-- Who's Browsing Panel --}}
-                        <div class="mt-5 border-t border-red-900/10 pt-5">
-                            <div class="text-[9px] font-black text-red-500 uppercase tracking-[0.2em] mb-2 flex items-center gap-2">
-                                <span class="w-2 h-2 rounded-full bg-red-600"></span>
-                                Online Now (<span id="visitor-count">{{ count($visitors) }}</span>)
-                            </div>
-                            <div id="visitor-list" class="text-[10px] text-gray-400 font-mono leading-relaxed break-words">
-                                @if(count($visitors) > 0)
-                                @php
-                                $visitorLabels = collect($visitors)->map(function($visitor) {
-                                if ($visitor['type'] === 'member') {
-                                $role = \App\Enum\Role::from($visitor['role']);
-                                return $role->userStyle('@' . $visitor['name']);
-                                }
-                                return '<span class="text-gray-500">' . e($visitor['name']) . '</span>';
-                                });
-                                @endphp
-                                {!! $visitorLabels->implode(', ') !!}
-                                @else
-                                <span class="text-gray-700 italic">No active visitors</span>
-                                @endif
-                            </div>
+                        <div class="flex items-center gap-1">
+                            <button onclick="openShareModal()" class="px-3 py-1 text-[10px] font-semibold text-gray-400 border border-[#222] hover:border-gray-500 hover:text-white uppercase">Share</button>
+                            <a href="{{ route('pastebin.raw', $pastebin->slug) }}" target="_blank" class="px-3 py-1 text-[10px] font-semibold text-gray-400 border border-[#222] hover:border-gray-500 hover:text-white uppercase">Raw</a>
+                            <a href="{{ route('pastebin.download', $pastebin->slug) }}" class="px-3 py-1 text-[10px] font-semibold text-red-500 border border-[#2a1a1a] hover:bg-red-600 hover:text-white hover:border-red-600 uppercase">Download</a>
                         </div>
                     </div>
-                </aside>
 
-                <!-- Right Content Area -->
-                <main class="flex-1 flex flex-col gap-2">
-                    <!-- Post Card -->
-                    <div class="bg-[#050505] border border-red-900/30 rounded-sm flex flex-col min-h-[600px]">
-                        <!-- Post Header -->
-                        <div class="bg-[#111] px-5 py-2.5 border-b border-red-900/30 flex justify-between items-center text-[10px] text-gray-500 font-mono">
-                            {{ $pastebin->created_at->format('d-m-Y, H:i A') }}
+                    <!-- Content Area -->
+                    <div class="border border-[#1e1e1e] bg-[#080808]" id="content-section-container">
+
+                        <!-- Burn-After-Reading Alert -->
+                        @if(isset($isBurned) && $isBurned)
+                        <div class="mx-5 mt-5 p-3 border border-dashed border-red-800 text-red-400 font-mono text-xs flex items-start gap-3">
+                            <span class="flex-shrink-0">⚠</span>
+                            <div>
+                                <div class="font-bold uppercase mb-1 text-red-500">BURN AFTER READING — Content Cleared</div>
+                                <p class="text-gray-500 text-[10px] leading-relaxed">This pastebin was flagged for zero-trace self-destruction. Records, cover pictures, gallery attachments, and comments have been permanently wiped. This is your only window to copy the content.</p>
+                            </div>
+                        </div>
+                        @endif
+
+                        <!-- Cover Image -->
+                        @if($pastebin->cover_path && $pastebin->cover_path !== 'defaultCover.png')
+                        <div class="border-b border-[#1a1a1a] overflow-hidden">
+                            <img src="{{ asset('storage/' . $pastebin->cover_path) }}" class="w-full max-h-[380px] object-cover" alt="cover">
+                        </div>
+                        @endif
+
+                        <!-- Maximize Button -->
+                        <button id="minimize-fixed-btn" onclick="toggleMaximizeContent()" class="hidden fixed top-4 right-4 z-[1001] bg-[#111] border border-[#2a2a2a] p-2" title="Minimize">
+                            <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 4v4m0 0H4m4 0l-5-5m11 1V4m0 0h4m-4 0l5-5M8 20v-4m0 0H4m4 0l5 5m11-1v4m0-4h4m-4 0l5 5" />
+                            </svg>
+                        </button>
+
+                        <style>
+                            .markdown-body {
+                                font-size: 13px;
+                                line-height: 1.7;
+                                word-break: break-word;
+                                overflow-wrap: anywhere;
+                            }
+                            .markdown-body p,
+                            .markdown-body li {
+                                margin-bottom: 0.6rem;
+                            }
+                            .markdown-body h1 {
+                                font-size: 16px;
+                                font-weight: 700;
+                                color: #e5e5e5;
+                                margin-bottom: 0.5rem;
+                                margin-top: 1.25rem;
+                                padding-bottom: 0.4rem;
+                                border-bottom: 1px solid #1e1e1e;
+                            }
+                            .markdown-body h2 {
+                                font-size: 14px;
+                                font-weight: 700;
+                                color: #e5e5e5;
+                                margin-bottom: 0.4rem;
+                                margin-top: 1rem;
+                            }
+                            .markdown-body h3 {
+                                font-size: 13px;
+                                font-weight: 600;
+                                color: #d1d1d1;
+                                margin-bottom: 0.3rem;
+                                margin-top: 0.75rem;
+                            }
+                            .markdown-body a {
+                                color: #ef4444;
+                                text-decoration: underline;
+                                word-break: break-all;
+                            }
+                            .markdown-body a:hover { color: #dc2626; }
+                            .markdown-body ul {
+                                list-style-type: disc;
+                                padding-left: 1.5rem;
+                                margin-bottom: 0.75rem;
+                            }
+                            .markdown-body ol {
+                                list-style-type: decimal;
+                                padding-left: 1.5rem;
+                                margin-bottom: 0.75rem;
+                            }
+                            .markdown-body li { margin-bottom: 0.2rem; }
+                            .markdown-body blockquote {
+                                border-left: 3px solid #3a1a1a;
+                                padding: 0.5rem 1rem;
+                                color: #9ca3af;
+                                font-style: italic;
+                                background-color: #0d0d0d;
+                                margin-bottom: 1rem;
+                            }
+                            .markdown-body code {
+                                font-family: 'Courier New', Courier, monospace;
+                                background-color: #111;
+                                padding: 0.1rem 0.3rem;
+                                font-size: 12px;
+                                word-break: break-all;
+                                color: #e5e5e5;
+                                border: 1px solid #222;
+                            }
+                            .markdown-body pre {
+                                background-color: #050505;
+                                padding: 1rem 1.25rem;
+                                overflow-x: auto;
+                                border: 1px solid #1a1a1a;
+                                margin-bottom: 1rem;
+                                font-size: 12px;
+                                white-space: pre-wrap;
+                                word-wrap: break-word;
+                            }
+                            .markdown-body pre code {
+                                background-color: transparent;
+                                border: none;
+                                padding: 0;
+                                font-size: 12px;
+                                word-break: normal;
+                            }
+                            .markdown-body hr {
+                                border-color: #1e1e1e;
+                                margin: 1.5rem 0;
+                            }
+                            .markdown-body table {
+                                width: 100%;
+                                border-collapse: collapse;
+                                margin-bottom: 1rem;
+                                font-size: 12px;
+                            }
+                            .markdown-body th,
+                            .markdown-body td {
+                                border: 1px solid #222;
+                                padding: 0.4rem 0.75rem;
+                                text-align: left;
+                                overflow-wrap: anywhere;
+                            }
+                            .markdown-body th {
+                                background-color: #0d0d0d;
+                                font-weight: 600;
+                                color: #ccc;
+                            }
+                            #pastebin-content-wrapper {
+                                overflow: hidden;
+                            }
+                            #pastebin-content-wrapper.collapsed {
+                                max-height: 700px;
+                            }
+                            #pastebin-content-wrapper.expanded {
+                                max-height: none;
+                            }
+                            #content-section-container.maximized {
+                                position: fixed;
+                                top: 0; left: 0;
+                                width: 100vw; height: 100vh;
+                                z-index: 1000;
+                                background-color: #050505;
+                                padding: 2.5rem;
+                                overflow-y: auto;
+                            }
+                            #content-section-container.maximized #pastebin-content-wrapper {
+                                max-height: none !important;
+                                max-width: 960px;
+                                margin: 0 auto;
+                            }
+                            #content-section-container.maximized #view-full-btn-container {
+                                position: sticky;
+                                bottom: 0;
+                                background: #050505;
+                                padding: 1rem 0;
+                                margin-top: 1.5rem;
+                                border-top: 1px solid #1a1a1a;
+                                z-index: 10;
+                            }
+                        </style>
+
+                        <div id="pastebin-content-wrapper" class="collapsed markdown-body text-gray-300 px-6 py-5 font-mono text-[13px] overflow-x-auto leading-relaxed">
+                            {!! $contentMarkdown !!}
                         </div>
 
-                        <!-- Post Content -->
-                        <div class="p-8 flex-1">
-
-                            <!-- Burn-After-Reading Alert -->
-                            @if(isset($isBurned) && $isBurned)
-                            <div class="mb-8 p-4 bg-red-950/20 border-2 border-dashed border-red-600 rounded-sm text-red-500 font-mono text-xs flex items-start gap-3">
-                                <div class="flex-shrink-0 text-lg">⚠️</div>
-                                <div class="space-y-1">
-                                    <h4 class="font-black tracking-widest uppercase text-red-600">MAIN CLEARANCE EXPIRED: BURN AFTER READING</h4>
-                                    <p class="text-gray-400 text-[10px] leading-relaxed">
-                                        This pastebin was flagged for zero-trace self-destruction. The transaction records, cover pictures, gallery attachments, and thread comments have been completely wiped from the terminal databases. **This page is your only window to copy its contents.** Refreshing or exiting will terminate your connection to this data.
-                                    </p>
-                                </div>
-                            </div>
-                            @endif
-
-                            <!-- Cover Image -->
-                            @if($pastebin->cover_path && $pastebin->cover_path !== 'defaultCover.png')
-                            <div class="mb-8 border border-red-900/20 bg-[#050505] p-1 rounded-sm overflow-hidden">
-                                <img src="{{ asset('storage/' . $pastebin->cover_path) }}" class="w-full max-h-[400px] object-cover" alt="cover">
-                            </div>
-                            @endif
-
-
-
-                            <!-- Main Content Block -->
-                            <div class="mb-8" id="content-section-container">
-                                <button id="minimize-fixed-btn" onclick="toggleMaximizeContent()" class="hidden fixed top-4 right-4 z-[1001] bg-[#111] border border-red-900/30 p-2.5 rounded-sm hover:border-red-600 text-gray-400 hover:text-white transition-colors shadow-2xl" title="Minimize">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 4v4m0 0H4m4 0l-5-5m11 1V4m0 0h4m-4 0l5-5M8 20v-4m0 0H4m4 0l5 5m11-1v4m0-4h4m-4 0l5 5" />
-                                    </svg>
-                                </button>
-
-                                <style>
-                                    .markdown-body {
-                                        font-size: 11px !important;
-                                        line-height: 1.6 !important;
-                                        word-break: break-word;
-                                        overflow-wrap: anywhere;
-                                    }
-
-                                    .markdown-body p,
-                                    .markdown-body li,
-                                    .markdown-body td,
-                                    .markdown-body th {
-                                        font-size: 11px !important;
-                                        margin-bottom: 0.75rem;
-                                    }
-
-                                    .markdown-body h1 {
-                                        font-size: 14px !important;
-                                        font-weight: 900;
-                                        color: #fff;
-                                        margin-bottom: 0.75rem;
-                                        margin-top: 1.25rem;
-                                        text-transform: uppercase;
-                                    }
-
-                                    .markdown-body h2 {
-                                        font-size: 13px !important;
-                                        font-weight: 800;
-                                        color: #fff;
-                                        margin-bottom: 0.5rem;
-                                        margin-top: 1.25rem;
-                                        text-transform: uppercase;
-                                    }
-
-                                    .markdown-body h3 {
-                                        font-size: 12px !important;
-                                        font-weight: 700;
-                                        color: #fff;
-                                        margin-bottom: 0.5rem;
-                                        margin-top: 1rem;
-                                    }
-
-                                    .markdown-body a {
-                                        color: #ef4444;
-                                        text-decoration: underline;
-                                        word-break: break-all;
-                                    }
-
-                                    .markdown-body a:hover {
-                                        color: #dc2626;
-                                    }
-
-                                    .markdown-body ul {
-                                        list-style-type: disc;
-                                        padding-left: 1.5rem;
-                                        margin-bottom: 0.75rem;
-                                    }
-
-                                    .markdown-body ol {
-                                        list-style-type: decimal;
-                                        padding-left: 1.5rem;
-                                        margin-bottom: 0.75rem;
-                                    }
-
-                                    .markdown-body li {
-                                        margin-bottom: 0.25rem;
-                                    }
-
-                                    .markdown-body blockquote {
-                                        border-left: 2px solid rgba(153, 27, 27, 0.5);
-                                        padding-left: 1rem;
-                                        color: #9ca3af;
-                                        font-style: italic;
-                                        background-color: rgba(0, 0, 0, 0.2);
-                                        padding-top: 0.5rem;
-                                        padding-bottom: 0.5rem;
-                                        margin-bottom: 1rem;
-                                    }
-
-                                    .markdown-body code {
-                                        font-family: monospace;
-                                        background-color: rgba(255, 255, 255, 0.1);
-                                        padding: 0.1rem 0.3rem;
-                                        border-radius: 0.125rem;
-                                        font-size: 10px !important;
-                                        word-break: break-all;
-                                    }
-
-                                    .markdown-body pre {
-                                        background-color: #000;
-                                        padding: 1rem;
-                                        overflow-x: auto;
-                                        border: 1px solid rgba(153, 27, 27, 0.2);
-                                        border-radius: 0.25rem;
-                                        margin-bottom: 1rem;
-                                        font-size: 11px !important;
-                                        white-space: pre-wrap;
-                                        word-wrap: break-word;
-                                    }
-
-                                    .markdown-body pre code {
-                                        background-color: transparent;
-                                        padding: 0;
-                                        font-size: 11px !important;
-                                        word-break: normal;
-                                    }
-
-                                    .markdown-body hr {
-                                        border-color: rgba(153, 27, 27, 0.2);
-                                        margin-top: 2rem;
-                                        margin-bottom: 2rem;
-                                    }
-
-                                    .markdown-body table {
-                                        width: 100%;
-                                        border-collapse: collapse;
-                                        margin-bottom: 1rem;
-                                        table-layout: fixed;
-                                        word-wrap: break-word;
-                                    }
-
-                                    .markdown-body th,
-                                    .markdown-body td {
-                                        border: 1px solid rgba(153, 27, 27, 0.3);
-                                        padding: 0.5rem;
-                                        text-align: left;
-                                        overflow-wrap: anywhere;
-                                    }
-
-                                    .markdown-body th {
-                                        background-color: rgba(153, 27, 27, 0.1);
-                                        font-weight: bold;
-                                    }
-
-                                    /* View Full Transition */
-                                    #pastebin-content-wrapper {
-                                        transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-                                        overflow: hidden;
-                                    }
-
-                                    #pastebin-content-wrapper.collapsed {
-                                        max-height: 800px;
-                                    }
-
-                                    #pastebin-content-wrapper.expanded {
-                                        max-height: none;
-                                    }
-
-                                    /* Maximize State */
-                                    #content-section-container.maximized {
-                                        position: fixed;
-                                        top: 0;
-                                        left: 0;
-                                        width: 100vw;
-                                        height: 100vh;
-                                        z-index: 1000;
-                                        background-color: #050505;
-                                        padding: 3rem;
-                                        overflow-y: auto;
-                                    }
-
-                                    #content-section-container.maximized #pastebin-content-wrapper {
-                                        max-height: none !important;
-                                        padding: 0;
-                                        max-width: 1200px;
-                                        margin: 0 auto;
-                                    }
-
-                                    #content-section-container.maximized #view-full-btn-container {
-                                        position: sticky;
-                                        bottom: 0;
-                                        background: #050505;
-                                        padding-top: 1.5rem;
-                                        padding-bottom: 1.5rem;
-                                        margin-top: 2rem;
-                                        border-top: 1px solid rgba(153, 27, 27, 0.2);
-                                        z-index: 10;
-                                    }
-                                </style>
-                                <div id="pastebin-content-wrapper" class="collapsed markdown-body text-gray-300 p-6 font-mono text-[11px] overflow-x-auto leading-relaxed scrollbar-thin scrollbar-thumb-red-900 scrollbar-track-transparent">
-                                    {!! $contentMarkdown !!}
-                                </div>
-                                {{-- View Full / Maximize Buttons --}}
-                                <div id="view-full-btn-container" class="border-t border-red-900/10 bg-gradient-to-t from-[#050505] to-transparent -mt-16 pt-12 pb-3 flex justify-center gap-3 relative">
-                                    <button id="view-full-btn" onclick="toggleViewFull()" class="flex items-center gap-2 bg-[#0a0a0a] border border-red-900/30 hover:border-red-600 text-[9px] font-black uppercase tracking-[0.2em] text-red-500 hover:text-white px-5 py-2 rounded-sm transition-all duration-200 active:scale-95">
-                                        <svg id="view-full-icon" class="w-3 h-3 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7" />
-                                        </svg>
-                                        <span id="view-full-text">View Full Content</span>
-                                    </button>
-                                    <button id="maximize-btn" onclick="toggleMaximizeContent()" class="flex items-center gap-2 bg-[#0a0a0a] border border-red-900/30 hover:border-red-600 text-[9px] font-black uppercase tracking-[0.2em] text-gray-400 hover:text-white px-5 py-2 rounded-sm transition-all duration-200 active:scale-95">
-                                        <svg id="maximize-icon" class="w-3 h-3 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
-                                        </svg>
-                                        <span id="maximize-text">Maximize</span>
-                                    </button>
-                                </div>
-                            </div>
-
-                            <!-- Gallery Images -->
-                            @if($pastebin->images && $pastebin->images->count() > 0)
-                            <div class="mt-12 pt-8 border-t border-red-900/10">
-                                <div class="text-[10px] font-black text-red-500 uppercase mb-5 tracking-[0.2em] flex items-center gap-3">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                                    </svg>
-                                    Attached Evidence Gallery ({{ $pastebin->images->count() }})
-                                </div>
-                                <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-                                    @foreach($pastebin->images as $image)
-                                    <div class="aspect-square border border-red-900/20 p-1.5 group">
-                                        <a href="{{ asset('storage/' . $image->image_path) }}" target="_blank">
-                                            <img src="{{ asset('storage/' . $image->image_path) }}" class="w-full h-full object-cover " alt="evidence">
-                                        </a>
-                                    </div>
-                                    @endforeach
-                                </div>
-                            </div>
-                            @endif
+                        <!-- View Full / Maximize Buttons -->
+                        <div id="view-full-btn-container" class="border-t border-[#141414] px-4 py-2 flex items-center gap-2 bg-[#080808]">
+                            <button id="view-full-btn" onclick="toggleViewFull()" class="flex items-center gap-1.5 text-[10px] font-semibold text-gray-400 hover:text-white uppercase border border-[#222] px-3 py-1 hover:border-gray-500">
+                                <svg id="view-full-icon" class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7" />
+                                </svg>
+                                <span id="view-full-text">Show Full</span>
+                            </button>
+                            <button id="maximize-btn" onclick="toggleMaximizeContent()" class="flex items-center gap-1.5 text-[10px] font-semibold text-gray-500 hover:text-white uppercase border border-[#222] px-3 py-1 hover:border-gray-500">
+                                <svg id="maximize-icon" class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
+                                </svg>
+                                <span id="maximize-text">Fullscreen</span>
+                            </button>
                         </div>
-
-                        <!-- Footer Actions -->
-                        <footer class="bg-[#111] border-t border-red-900/30 px-6 py-3 flex items-center justify-between rounded-b-sm mt-auto">
-
-                            <div class="flex gap-3">
-                                @auth
-                                @can('delete', $pastebin)
-                                <form id="delete-paste-form" action="{{ route('pastebin.destroy', $pastebin) }}" method="POST" class="inline">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="button" onclick="confirmDelete()" class="bg-red-950/20 border border-red-900/40 text-[9px] font-black px-4 py-1.5 text-red-500 hover:bg-red-600 hover:text-white uppercase tracking-widest transition-colors duration-150">
-                                        Delete
-                                    </button>
-                                </form>
-                                @endcan
-                                @can('update', $pastebin)
-                                <button onclick="document.getElementById('edit-modal').classList.remove('hidden')" class="bg-red-600/10 border border-red-600/30 text-[9px] font-black px-5 py-1.5 text-red-500 hover:bg-red-600 hover:text-white uppercase tracking-widest">Edit Thread</button>
-                                @else
-                                <button onclick="document.getElementById('edit-modal').classList.remove('hidden')" class="bg-red-600/10 border border-red-600/30 text-[9px] font-black px-5 py-1.5 text-red-500 hover:bg-red-600 hover:text-white uppercase tracking-widest">Suggest Edit</button>
-                                @endcan
-                                @endauth
-                                <button onclick="document.getElementById('report-modal').classList.remove('hidden')" class="bg-[#0a0a0a] border border-red-900/20 text-[9px] font-black px-4 py-1.5 text-gray-500 hover:text-white hover:border-white/20 uppercase tracking-widest">Report</button>
-                                @guest
-                                <a href="{{ route('login') }}" class="bg-[#0a0a0a] border border-red-900/20 text-[9px] font-black px-4 py-1.5 text-gray-500 hover:text-white hover:border-white/20 uppercase tracking-widest">Edit/Suggest</a>
-                                @endguest
-                            </div>
-
-                            <div class="flex gap-3">
-                                <button onclick="openShareModal()" class="bg-[#0a0a0a] border border-red-900/20 text-[9px] font-black px-4 py-1.5 text-gray-500 hover:text-white hover:border-white/20 uppercase tracking-widest transition-colors duration-150">
-                                    Share
-                                </button>
-                                <a href="{{ route('pastebin.raw', $pastebin->slug) }}" target="_blank" class="bg-[#0a0a0a] border border-red-900/20 text-[9px] font-black px-4 py-1.5 text-gray-500 hover:text-white hover:border-white/20 uppercase tracking-widest transition-colors duration-150">
-                                    Raw View
-                                </a>
-                                <a href="{{ route('pastebin.download', $pastebin->slug) }}" class="bg-red-950/20 border border-red-900/40 text-[9px] font-black px-4 py-1.5 text-red-500 hover:bg-red-600 hover:text-white uppercase tracking-widest transition-colors duration-150">
-                                    Download
-                                </a>
-                            </div>
-                        </footer>
                     </div>
+
+                    <!-- Gallery Images -->
+                    @if($pastebin->images && $pastebin->images->count() > 0)
+                    <div class="border border-[#1e1e1e] bg-[#080808] px-5 py-4">
+                        <div class="text-[10px] font-semibold text-gray-500 uppercase tracking-widest mb-3 flex items-center gap-2">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                            </svg>
+                            Gallery ({{ $pastebin->images->count() }})
+                        </div>
+                        <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-2">
+                            @foreach($pastebin->images as $image)
+                            <a href="{{ asset('storage/' . $image->image_path) }}" target="_blank" class="aspect-square border border-[#1e1e1e] overflow-hidden block">
+                                <img src="{{ asset('storage/' . $image->image_path) }}" class="w-full h-full object-cover" alt="evidence">
+                            </a>
+                            @endforeach
+                        </div>
+                    </div>
+                    @endif
 
                     <!-- Sponsor Banners Section -->
                     @php
@@ -534,17 +392,13 @@ $ogImage = $pastebin->cover_path && $pastebin->cover_path !== 'defaultCover.png'
                     @endphp
 
                     @if($showBanners->isNotEmpty())
-                    <div class="bg-[#050505] border border-red-900/30 p-5 rounded-sm">
-                        <p class="text-[9px] text-red-500 font-black uppercase tracking-[0.2em] text-center mb-3 flex items-center justify-center gap-1.5 font-mono select-none">
-                            <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span>
-                            OFFICIAL PLATFORM SPONSORS
-                        </p>
-                        <div class="flex flex-wrap justify-center gap-4">
+                    <div class="border border-[#1e1e1e] bg-[#080808] px-5 py-3">
+                        <p class="text-[9px] text-gray-600 font-semibold uppercase tracking-widest text-center mb-3 select-none">Sponsored</p>
+                        <div class="flex flex-wrap justify-center gap-3">
                             @foreach($showBanners as $banner)
                             <a href="{{ route('ads.click', $banner->id) }}" target="_blank"
-                                class="block w-full max-w-[466px] h-[58px] border border-red-950/40 hover:border-red-600/70 overflow-hidden rounded-sm bg-black transition-colors duration-150 relative group">
-                                <img src="{{ asset($banner->media_url) }}" alt="{{ $banner->title }}"
-                                    class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity duration-150">
+                                class="block w-full max-w-[466px] h-[58px] border border-[#1a1a1a] hover:border-[#333] overflow-hidden bg-black">
+                                <img src="{{ asset($banner->media_url) }}" alt="{{ $banner->title }}" class="w-full h-full object-cover opacity-75 hover:opacity-100">
                             </a>
                             @endforeach
                         </div>
@@ -552,82 +406,70 @@ $ogImage = $pastebin->cover_path && $pastebin->cover_path !== 'defaultCover.png'
                     @endif
 
                     <!-- Comments Section -->
-                    <div class="bg-[#0a0a0a] border border-red-900/30 p-6 rounded-sm flex flex-col gap-6">
-                        <h3 class="text-xs font-black text-red-500 uppercase tracking-[0.2em] flex items-center gap-3">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
-                            </svg>
-                            Discussion (Top 5 Recent)
-                        </h3>
+                    <div class="border border-[#1e1e1e] bg-[#080808]">
+                        <div class="px-5 py-3 border-b border-[#141414] flex items-center justify-between">
+                            <span class="text-[10px] font-semibold text-gray-500 uppercase tracking-widest">Comments</span>
+                        </div>
 
                         <style>
                             .comment-content blockquote {
-                                border-left: 2px solid rgba(153, 27, 27, 0.5);
-                                padding-left: 0.75rem;
-                                margin-top: 0.5rem;
-                                margin-bottom: 0.5rem;
+                                border-left: 2px solid #2a1a1a;
+                                padding: 0.25rem 0.75rem;
                                 font-style: italic;
                                 color: #6b7280;
-                                background-color: rgba(0, 0, 0, 0.2);
-                                padding-top: 0.25rem;
-                                padding-bottom: 0.25rem;
+                                background-color: #0a0a0a;
+                                margin: 0.4rem 0;
                             }
-
-                            .comment-content p {
-                                margin-bottom: 0.5rem;
-                            }
-
-                            .comment-content p:last-child {
-                                margin-bottom: 0;
-                            }
+                            .comment-content p { margin-bottom: 0.4rem; }
+                            .comment-content p:last-child { margin-bottom: 0; }
                         </style>
 
-                        @if(isset($comments) && count($comments) > 0)
-                        <div class="space-y-4">
+                        <div class="divide-y divide-[#111]">
+                            @if(isset($comments) && count($comments) > 0)
                             @foreach($comments as $comment)
-                            <div class="border border-red-900/20 p-4 rounded-sm flex gap-4">
-                                <div class="w-8 h-8 overflow-hidden flex-shrink-0">
+                            <div class="px-5 py-4 flex gap-3">
+                                <div class="w-7 h-7 overflow-hidden flex-shrink-0 border border-[#1e1e1e]">
                                     @if($comment->user->identification->avatar_path)
-                                    <img src="{{ asset('storage/' . $comment->user->identification->avatar_path) }}" class="w-full h-full object-cover">
+                                    <img src="{{ asset('storage/' . $comment->user->identification->avatar_path) }}" class="w-full h-full object-cover" alt="">
                                     @else
-                                    <div class="w-full h-full flex items-center justify-center text-xs font-bold text-gray-600">
+                                    <div class="w-full h-full flex items-center justify-center text-[10px] font-bold text-gray-600 bg-[#111]">
                                         {{ strtoupper(substr($comment->user->username, 0, 1)) }}
                                     </div>
                                     @endif
                                 </div>
-                                <div class="flex-1">
-                                    <div class="flex justify-between items-start mb-2">
-                                        <a href="{{ route('profile.show', $comment->user->username) }}" class="text-[11px] font-black tracking-tighter">
+                                <div class="flex-1 min-w-0">
+                                    <div class="flex items-center justify-between mb-1.5">
+                                        <a href="{{ route('profile.show', $comment->user->username) }}" class="text-[11px] font-semibold">
                                             {!! $comment->user->identification->role->userStyleWithBanner($comment->user->username, $comment->user->identification->custom_color ?? '#ffffff') !!}
                                         </a>
                                         <div class="flex items-center gap-3">
-                                            <div class="text-[9px] text-gray-600 font-mono">{{ $comment->created_at->diffForHumans() }}</div>
+                                            <span class="text-[10px] text-gray-600">{{ $comment->created_at->diffForHumans() }}</span>
                                             @auth
-                                            <button type="button" onclick="replyToComment('{{ $comment->user->username }}', {{ json_encode($comment->content) }})" class="text-[9px] text-gray-500 hover:text-red-500 font-black uppercase tracking-widest transition-colors">Reply</button>
+                                            <button type="button" onclick="replyToComment('{{ $comment->user->username }}', {{ json_encode($comment->content) }})" class="text-[10px] text-gray-600 hover:text-red-500 uppercase">Reply</button>
                                             @endauth
                                         </div>
                                     </div>
-                                    <div class="text-xs text-gray-400 font-mono leading-relaxed comment-content">
+                                    <div class="text-[12px] text-gray-400 font-mono leading-relaxed comment-content">
                                         {!! \Illuminate\Support\Str::markdown($comment->content) !!}
                                     </div>
                                 </div>
                             </div>
                             @endforeach
+                            @else
+                            <div class="px-5 py-6 text-[11px] text-gray-700 font-mono text-center">
+                                No comments yet.
+                            </div>
+                            @endif
                         </div>
-                        @else
-                        <div class="text-xs text-gray-600 font-mono italic p-4 text-center border border-red-900/10 bg-[#050505]">
-                            No comments yet. Be the first to start the discussion.
-                        </div>
-                        @endif
 
                         @auth
-                        <form action="{{ route('pastebin.comments.store', $pastebin) }}" method="POST" class="mt-4">
+                        <form action="{{ route('pastebin.comments.store', $pastebin) }}" method="POST" class="border-t border-[#141414] px-5 py-4">
                             @csrf
-                            <div class="flex flex-col gap-3">
-                                <textarea id="comment-textarea" name="content" rows="3" placeholder="Add a comment..." required class="w-full bg-[#050505] border border-red-900/20 rounded-sm px-4 py-3 text-xs font-mono text-gray-300 focus:outline-none focus:border-red-600 resize-none"></textarea>
+                            <div class="flex flex-col gap-2">
+                                <textarea id="comment-textarea" name="content" rows="3" placeholder="Write a comment..." required class="w-full bg-[#050505] border border-[#1e1e1e] px-3 py-2 text-[12px] font-mono text-gray-300 focus:outline-none focus:border-[#333] resize-none"></textarea>
                                 @error('content') <span class="text-red-500 text-[10px]">{{ $message }}</span> @enderror
                                 <div class="flex justify-end">
-                                    <button type="submit" class="bg-red-600/10 border border-red-600/30 hover:bg-red-600 hover:text-white text-red-500 px-6 py-2 rounded-sm font-black text-[10px] uppercase tracking-[0.2em] transition-colors">Post Comment</button>
+                                    <button type="submit" class="border border-[#2a1a1a] text-red-500 hover:bg-red-600 hover:text-white hover:border-red-600 px-5 py-1.5 text-[10px] font-semibold uppercase">Post</button>
                                 </div>
                             </div>
                         </form>
@@ -636,17 +478,13 @@ $ogImage = $pastebin->cover_path && $pastebin->cover_path !== 'defaultCover.png'
                                 const textarea = document.getElementById('comment-textarea');
                                 const quotedText = text.split('\n').map(line => '> ' + line).join('\n');
                                 const replyFormat = `> **@${username}** said:\n${quotedText}\n\n`;
-
                                 textarea.value = textarea.value ? textarea.value + '\n' + replyFormat : replyFormat;
                                 textarea.focus();
-                                textarea.scrollIntoView({
-                                    behavior: 'smooth',
-                                    block: 'center'
-                                });
+                                textarea.scrollIntoView({ behavior: 'smooth', block: 'center' });
                             }
                         </script>
                         @else
-                        <div class="mt-4 text-xs text-gray-500 font-mono text-center p-3 border border-red-900/20 bg-[#050505]">
+                        <div class="border-t border-[#141414] px-5 py-4 text-[11px] text-gray-600 text-center">
                             <a href="{{ route('login') }}" class="text-red-500 hover:underline">Log in</a> to post a comment.
                         </div>
                         @endauth
@@ -655,35 +493,31 @@ $ogImage = $pastebin->cover_path && $pastebin->cover_path !== 'defaultCover.png'
                     <!-- Pending Suggestions Block -->
                     @if(auth()->check() && (auth()->id() === $pastebin->user_id || auth()->user()->canUsePremiumFeatures()))
                     @if(isset($pendingEdits) && count($pendingEdits) > 0)
-                    <div class="bg-[#0a0a0a] border border-red-600/30 p-6 rounded-sm">
-                        <h3 class="text-xs font-black text-red-500 uppercase mb-5 tracking-[0.2em] flex items-center gap-3">
-                            <span class="w-2 h-2 bg-red-600 rounded-full"></span>
-                            Pending Improvements ({{ count($pendingEdits) }})
-                        </h3>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="border border-[#2a1a1a] bg-[#080808]">
+                        <div class="px-5 py-3 border-b border-[#141414] flex items-center gap-2">
+                            <span class="w-1.5 h-1.5 bg-red-600 rounded-full inline-block"></span>
+                            <span class="text-[10px] font-semibold text-gray-400 uppercase tracking-widest">Pending Edits ({{ count($pendingEdits) }})</span>
+                        </div>
+                        <div class="divide-y divide-[#111]">
                             @foreach($pendingEdits as $edit)
-                            <div class="bg-[#050505] border border-red-900/20 p-4 flex flex-col gap-4 rounded-sm">
-                                <div class="flex items-center gap-3">
-                                    <div class="w-8 h-8 bg-red-600/10 border border-red-900/20 flex items-center justify-center text-red-500 font-black text-[10px]">
-                                        {{ substr($edit->user->username, 0, 1) }}
-                                    </div>
-                                    <div>
-                                        <div class="text-xs font-black text-white uppercase tracking-tighter">{{ $edit->user->username }}</div>
-                                        <div class="text-[9px] text-gray-600 font-mono">{{ $edit->created_at->diffForHumans() }}</div>
-                                    </div>
+                            <div class="px-5 py-4 flex items-start gap-4">
+                                <div class="flex-shrink-0 w-8 h-8 border border-[#1e1e1e] flex items-center justify-center text-[10px] font-bold text-gray-500 bg-[#0a0a0a]">
+                                    {{ strtoupper(substr($edit->user->username, 0, 1)) }}
                                 </div>
-                                <div class="text-[11px] text-gray-400 italic bg-black/50 p-3 border-l border-red-600">
-                                    "{{ $edit->title }}"
-                                </div>
-                                <div class="flex gap-2">
-                                    <form action="{{ route('pastebin.edit.approve', $edit) }}" method="POST" class="flex-1">
-                                        @csrf
-                                        <button class="w-full bg-green-600/10 border border-green-600/30 text-green-500 py-2 text-[9px] font-black uppercase tracking-widest hover:bg-green-600 hover:text-white">Approve</button>
-                                    </form>
-                                    <form action="{{ route('pastebin.edit.reject', $edit) }}" method="POST" class="flex-1">
-                                        @csrf
-                                        <button class="w-full bg-red-600/10 border border-red-600/30 text-red-500 py-2 text-[9px] font-black uppercase tracking-widest hover:bg-red-600 hover:text-white">Reject</button>
-                                    </form>
+                                <div class="flex-1 min-w-0">
+                                    <div class="text-[11px] font-semibold text-gray-300">{{ $edit->user->username }}</div>
+                                    <div class="text-[10px] text-gray-600 mb-2">{{ $edit->created_at->diffForHumans() }}</div>
+                                    <div class="text-[11px] text-gray-500 italic border-l-2 border-[#2a1a1a] pl-2 mb-3">"{{ $edit->title }}"</div>
+                                    <div class="flex gap-2">
+                                        <form action="{{ route('pastebin.edit.approve', $edit) }}" method="POST">
+                                            @csrf
+                                            <button class="px-4 py-1 text-[10px] font-semibold text-green-500 border border-[#1a2a1a] hover:bg-green-700 hover:text-white hover:border-green-700 uppercase">Approve</button>
+                                        </form>
+                                        <form action="{{ route('pastebin.edit.reject', $edit) }}" method="POST">
+                                            @csrf
+                                            <button class="px-4 py-1 text-[10px] font-semibold text-gray-500 border border-[#222] hover:bg-red-800 hover:text-white hover:border-red-800 uppercase">Reject</button>
+                                        </form>
+                                    </div>
                                 </div>
                             </div>
                             @endforeach
@@ -691,7 +525,93 @@ $ogImage = $pastebin->cover_path && $pastebin->cover_path !== 'defaultCover.png'
                     </div>
                     @endif
                     @endif
+
                 </main>
+
+                <!-- Right Sidebar -->
+                <aside class="w-full lg:w-56 flex-shrink-0">
+                    <div class="sticky top-20 flex flex-col gap-0.5">
+
+                        <!-- Author Card -->
+                        <div class="border border-[#1e1e1e] bg-[#0d0d0d] px-4 py-4">
+                            <div class="text-[9px] font-semibold text-gray-600 uppercase tracking-widest mb-3">Author</div>
+                            <div class="flex items-center gap-3 mb-3">
+                                <div class="w-10 h-10 overflow-hidden border border-[#1e1e1e] flex-shrink-0">
+                                    @if($pastebin->user && $pastebin->user->identification->avatar_path)
+                                    <img src="{{ asset('storage/' . $pastebin->user->identification->avatar_path) }}" class="w-full h-full object-cover" alt="avatar">
+                                    @else
+                                    <img src="{{ asset('storage/avatars/default.png') }}" class="w-full h-full object-cover" alt="avatar">
+                                    @endif
+                                </div>
+                                <div class="min-w-0">
+                                    <a href="{{ $pastebin->user ? route('profile.show', $pastebin->user->username) : '#' }}" class="block text-[12px] font-semibold text-white hover:text-red-400 truncate">
+                                        @if($pastebin->user)
+                                        {!! $pastebin->user->identification->role->userStyleWithBanner($pastebin->author_name, $pastebin->user->identification->color_username ?? '#ffffff') !!}
+                                        @else
+                                        {{ $pastebin->author_name }}
+                                        @endif
+                                    </a>
+                                    @if($pastebin->user)
+                                    <div class="text-[10px] text-red-500 font-medium">{{ $pastebin->user->identification->role->label() }}</div>
+                                    @else
+                                    <div class="text-[10px] text-gray-600">Guest</div>
+                                    @endif
+                                </div>
+                            </div>
+
+                            <div class="space-y-1.5 pt-3 border-t border-[#141414]">
+                                @if($pastebin->user)
+                                <div class="flex justify-between text-[11px]">
+                                    <span class="text-gray-600">Posts</span>
+                                    <span class="text-gray-300 font-medium">{{ $pastebin->user->pastebins()->count() }}</span>
+                                </div>
+                                <div class="flex justify-between text-[11px]">
+                                    <span class="text-gray-600">Followers</span>
+                                    <span class="text-gray-300 font-medium">{{ $pastebin->user->followers()->count() }}</span>
+                                </div>
+                                <div class="flex justify-between text-[11px]">
+                                    <span class="text-gray-600">Joined</span>
+                                    <span class="text-gray-400">{{ $pastebin->user->created_at->format('M Y') }}</span>
+                                </div>
+                                @endif
+                                <div class="flex justify-between text-[11px]">
+                                    <span class="text-gray-600">Views</span>
+                                    <span class="text-red-500 font-medium">{{ number_format($pastebin->views_count) }}</span>
+                                </div>
+                                <div class="flex justify-between text-[11px]">
+                                    <span class="text-gray-600">Downloads</span>
+                                    <span class="text-gray-400">{{ number_format($pastebin->download_count ?? 0) }}</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Online Visitors -->
+                        <div class="border border-[#1e1e1e] bg-[#0d0d0d] px-4 py-3">
+                            <div class="flex items-center gap-1.5 mb-2">
+                                <span class="w-1.5 h-1.5 rounded-full bg-green-500 flex-shrink-0"></span>
+                                <span class="text-[9px] font-semibold text-gray-500 uppercase tracking-widest">Online (<span id="visitor-count">{{ count($visitors) }}</span>)</span>
+                            </div>
+                            <div id="visitor-list" class="text-[11px] text-gray-500 font-mono leading-relaxed break-words">
+                                @if(count($visitors) > 0)
+                                @php
+                                $visitorLabels = collect($visitors)->map(function($visitor) {
+                                if ($visitor['type'] === 'member') {
+                                $role = \App\Enum\Role::from($visitor['role']);
+                                return $role->userStyle('@' . $visitor['name']);
+                                }
+                                return '<span class="text-gray-600">' . e($visitor['name']) . '</span>';
+                                });
+                                @endphp
+                                {!! $visitorLabels->implode(', ') !!}
+                                @else
+                                <span class="text-gray-700">No active visitors</span>
+                                @endif
+                            </div>
+                        </div>
+
+                    </div>
+                </aside>
+
             </div>
         </div>
     </div>
@@ -952,22 +872,17 @@ $ogImage = $pastebin->cover_path && $pastebin->cover_path !== 'defaultCover.png'
             if (!isExpanded) {
                 wrapper.classList.remove('collapsed');
                 wrapper.classList.add('expanded');
-                wrapper.style.maxHeight = wrapper.scrollHeight + 'px';
-                btnContainer.classList.remove('bg-gradient-to-t', 'from-[#050505]', '-mt-16', 'pt-12');
-                btnContainer.classList.add('mt-4', 'pt-0');
-                btnText.innerText = 'Collapse Content';
+                wrapper.style.maxHeight = 'none';
+                btnText.innerText = 'Collapse';
                 icon.style.transform = 'rotate(180deg)';
                 isExpanded = true;
             } else {
-                wrapper.style.maxHeight = '800px';
+                wrapper.style.maxHeight = '700px';
                 wrapper.classList.remove('expanded');
                 wrapper.classList.add('collapsed');
-                btnContainer.classList.add('bg-gradient-to-t', 'from-[#050505]', '-mt-16', 'pt-12');
-                btnContainer.classList.remove('mt-4', 'pt-0');
-                btnText.innerText = 'View Full Content';
+                btnText.innerText = 'Show Full';
                 icon.style.transform = 'rotate(0deg)';
                 isExpanded = false;
-                // Scroll back to content top
                 document.getElementById('pastebin-content-wrapper').scrollIntoView({
                     behavior: 'smooth',
                     block: 'start'
@@ -987,32 +902,16 @@ $ogImage = $pastebin->cover_path && $pastebin->cover_path !== 'defaultCover.png'
             if (!isMaximized) {
                 container.classList.add('maximized');
                 document.body.style.overflow = 'hidden';
-                maximizeText.innerText = 'Minimize';
+                maximizeText.innerText = 'Exit';
                 maximizeIcon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 4v4m0 0H4m4 0l-5-5m11 1V4m0 0h4m-4 0l5-5M8 20v-4m0 0H4m4 0l5 5m11-1v4m0-4h4m-4 0l5 5"/>';
                 fixedCloseBtn.classList.remove('hidden');
-
-                // If not in expanded mode, remove the gradient visually by just expanding the content fully
-                if (!isExpanded) {
-                    const btnContainer = document.getElementById('view-full-btn-container');
-                    btnContainer.classList.remove('bg-gradient-to-t', 'from-[#050505]', '-mt-16', 'pt-12');
-                    btnContainer.classList.add('mt-4', 'pt-0');
-                }
-
                 isMaximized = true;
             } else {
                 container.classList.remove('maximized');
                 document.body.style.overflow = 'auto';
-                maximizeText.innerText = 'Maximize';
+                maximizeText.innerText = 'Fullscreen';
                 maximizeIcon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"/>';
                 fixedCloseBtn.classList.add('hidden');
-
-                // Restore classes if we were collapsed
-                if (!isExpanded) {
-                    const btnContainer = document.getElementById('view-full-btn-container');
-                    btnContainer.classList.add('bg-gradient-to-t', 'from-[#050505]', '-mt-16', 'pt-12');
-                    btnContainer.classList.remove('mt-4', 'pt-0');
-                }
-
                 isMaximized = false;
                 document.getElementById('pastebin-content-wrapper').scrollIntoView({
                     behavior: 'smooth',
@@ -1076,17 +975,5 @@ $ogImage = $pastebin->cover_path && $pastebin->cover_path !== 'defaultCover.png'
             setInterval(heartbeat, 30000);
         });
     </script>
-    <style>
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(-4px);
-            }
 
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-    </style>
 </x-layouts.app>
