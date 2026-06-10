@@ -1,4 +1,4 @@
-@php
+<?php
 // Strip HTML tags from markdown to get clean text for meta description
 $plainContent = strip_tags($contentMarkdown);
 $plainContent = preg_replace('/\s+/', ' ', $plainContent); // normalize whitespace
@@ -32,103 +32,113 @@ $robots = ($pastebin->visibility === \App\Enum\Visibility::PRIVATE || $pastebin-
 // Determine OG Image
 $ogImage = $pastebin->cover_path && $pastebin->cover_path !== 'defaultCover.png'
 ? asset('storage/' . $pastebin->cover_path): ($pastebin->images->count() > 0 ? asset('storage/' . $pastebin->images->first()->image_path) : null);
-@endphp
+?>
 
-<x-layouts.app
-    :title="$title"
-    :description="$seoDescription"
-    :ogImage="$ogImage"
-    :keywords="$seoKeywords"
-    :robots="$robots"
-    :twitterLabel1="'Author'"
-    :twitterData1="$pastebin->author_name"
-    :twitterLabel2="'Views'"
-    :twitterData2="number_format($pastebin->views_count)">
-    <x-slot:extraHead>
+<?php if (isset($component)) { $__componentOriginal5863877a5171c196453bfa0bd807e410 = $component; } ?>
+<?php if (isset($attributes)) { $__attributesOriginal5863877a5171c196453bfa0bd807e410 = $attributes; } ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.layouts.app','data' => ['title' => $title,'description' => $seoDescription,'ogImage' => $ogImage,'keywords' => $seoKeywords,'robots' => $robots,'twitterLabel1' => 'Author','twitterData1' => $pastebin->author_name,'twitterLabel2' => 'Views','twitterData2' => number_format($pastebin->views_count)]] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component->withName('layouts.app'); ?>
+<?php if ($component->shouldRender()): ?>
+<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
+<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
+<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
+<?php endif; ?>
+<?php $component->withAttributes(['title' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute($title),'description' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute($seoDescription),'ogImage' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute($ogImage),'keywords' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute($seoKeywords),'robots' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute($robots),'twitterLabel1' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute('Author'),'twitterData1' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute($pastebin->author_name),'twitterLabel2' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute('Views'),'twitterData2' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute(number_format($pastebin->views_count))]); ?>
+     <?php $__env->slot('extraHead', null, []); ?> 
         <!-- JSON-LD Structured Data for Pastebin -->
         <script type="application/ld+json">
         {
-            "@@context": "https://schema.org",
-            "@@type": "TextDigitalDocument",
-            "name": "{{ e($pastebin->title) }}",
-            "description": "{{ e($seoDescription) }}",
-            "url": "{{ request()->url() }}",
-            "dateCreated": "{{ $pastebin->created_at->toIso8601String() }}",
-            "datePublished": "{{ $pastebin->created_at->toIso8601String() }}",
-            "dateModified": "{{ $pastebin->updated_at->toIso8601String() }}",
+            "@context": "https://schema.org",
+            "@type": "TextDigitalDocument",
+            "name": "<?php echo e(e($pastebin->title)); ?>",
+            "description": "<?php echo e(e($seoDescription)); ?>",
+            "url": "<?php echo e(request()->url()); ?>",
+            "dateCreated": "<?php echo e($pastebin->created_at->toIso8601String()); ?>",
+            "datePublished": "<?php echo e($pastebin->created_at->toIso8601String()); ?>",
+            "dateModified": "<?php echo e($pastebin->updated_at->toIso8601String()); ?>",
             "author": {
-                "@@type": "Person",
-                "name": "{{ e($pastebin->author_name) }}",
-                "url": "{{ $pastebin->user ? route('profile.show', $pastebin->user->username) : null }}"
+                "@type": "Person",
+                "name": "<?php echo e(e($pastebin->author_name)); ?>",
+                "url": "<?php echo e($pastebin->user ? route('profile.show', $pastebin->user->username) : null); ?>"
             },
             "publisher": {
-                "@@type": "Organization",
-                "name": "{{ config('app.name') }}",
+                "@type": "Organization",
+                "name": "<?php echo e(config('app.name')); ?>",
                 "logo": {
-                    "@@type": "ImageObject",
-                    "url": "{{ asset('favicon-32x32.png') }}"
+                    "@type": "ImageObject",
+                    "url": "<?php echo e(asset('favicon-32x32.png')); ?>"
                 }
             },
             "interactionStatistic": [
                 {
-                    "@@type": "InteractionCounter",
+                    "@type": "InteractionCounter",
                     "interactionType": "https://schema.org/WatchAction",
-                    "userInteractionCount": {{ $pastebin->views_count }}
+                    "userInteractionCount": <?php echo e($pastebin->views_count); ?>
+
                 },
                 {
-                    "@@type": "InteractionCounter",
+                    "@type": "InteractionCounter",
                     "interactionType": "https://schema.org/DownloadAction",
-                    "userInteractionCount": {{ $pastebin->download_count }}
+                    "userInteractionCount": <?php echo e($pastebin->download_count); ?>
+
                 }
             ]
         }
         </script>
 
         <!-- Advanced OpenGraph SEO Tags -->
-        <meta property="article:published_time" content="{{ $pastebin->created_at->toIso8601String() }}">
-        <meta property="article:modified_time" content="{{ $pastebin->updated_at->toIso8601String() }}">
-        <meta property="article:author" content="{{ e($pastebin->author_name) }}">
+        <meta property="article:published_time" content="<?php echo e($pastebin->created_at->toIso8601String()); ?>">
+        <meta property="article:modified_time" content="<?php echo e($pastebin->updated_at->toIso8601String()); ?>">
+        <meta property="article:author" content="<?php echo e(e($pastebin->author_name)); ?>">
         <meta property="article:section" content="Pastebin">
-        <meta property="article:tag" content="{{ e($seoKeywords) }}">
-    </x-slot:extraHead>
+        <meta property="article:tag" content="<?php echo e(e($seoKeywords)); ?>">
+     <?php $__env->endSlot(); ?>
     <div class="min-h-screen text-gray-300 font-sans">
         <div class="max-w-[1400px] mx-auto px-2 py-4 md:py-8">
-            @if(session('success'))
+            <?php if(session('success')): ?>
             <div class="mb-4 p-4 bg-green-950/20 border border-green-900/30 text-green-500 text-xs font-mono font-bold rounded-sm">
-                {{ session('success') }}
+                <?php echo e(session('success')); ?>
+
             </div>
-            @endif
-            @if(session('reputation_awarded'))
+            <?php endif; ?>
+            <?php if(session('reputation_awarded')): ?>
             <div class="mb-4 p-3 bg-yellow-950/20 border border-yellow-700/40 text-yellow-400 text-xs font-mono font-bold rounded-sm flex items-center gap-2">
-                {{ session('reputation_awarded') }}
+                <?php echo e(session('reputation_awarded')); ?>
+
             </div>
-            @endif
-            @if(session('info'))
+            <?php endif; ?>
+            <?php if(session('info')): ?>
             <div class="mb-4 p-4 bg-blue-950/20 border border-blue-900/30 text-blue-400 text-xs font-mono font-bold rounded-sm">
-                {{ session('info') }}
+                <?php echo e(session('info')); ?>
+
             </div>
-            @endif
-            @if(session('error'))
+            <?php endif; ?>
+            <?php if(session('error')): ?>
             <div class="mb-4 p-4 bg-red-950/20 border border-red-900/30 text-red-500 text-xs font-mono font-bold rounded-sm">
-                {{ session('error') }}
+                <?php echo e(session('error')); ?>
+
             </div>
-            @endif
+            <?php endif; ?>
 
             <!-- Breadcrumb/Header Bar -->
             <div class="bg-[#0a0a0a] border border-red-900/40 px-5 py-4 mb-2 flex items-center justify-between rounded-sm">
                 <div class="flex items-center gap-3">
-                    {!! $pastebin->visibility->badge() !!}
+                    <?php echo $pastebin->visibility->badge(); ?>
+
                     <h1 class="text-white font-black text-base md:text-lg tracking-tight">
-                        {{ $pastebin->title }}
+                        <?php echo e($pastebin->title); ?>
+
                     </h1>
                 </div>
                 <div class="text-[10px] md:text-xs text-gray-500 font-bold tracking-widest">
                     by
-                    <span style="color: {{ $pastebin->user ? $pastebin->user->identification->role->color() : '#888' }}">
-                        {{ $pastebin->author_name }}
+                    <span style="color: <?php echo e($pastebin->user ? $pastebin->user->identification->role->color() : '#888'); ?>">
+                        <?php echo e($pastebin->author_name); ?>
+
                     </span>
                     <span class="mx-2 text-red-900/40">|</span>
-                    {{ $pastebin->created_at->format('d-m-Y, H:i A') }}
+                    <?php echo e($pastebin->created_at->format('d-m-Y, H:i A')); ?>
+
                 </div>
             </div>
 
@@ -139,75 +149,78 @@ $ogImage = $pastebin->cover_path && $pastebin->cover_path !== 'defaultCover.png'
                 <aside class="w-full md:w-64 flex-shrink-0 bg-[#0a0a0a] border border-red-900/30 rounded-sm">
                     <div class="sticky top-4 md:top-20 p-5 text-center">
                         <div class="mb-4">
-                            <a href="{{ $pastebin->user ? route('profile.show', $pastebin->user->username) : '#' }}" class="text-white font-black text-sm md:text-base hover:text-red-500 tracking-tighter block">
-                                @if($pastebin->user)
-                                {!! $pastebin->user->identification->role->userStyleWithBanner($pastebin->author_name, $pastebin->user->identification->color_username ?? '#ffffff') !!}
-                                @else
-                                {{ $pastebin->author_name }}
-                                @endif
+                            <a href="<?php echo e($pastebin->user ? route('profile.show', $pastebin->user->username) : '#'); ?>" class="text-white font-black text-sm md:text-base hover:text-red-500 tracking-tighter block">
+                                <?php if($pastebin->user): ?>
+                                <?php echo $pastebin->user->identification->role->userStyleWithBanner($pastebin->author_name, $pastebin->user->identification->color_username ?? '#ffffff'); ?>
+
+                                <?php else: ?>
+                                <?php echo e($pastebin->author_name); ?>
+
+                                <?php endif; ?>
                             </a>
                         </div>
 
                         <!-- Avatar -->
                         <div class="mb-5 flex justify-center">
                             <div class="w-32 h-32 overflow-hidden ">
-                                @if($pastebin->user && $pastebin->user->identification->avatar_path)
-                                <img src="{{ asset('storage/' . $pastebin->user->identification->avatar_path) }}" class="w-full h-full object-cover" alt="avatar">
-                                @else
-                                <img src="{{ asset('storage/avatars/default.png') }}" class="w-full h-full object-cover" alt="avatar">
-                                @endif
+                                <?php if($pastebin->user && $pastebin->user->identification->avatar_path): ?>
+                                <img src="<?php echo e(asset('storage/' . $pastebin->user->identification->avatar_path)); ?>" class="w-full h-full object-cover" alt="avatar">
+                                <?php else: ?>
+                                <img src="<?php echo e(asset('storage/avatars/default.png')); ?>" class="w-full h-full object-cover" alt="avatar">
+                                <?php endif; ?>
                             </div>
                         </div>
 
                         <!-- Role Badge -->
                         <div class="mb-6 space-y-2">
-                            @if($pastebin->user)
+                            <?php if($pastebin->user): ?>
                             <div class="border border-red-900/20 bg-[#050505] py-1 text-[9px] font-black text-gray-500 uppercase tracking-[0.2em]">
                                 DoxMe Members
                             </div>
                             <div class="border border-red-600 bg-red-600/10 py-1.5 px-4 rounded-sm">
                                 <span class="text-red-500 font-black text-[10px] uppercase tracking-[0.2em]">
-                                    {{ $pastebin->user->identification->role->label() }}
+                                    <?php echo e($pastebin->user->identification->role->label()); ?>
+
                                 </span>
                             </div>
-                            @else
+                            <?php else: ?>
                             <div class="border border-gray-800 bg-gray-900/50 py-1.5 px-4 rounded-sm">
                                 <span class="text-gray-500 font-black text-[10px] uppercase tracking-[0.2em]">GUEST</span>
                             </div>
-                            @endif
+                            <?php endif; ?>
                         </div>
 
                         <!-- User Stats -->
                         <div class="text-[10px] space-y-2 text-left px-1 border-t border-red-900/10 pt-5">
-                            @if($pastebin->user)
+                            <?php if($pastebin->user): ?>
                             <div class="flex justify-between items-center">
                                 <span class="text-gray-500 font-bold uppercase tracking-tighter">Posts:</span>
-                                <span class="text-white font-black">{{ $pastebin->user->pastebins()->count() }}</span>
+                                <span class="text-white font-black"><?php echo e($pastebin->user->pastebins()->count()); ?></span>
                             </div>
                             <div class="flex justify-between items-center">
                                 <span class="text-gray-500 font-bold uppercase tracking-tighter">Followers:</span>
-                                <span class="text-white font-black">{{ $pastebin->user->followers()->count() }}</span>
+                                <span class="text-white font-black"><?php echo e($pastebin->user->followers()->count()); ?></span>
                             </div>
                             <div class="flex justify-between items-center">
                                 <span class="text-gray-500 font-bold uppercase tracking-tighter">Joined:</span>
-                                <span class="text-white font-mono">{{ $pastebin->user->created_at->format('M Y') }}</span>
+                                <span class="text-white font-mono"><?php echo e($pastebin->user->created_at->format('M Y')); ?></span>
                             </div>
-                            @endif
+                            <?php endif; ?>
                             <div class="flex justify-between items-center">
                                 <span class="text-gray-500 font-bold uppercase tracking-tighter">Views:</span>
-                                <span class="text-red-500 font-black">{{ number_format($pastebin->views_count) }}</span>
+                                <span class="text-red-500 font-black"><?php echo e(number_format($pastebin->views_count)); ?></span>
                             </div>
                         </div>
 
-                        {{-- Who's Browsing Panel --}}
+                        
                         <div class="mt-5 border-t border-red-900/10 pt-5">
                             <div class="text-[9px] font-black text-red-500 uppercase tracking-[0.2em] mb-2 flex items-center gap-2">
                                 <span class="w-2 h-2 rounded-full bg-red-600"></span>
-                                Online Now (<span id="visitor-count">{{ count($visitors) }}</span>)
+                                Online Now (<span id="visitor-count"><?php echo e(count($visitors)); ?></span>)
                             </div>
                             <div id="visitor-list" class="text-[10px] text-gray-400 font-mono leading-relaxed break-words">
-                                @if(count($visitors) > 0)
-                                @php
+                                <?php if(count($visitors) > 0): ?>
+                                <?php
                                 $visitorLabels = collect($visitors)->map(function($visitor) {
                                 if ($visitor['type'] === 'member') {
                                 $role = \App\Enum\Role::from($visitor['role']);
@@ -215,11 +228,12 @@ $ogImage = $pastebin->cover_path && $pastebin->cover_path !== 'defaultCover.png'
                                 }
                                 return '<span class="text-gray-500">' . e($visitor['name']) . '</span>';
                                 });
-                                @endphp
-                                {!! $visitorLabels->implode(', ') !!}
-                                @else
+                                ?>
+                                <?php echo $visitorLabels->implode(', '); ?>
+
+                                <?php else: ?>
                                 <span class="text-gray-700 italic">No active visitors</span>
-                                @endif
+                                <?php endif; ?>
                             </div>
                         </div>
                     </div>
@@ -231,14 +245,15 @@ $ogImage = $pastebin->cover_path && $pastebin->cover_path !== 'defaultCover.png'
                     <div class="bg-[#050505] border border-red-900/30 rounded-sm flex flex-col min-h-[600px]">
                         <!-- Post Header -->
                         <div class="bg-[#111] px-5 py-2.5 border-b border-red-900/30 flex justify-between items-center text-[10px] text-gray-500 font-mono">
-                            {{ $pastebin->created_at->format('d-m-Y, H:i A') }}
+                            <?php echo e($pastebin->created_at->format('d-m-Y, H:i A')); ?>
+
                         </div>
 
                         <!-- Post Content -->
                         <div class="p-8 flex-1">
 
                             <!-- Burn-After-Reading Alert -->
-                            @if(isset($isBurned) && $isBurned)
+                            <?php if(isset($isBurned) && $isBurned): ?>
                             <div class="mb-8 p-4 bg-red-950/20 border-2 border-dashed border-red-600 rounded-sm text-red-500 font-mono text-xs flex items-start gap-3">
                                 <div class="flex-shrink-0 text-lg">⚠️</div>
                                 <div class="space-y-1">
@@ -248,14 +263,14 @@ $ogImage = $pastebin->cover_path && $pastebin->cover_path !== 'defaultCover.png'
                                     </p>
                                 </div>
                             </div>
-                            @endif
+                            <?php endif; ?>
 
                             <!-- Cover Image -->
-                            @if($pastebin->cover_path && $pastebin->cover_path !== 'defaultCover.png')
+                            <?php if($pastebin->cover_path && $pastebin->cover_path !== 'defaultCover.png'): ?>
                             <div class="mb-8 border border-red-900/20 bg-[#050505] p-1 rounded-sm overflow-hidden">
-                                <img src="{{ asset('storage/' . $pastebin->cover_path) }}" class="w-full max-h-[400px] object-cover" alt="cover">
+                                <img src="<?php echo e(asset('storage/' . $pastebin->cover_path)); ?>" class="w-full max-h-[400px] object-cover" alt="cover">
                             </div>
-                            @endif
+                            <?php endif; ?>
 
 
 
@@ -437,9 +452,10 @@ $ogImage = $pastebin->cover_path && $pastebin->cover_path !== 'defaultCover.png'
                                     }
                                 </style>
                                 <div id="pastebin-content-wrapper" class="collapsed markdown-body text-gray-300 p-6 font-mono text-[11px] overflow-x-auto leading-relaxed scrollbar-thin scrollbar-thumb-red-900 scrollbar-track-transparent">
-                                    {!! $contentMarkdown !!}
+                                    <?php echo $contentMarkdown; ?>
+
                                 </div>
-                                {{-- View Full / Maximize Buttons --}}
+                                
                                 <div id="view-full-btn-container" class="border-t border-red-900/10 bg-gradient-to-t from-[#050505] to-transparent -mt-16 pt-12 pb-3 flex justify-center gap-3 relative">
                                     <button id="view-full-btn" onclick="toggleViewFull()" class="flex items-center gap-2 bg-[#0a0a0a] border border-red-900/30 hover:border-red-600 text-[9px] font-black uppercase tracking-[0.2em] text-red-500 hover:text-white px-5 py-2 rounded-sm transition-all duration-200 active:scale-95">
                                         <svg id="view-full-icon" class="w-3 h-3 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -457,61 +473,61 @@ $ogImage = $pastebin->cover_path && $pastebin->cover_path !== 'defaultCover.png'
                             </div>
 
                             <!-- Gallery Images -->
-                            @if($pastebin->images && $pastebin->images->count() > 0)
+                            <?php if($pastebin->images && $pastebin->images->count() > 0): ?>
                             <div class="mt-12 pt-8 border-t border-red-900/10">
                                 <div class="text-[10px] font-black text-red-500 uppercase mb-5 tracking-[0.2em] flex items-center gap-3">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                                     </svg>
-                                    Attached Evidence Gallery ({{ $pastebin->images->count() }})
+                                    Attached Evidence Gallery (<?php echo e($pastebin->images->count()); ?>)
                                 </div>
                                 <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-                                    @foreach($pastebin->images as $image)
+                                    <?php $__currentLoopData = $pastebin->images; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $image): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                     <div class="aspect-square border border-red-900/20 p-1.5 group">
-                                        <a href="{{ asset('storage/' . $image->image_path) }}" target="_blank">
-                                            <img src="{{ asset('storage/' . $image->image_path) }}" class="w-full h-full object-cover " alt="evidence">
+                                        <a href="<?php echo e(asset('storage/' . $image->image_path)); ?>" target="_blank">
+                                            <img src="<?php echo e(asset('storage/' . $image->image_path)); ?>" class="w-full h-full object-cover " alt="evidence">
                                         </a>
                                     </div>
-                                    @endforeach
+                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                 </div>
                             </div>
-                            @endif
+                            <?php endif; ?>
                         </div>
 
                         <!-- Footer Actions -->
                         <footer class="bg-[#111] border-t border-red-900/30 px-6 py-3 flex items-center justify-between rounded-b-sm mt-auto">
 
                             <div class="flex gap-3">
-                                @auth
-                                @can('delete', $pastebin)
-                                <form id="delete-paste-form" action="{{ route('pastebin.destroy', $pastebin) }}" method="POST" class="inline">
-                                    @csrf
-                                    @method('DELETE')
+                                <?php if(auth()->guard()->check()): ?>
+                                <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('delete', $pastebin)): ?>
+                                <form id="delete-paste-form" action="<?php echo e(route('pastebin.destroy', $pastebin)); ?>" method="POST" class="inline">
+                                    <?php echo csrf_field(); ?>
+                                    <?php echo method_field('DELETE'); ?>
                                     <button type="button" onclick="confirmDelete()" class="bg-red-950/20 border border-red-900/40 text-[9px] font-black px-4 py-1.5 text-red-500 hover:bg-red-600 hover:text-white uppercase tracking-widest transition-colors duration-150">
                                         Delete
                                     </button>
                                 </form>
-                                @endcan
-                                @can('update', $pastebin)
+                                <?php endif; ?>
+                                <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('update', $pastebin)): ?>
                                 <button onclick="document.getElementById('edit-modal').classList.remove('hidden')" class="bg-red-600/10 border border-red-600/30 text-[9px] font-black px-5 py-1.5 text-red-500 hover:bg-red-600 hover:text-white uppercase tracking-widest">Edit Thread</button>
-                                @else
+                                <?php else: ?>
                                 <button onclick="document.getElementById('edit-modal').classList.remove('hidden')" class="bg-red-600/10 border border-red-600/30 text-[9px] font-black px-5 py-1.5 text-red-500 hover:bg-red-600 hover:text-white uppercase tracking-widest">Suggest Edit</button>
-                                @endcan
-                                @endauth
+                                <?php endif; ?>
+                                <?php endif; ?>
                                 <button onclick="document.getElementById('report-modal').classList.remove('hidden')" class="bg-[#0a0a0a] border border-red-900/20 text-[9px] font-black px-4 py-1.5 text-gray-500 hover:text-white hover:border-white/20 uppercase tracking-widest">Report</button>
-                                @guest
-                                <a href="{{ route('login') }}" class="bg-[#0a0a0a] border border-red-900/20 text-[9px] font-black px-4 py-1.5 text-gray-500 hover:text-white hover:border-white/20 uppercase tracking-widest">Edit/Suggest</a>
-                                @endguest
+                                <?php if(auth()->guard()->guest()): ?>
+                                <a href="<?php echo e(route('login')); ?>" class="bg-[#0a0a0a] border border-red-900/20 text-[9px] font-black px-4 py-1.5 text-gray-500 hover:text-white hover:border-white/20 uppercase tracking-widest">Edit/Suggest</a>
+                                <?php endif; ?>
                             </div>
 
                             <div class="flex gap-3">
                                 <button onclick="openShareModal()" class="bg-[#0a0a0a] border border-red-900/20 text-[9px] font-black px-4 py-1.5 text-gray-500 hover:text-white hover:border-white/20 uppercase tracking-widest transition-colors duration-150">
                                     Share
                                 </button>
-                                <a href="{{ route('pastebin.raw', $pastebin->slug) }}" target="_blank" class="bg-[#0a0a0a] border border-red-900/20 text-[9px] font-black px-4 py-1.5 text-gray-500 hover:text-white hover:border-white/20 uppercase tracking-widest transition-colors duration-150">
+                                <a href="<?php echo e(route('pastebin.raw', $pastebin->slug)); ?>" target="_blank" class="bg-[#0a0a0a] border border-red-900/20 text-[9px] font-black px-4 py-1.5 text-gray-500 hover:text-white hover:border-white/20 uppercase tracking-widest transition-colors duration-150">
                                     Raw View
                                 </a>
-                                <a href="{{ route('pastebin.download', $pastebin->slug) }}" class="bg-red-950/20 border border-red-900/40 text-[9px] font-black px-4 py-1.5 text-red-500 hover:bg-red-600 hover:text-white uppercase tracking-widest transition-colors duration-150">
+                                <a href="<?php echo e(route('pastebin.download', $pastebin->slug)); ?>" class="bg-red-950/20 border border-red-900/40 text-[9px] font-black px-4 py-1.5 text-red-500 hover:bg-red-600 hover:text-white uppercase tracking-widest transition-colors duration-150">
                                     Download
                                 </a>
                             </div>
@@ -519,27 +535,27 @@ $ogImage = $pastebin->cover_path && $pastebin->cover_path !== 'defaultCover.png'
                     </div>
 
                     <!-- Sponsor Banners Section -->
-                    @php
+                    <?php
                     $showBanners = \App\Helper\AdTracker::getBanners(0, 0);
-                    @endphp
+                    ?>
 
-                    @if($showBanners->isNotEmpty())
+                    <?php if($showBanners->isNotEmpty()): ?>
                     <div class="bg-[#050505] border border-red-900/30 p-5 rounded-sm">
                         <p class="text-[9px] text-red-500 font-black uppercase tracking-[0.2em] text-center mb-3 flex items-center justify-center gap-1.5 font-mono select-none">
                             <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span>
                             OFFICIAL PLATFORM SPONSORS
                         </p>
                         <div class="flex flex-wrap justify-center gap-4">
-                            @foreach($showBanners as $banner)
-                            <a href="{{ route('ads.click', $banner->id) }}" target="_blank"
+                            <?php $__currentLoopData = $showBanners; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $banner): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                            <a href="<?php echo e(route('ads.click', $banner->id)); ?>" target="_blank"
                                 class="block w-full max-w-[466px] h-[58px] border border-red-950/40 hover:border-red-600/70 overflow-hidden rounded-sm bg-black transition-colors duration-150 relative group">
-                                <img src="{{ asset($banner->media_url) }}" alt="{{ $banner->title }}"
+                                <img src="<?php echo e(asset($banner->media_url)); ?>" alt="<?php echo e($banner->title); ?>"
                                     class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity duration-150">
                             </a>
-                            @endforeach
+                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                         </div>
                     </div>
-                    @endif
+                    <?php endif; ?>
 
                     <!-- Comments Section -->
                     <div class="bg-[#0a0a0a] border border-red-900/30 p-6 rounded-sm flex flex-col gap-6">
@@ -572,50 +588,60 @@ $ogImage = $pastebin->cover_path && $pastebin->cover_path !== 'defaultCover.png'
                             }
                         </style>
 
-                        @if(isset($comments) && count($comments) > 0)
+                        <?php if(isset($comments) && count($comments) > 0): ?>
                         <div class="space-y-4">
-                            @foreach($comments as $comment)
+                            <?php $__currentLoopData = $comments; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $comment): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                             <div class="border border-red-900/20 p-4 rounded-sm flex gap-4">
                                 <div class="w-8 h-8 overflow-hidden flex-shrink-0">
-                                    @if($comment->user->identification->avatar_path)
-                                    <img src="{{ asset('storage/' . $comment->user->identification->avatar_path) }}" class="w-full h-full object-cover">
-                                    @else
+                                    <?php if($comment->user->identification->avatar_path): ?>
+                                    <img src="<?php echo e(asset('storage/' . $comment->user->identification->avatar_path)); ?>" class="w-full h-full object-cover">
+                                    <?php else: ?>
                                     <div class="w-full h-full flex items-center justify-center text-xs font-bold text-gray-600">
-                                        {{ strtoupper(substr($comment->user->username, 0, 1)) }}
+                                        <?php echo e(strtoupper(substr($comment->user->username, 0, 1))); ?>
+
                                     </div>
-                                    @endif
+                                    <?php endif; ?>
                                 </div>
                                 <div class="flex-1">
                                     <div class="flex justify-between items-start mb-2">
-                                        <a href="{{ route('profile.show', $comment->user->username) }}" class="text-[11px] font-black tracking-tighter">
-                                            {!! $comment->user->identification->role->userStyleWithBanner($comment->user->username, $comment->user->identification->custom_color ?? '#ffffff') !!}
+                                        <a href="<?php echo e(route('profile.show', $comment->user->username)); ?>" class="text-[11px] font-black tracking-tighter">
+                                            <?php echo $comment->user->identification->role->userStyleWithBanner($comment->user->username, $comment->user->identification->custom_color ?? '#ffffff'); ?>
+
                                         </a>
                                         <div class="flex items-center gap-3">
-                                            <div class="text-[9px] text-gray-600 font-mono">{{ $comment->created_at->diffForHumans() }}</div>
-                                            @auth
-                                            <button type="button" onclick="replyToComment('{{ $comment->user->username }}', {{ json_encode($comment->content) }})" class="text-[9px] text-gray-500 hover:text-red-500 font-black uppercase tracking-widest transition-colors">Reply</button>
-                                            @endauth
+                                            <div class="text-[9px] text-gray-600 font-mono"><?php echo e($comment->created_at->diffForHumans()); ?></div>
+                                            <?php if(auth()->guard()->check()): ?>
+                                            <button type="button" onclick="replyToComment('<?php echo e($comment->user->username); ?>', <?php echo e(json_encode($comment->content)); ?>)" class="text-[9px] text-gray-500 hover:text-red-500 font-black uppercase tracking-widest transition-colors">Reply</button>
+                                            <?php endif; ?>
                                         </div>
                                     </div>
                                     <div class="text-xs text-gray-400 font-mono leading-relaxed comment-content">
-                                        {!! \Illuminate\Support\Str::markdown($comment->content) !!}
+                                        <?php echo \Illuminate\Support\Str::markdown($comment->content); ?>
+
                                     </div>
                                 </div>
                             </div>
-                            @endforeach
+                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                         </div>
-                        @else
+                        <?php else: ?>
                         <div class="text-xs text-gray-600 font-mono italic p-4 text-center border border-red-900/10 bg-[#050505]">
                             No comments yet. Be the first to start the discussion.
                         </div>
-                        @endif
+                        <?php endif; ?>
 
-                        @auth
-                        <form action="{{ route('pastebin.comments.store', $pastebin) }}" method="POST" class="mt-4">
-                            @csrf
+                        <?php if(auth()->guard()->check()): ?>
+                        <form action="<?php echo e(route('pastebin.comments.store', $pastebin)); ?>" method="POST" class="mt-4">
+                            <?php echo csrf_field(); ?>
                             <div class="flex flex-col gap-3">
                                 <textarea id="comment-textarea" name="content" rows="3" placeholder="Add a comment..." required class="w-full bg-[#050505] border border-red-900/20 rounded-sm px-4 py-3 text-xs font-mono text-gray-300 focus:outline-none focus:border-red-600 resize-none"></textarea>
-                                @error('content') <span class="text-red-500 text-[10px]">{{ $message }}</span> @enderror
+                                <?php $__errorArgs = ['content'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> <span class="text-red-500 text-[10px]"><?php echo e($message); ?></span> <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                                 <div class="flex justify-end">
                                     <button type="submit" class="bg-red-600/10 border border-red-600/30 hover:bg-red-600 hover:text-white text-red-500 px-6 py-2 rounded-sm font-black text-[10px] uppercase tracking-[0.2em] transition-colors">Post Comment</button>
                                 </div>
@@ -635,52 +661,53 @@ $ogImage = $pastebin->cover_path && $pastebin->cover_path !== 'defaultCover.png'
                                 });
                             }
                         </script>
-                        @else
+                        <?php else: ?>
                         <div class="mt-4 text-xs text-gray-500 font-mono text-center p-3 border border-red-900/20 bg-[#050505]">
-                            <a href="{{ route('login') }}" class="text-red-500 hover:underline">Log in</a> to post a comment.
+                            <a href="<?php echo e(route('login')); ?>" class="text-red-500 hover:underline">Log in</a> to post a comment.
                         </div>
-                        @endauth
+                        <?php endif; ?>
                     </div>
 
                     <!-- Pending Suggestions Block -->
-                    @if(auth()->check() && (auth()->id() === $pastebin->user_id || auth()->user()->canUsePremiumFeatures()))
-                    @if(isset($pendingEdits) && count($pendingEdits) > 0)
+                    <?php if(auth()->check() && (auth()->id() === $pastebin->user_id || auth()->user()->canUsePremiumFeatures())): ?>
+                    <?php if(isset($pendingEdits) && count($pendingEdits) > 0): ?>
                     <div class="bg-[#0a0a0a] border border-red-600/30 p-6 rounded-sm">
                         <h3 class="text-xs font-black text-red-500 uppercase mb-5 tracking-[0.2em] flex items-center gap-3">
                             <span class="w-2 h-2 bg-red-600 rounded-full"></span>
-                            Pending Improvements ({{ count($pendingEdits) }})
+                            Pending Improvements (<?php echo e(count($pendingEdits)); ?>)
                         </h3>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            @foreach($pendingEdits as $edit)
+                            <?php $__currentLoopData = $pendingEdits; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $edit): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                             <div class="bg-[#050505] border border-red-900/20 p-4 flex flex-col gap-4 rounded-sm">
                                 <div class="flex items-center gap-3">
                                     <div class="w-8 h-8 bg-red-600/10 border border-red-900/20 flex items-center justify-center text-red-500 font-black text-[10px]">
-                                        {{ substr($edit->user->username, 0, 1) }}
+                                        <?php echo e(substr($edit->user->username, 0, 1)); ?>
+
                                     </div>
                                     <div>
-                                        <div class="text-xs font-black text-white uppercase tracking-tighter">{{ $edit->user->username }}</div>
-                                        <div class="text-[9px] text-gray-600 font-mono">{{ $edit->created_at->diffForHumans() }}</div>
+                                        <div class="text-xs font-black text-white uppercase tracking-tighter"><?php echo e($edit->user->username); ?></div>
+                                        <div class="text-[9px] text-gray-600 font-mono"><?php echo e($edit->created_at->diffForHumans()); ?></div>
                                     </div>
                                 </div>
                                 <div class="text-[11px] text-gray-400 italic bg-black/50 p-3 border-l border-red-600">
-                                    "{{ $edit->title }}"
+                                    "<?php echo e($edit->title); ?>"
                                 </div>
                                 <div class="flex gap-2">
-                                    <form action="{{ route('pastebin.edit.approve', $edit) }}" method="POST" class="flex-1">
-                                        @csrf
+                                    <form action="<?php echo e(route('pastebin.edit.approve', $edit)); ?>" method="POST" class="flex-1">
+                                        <?php echo csrf_field(); ?>
                                         <button class="w-full bg-green-600/10 border border-green-600/30 text-green-500 py-2 text-[9px] font-black uppercase tracking-widest hover:bg-green-600 hover:text-white">Approve</button>
                                     </form>
-                                    <form action="{{ route('pastebin.edit.reject', $edit) }}" method="POST" class="flex-1">
-                                        @csrf
+                                    <form action="<?php echo e(route('pastebin.edit.reject', $edit)); ?>" method="POST" class="flex-1">
+                                        <?php echo csrf_field(); ?>
                                         <button class="w-full bg-red-600/10 border border-red-600/30 text-red-500 py-2 text-[9px] font-black uppercase tracking-widest hover:bg-red-600 hover:text-white">Reject</button>
                                     </form>
                                 </div>
                             </div>
-                            @endforeach
+                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                         </div>
                     </div>
-                    @endif
-                    @endif
+                    <?php endif; ?>
+                    <?php endif; ?>
                 </main>
             </div>
         </div>
@@ -692,7 +719,7 @@ $ogImage = $pastebin->cover_path && $pastebin->cover_path !== 'defaultCover.png'
         <div class="relative bg-[#0a0a0a] border border-red-900/40 w-full max-w-4xl rounded-sm overflow-hidden">
             <div class="flex items-center justify-between px-6 py-4 border-b border-red-900/40 bg-[#111]">
                 <h2 class="text-sm font-black text-red-500 uppercase tracking-[0.2em]">
-                    @can('update', $pastebin) Edit Thread @else Suggest Improvement @endcan
+                    <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('update', $pastebin)): ?> Edit Thread <?php else: ?> Suggest Improvement <?php endif; ?>
                 </h2>
                 <button onclick="document.getElementById('edit-modal').classList.add('hidden')" class="text-gray-500 hover:text-white">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -701,19 +728,19 @@ $ogImage = $pastebin->cover_path && $pastebin->cover_path !== 'defaultCover.png'
                 </button>
             </div>
 
-            <form action="@can('update', $pastebin) {{ route('pastebin.update', $pastebin) }} @else {{ route('pastebin.edit.store', $pastebin) }} @endcan" method="POST" enctype="multipart/form-data" class="p-8 space-y-8">
-                @csrf
-                @can('update', $pastebin) @method('PUT') @endcan
+            <form action="<?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('update', $pastebin)): ?> <?php echo e(route('pastebin.update', $pastebin)); ?> <?php else: ?> <?php echo e(route('pastebin.edit.store', $pastebin)); ?> <?php endif; ?>" method="POST" enctype="multipart/form-data" class="p-8 space-y-8">
+                <?php echo csrf_field(); ?>
+                <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('update', $pastebin)): ?> <?php echo method_field('PUT'); ?> <?php endif; ?>
 
-                @can('update', $pastebin)
+                <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('update', $pastebin)): ?>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                     <div class="space-y-2">
                         <label class="text-[10px] font-black text-gray-600 uppercase tracking-widest">Title</label>
-                        <input type="text" name="title" value="{{ $pastebin->title }}" class="w-full bg-[#050505] border border-red-900/20 px-4 py-3 text-xs text-gray-300 focus:outline-none focus:border-red-600 rounded-sm">
+                        <input type="text" name="title" value="<?php echo e($pastebin->title); ?>" class="w-full bg-[#050505] border border-red-900/20 px-4 py-3 text-xs text-gray-300 focus:outline-none focus:border-red-600 rounded-sm">
                     </div>
                     <div class="space-y-2">
                         <label class="text-[10px] font-black text-gray-600 uppercase tracking-widest">Description <span class="text-[8px] font-normal text-gray-500 normal-case">(Optional - Helps in finding it on search engines)</span></label>
-                        <input type="text" name="description" value="{{ $pastebin->description }}" class="w-full bg-[#050505] border border-red-900/20 px-4 py-3 text-xs text-gray-300 focus:outline-none focus:border-red-600 rounded-sm">
+                        <input type="text" name="description" value="<?php echo e($pastebin->description); ?>" class="w-full bg-[#050505] border border-red-900/20 px-4 py-3 text-xs text-gray-300 focus:outline-none focus:border-red-600 rounded-sm">
                     </div>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mt-4">
@@ -727,45 +754,45 @@ $ogImage = $pastebin->cover_path && $pastebin->cover_path !== 'defaultCover.png'
                     </div>
                 </div>
 
-                @if($pastebin->images && $pastebin->images->count() > 0)
+                <?php if($pastebin->images && $pastebin->images->count() > 0): ?>
                 <div class="space-y-2 mt-6">
                     <label class="text-[10px] font-black text-gray-600 uppercase tracking-widest">Manage Existing Gallery Images</label>
                     <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 p-4 border border-red-900/20 bg-[#050505] rounded-sm">
-                        @foreach($pastebin->images as $image)
+                        <?php $__currentLoopData = $pastebin->images; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $image): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                         <div class="relative aspect-square border border-red-900/20 p-1 group transition-all duration-150 image-to-delete-container">
-                            <img src="{{ asset('storage/' . $image->image_path) }}" class="w-full h-full object-cover rounded-sm image-preview" alt="existing evidence">
+                            <img src="<?php echo e(asset('storage/' . $image->image_path)); ?>" class="w-full h-full object-cover rounded-sm image-preview" alt="existing evidence">
                             <!-- Overlay with checkbox -->
                             <div class="absolute inset-0 bg-black/40 group-hover:bg-black/70 flex items-center justify-center transition-all duration-150 overlay-delete opacity-0 group-hover:opacity-100">
                                 <label class="flex flex-col items-center justify-center cursor-pointer text-gray-400 hover:text-red-500 text-[9px] font-black uppercase tracking-wider gap-2 select-none w-full h-full">
-                                    <input type="checkbox" name="delete_images[]" value="{{ $image->id }}" onchange="toggleImageDeleteState(this)" class="form-checkbox text-red-600 focus:ring-red-600 h-4 w-4 bg-black border-red-900/40 rounded-sm cursor-pointer">
+                                    <input type="checkbox" name="delete_images[]" value="<?php echo e($image->id); ?>" onchange="toggleImageDeleteState(this)" class="form-checkbox text-red-600 focus:ring-red-600 h-4 w-4 bg-black border-red-900/40 rounded-sm cursor-pointer">
                                     <span class="delete-label">Delete</span>
                                 </label>
                             </div>
                         </div>
-                        @endforeach
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                     </div>
                     <p class="text-[9px] text-gray-500 font-mono italic">Check "Delete" on any existing images you wish to remove upon saving changes.</p>
                 </div>
-                @endif
-                @else
-                <input type="hidden" name="title" value="{{ $pastebin->title }}">
-                <input type="hidden" name="description" value="{{ $pastebin->description }}">
-                @endcan
+                <?php endif; ?>
+                <?php else: ?>
+                <input type="hidden" name="title" value="<?php echo e($pastebin->title); ?>">
+                <input type="hidden" name="description" value="<?php echo e($pastebin->description); ?>">
+                <?php endif; ?>
                 <div class="space-y-2">
                     <label class="text-[10px] font-black text-gray-600 uppercase tracking-widest">Content</label>
-                    <textarea name="content" rows="12" class="w-full bg-[#050505] border border-red-900/20 px-4 py-3 text-xs font-mono text-gray-300 focus:outline-none focus:border-red-600 resize-none rounded-sm">{{ $pastebin->content }}</textarea>
+                    <textarea name="content" rows="12" class="w-full bg-[#050505] border border-red-900/20 px-4 py-3 text-xs font-mono text-gray-300 focus:outline-none focus:border-red-600 resize-none rounded-sm"><?php echo e($pastebin->content); ?></textarea>
                 </div>
                 <div class="flex justify-end gap-6 pt-6 border-t border-red-900/10">
                     <button type="button" onclick="document.getElementById('edit-modal').classList.add('hidden')" class="text-[10px] font-black uppercase tracking-widest text-gray-600 hover:text-white">Dismiss</button>
                     <button type="submit" class="bg-red-600 hover:bg-red-700 text-white px-10 py-3.5 font-black uppercase text-[10px] tracking-widest rounded-sm">
-                        @can('update', $pastebin) Save Changes @else Transmit Suggestion @endcan
+                        <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('update', $pastebin)): ?> Save Changes <?php else: ?> Transmit Suggestion <?php endif; ?>
                     </button>
                 </div>
             </form>
         </div>
     </div>
-    @auth
-    @can('delete', $pastebin)
+    <?php if(auth()->guard()->check()): ?>
+    <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('delete', $pastebin)): ?>
     <script>
         function confirmDelete() {
             window.doxmeModal({
@@ -780,8 +807,8 @@ $ogImage = $pastebin->cover_path && $pastebin->cover_path !== 'defaultCover.png'
             });
         }
     </script>
-    @endcan
-    @endauth
+    <?php endif; ?>
+    <?php endif; ?>
 
     <!-- Report Modal -->
     <div id="report-modal" class="fixed inset-0 z-[100] hidden flex items-center justify-center p-4">
@@ -795,8 +822,8 @@ $ogImage = $pastebin->cover_path && $pastebin->cover_path !== 'defaultCover.png'
                     </svg>
                 </button>
             </div>
-            <form action="{{ route('pastebin.report', $pastebin->slug) }}" method="POST" class="p-6 space-y-4">
-                @csrf
+            <form action="<?php echo e(route('pastebin.report', $pastebin->slug)); ?>" method="POST" class="p-6 space-y-4">
+                <?php echo csrf_field(); ?>
                 <div>
                     <label for="reason" class="block text-[10px] font-black uppercase tracking-widest text-gray-400 mb-2">Reason for Report</label>
                     <textarea id="reason" name="reason" required placeholder="Describe why this thread " rows="4"
@@ -825,7 +852,7 @@ $ogImage = $pastebin->cover_path && $pastebin->cover_path !== 'defaultCover.png'
             <div class="p-6 space-y-6">
                 <!-- Social Share Links -->
                 <div class="grid grid-cols-2 gap-3">
-                    <a href="https://t.me/share/url?url={{ urlencode(request()->url()) }}&text={{ urlencode($pastebin->title) }}" target="_blank"
+                    <a href="https://t.me/share/url?url=<?php echo e(urlencode(request()->url())); ?>&text=<?php echo e(urlencode($pastebin->title)); ?>" target="_blank"
                         class="flex items-center justify-center gap-2 p-3 bg-[#0a0a0a] border border-red-900/20 hover:border-red-600 hover:bg-red-950/10 rounded-sm text-xs font-black uppercase tracking-wider text-gray-300 transition-all active:scale-95">
                         <svg class="w-4 h-4 text-red-500" fill="currentColor" viewBox="0 0 24 24">
                             <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69.01-.03.01-.14-.07-.2-.08-.06-.19-.04-.27-.02-.11.02-1.93 1.23-5.46 3.62-.51.35-.98.53-1.39.51-.46-.01-1.35-.26-2.01-.48-.8-.27-1.44-.42-1.39-.88.03-.24.37-.49 1.02-.75 3.98-1.73 6.64-2.88 7.98-3.45 3.8-1.61 4.59-1.9 5.1-.19.06.12.08.26.06.4z" />
@@ -833,7 +860,7 @@ $ogImage = $pastebin->cover_path && $pastebin->cover_path !== 'defaultCover.png'
                         <span>Telegram</span>
                     </a>
 
-                    <a href="https://twitter.com/intent/tweet?url={{ urlencode(request()->url()) }}&text={{ urlencode($pastebin->title) }}" target="_blank"
+                    <a href="https://twitter.com/intent/tweet?url=<?php echo e(urlencode(request()->url())); ?>&text=<?php echo e(urlencode($pastebin->title)); ?>" target="_blank"
                         class="flex items-center justify-center gap-2 p-3 bg-[#0a0a0a] border border-red-900/20 hover:border-red-600 hover:bg-red-950/10 rounded-sm text-xs font-black uppercase tracking-wider text-gray-300 transition-all active:scale-95">
                         <svg class="w-4 h-4 text-red-500" fill="currentColor" viewBox="0 0 24 24">
                             <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
@@ -846,7 +873,7 @@ $ogImage = $pastebin->cover_path && $pastebin->cover_path !== 'defaultCover.png'
                 <div class="flex flex-col gap-2">
                     <label class="text-[10px] font-bold text-gray-500 uppercase">Share Link</label>
                     <div class="flex items-center gap-2 bg-black border border-red-900/20 p-2.5 rounded-sm">
-                        <input type="text" readonly id="share-link-input" value="{{ request()->url() }}"
+                        <input type="text" readonly id="share-link-input" value="<?php echo e(request()->url()); ?>"
                             class="bg-transparent text-xs text-gray-300 font-mono focus:outline-none flex-1 select-all cursor-text" />
                         <button onclick="copyShareLink()" class="px-4 py-1.5 border border-red-600 bg-red-600/10 hover:bg-red-600/20 text-red-500 text-[10px] font-black uppercase tracking-widest transition-all rounded-sm flex items-center gap-1 active:scale-95">
                             <span id="copy-share-btn-text">Copy</span>
@@ -1012,8 +1039,8 @@ $ogImage = $pastebin->cover_path && $pastebin->cover_path !== 'defaultCover.png'
         }
 
         // ── Live Visitor Polling ──────────────────────────────────────────
-        const PASTEBIN_SLUG = @json($pastebin->slug);
-        const VISIT_URL = '{{ route("pastebin.visit", ":slug") }}'.replace(':slug', PASTEBIN_SLUG);
+        const PASTEBIN_SLUG = <?php echo json_encode($pastebin->slug, 15, 512) ?>;
+        const VISIT_URL = '<?php echo e(route("pastebin.visit", ":slug")); ?>'.replace(':slug', PASTEBIN_SLUG);
         const CSRF_TOKEN = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') ?? '';
 
         function buildVisitorItem(visitor) {
@@ -1079,4 +1106,13 @@ $ogImage = $pastebin->cover_path && $pastebin->cover_path !== 'defaultCover.png'
             }
         }
     </style>
-</x-layouts.app>
+ <?php echo $__env->renderComponent(); ?>
+<?php endif; ?>
+<?php if (isset($__attributesOriginal5863877a5171c196453bfa0bd807e410)): ?>
+<?php $attributes = $__attributesOriginal5863877a5171c196453bfa0bd807e410; ?>
+<?php unset($__attributesOriginal5863877a5171c196453bfa0bd807e410); ?>
+<?php endif; ?>
+<?php if (isset($__componentOriginal5863877a5171c196453bfa0bd807e410)): ?>
+<?php $component = $__componentOriginal5863877a5171c196453bfa0bd807e410; ?>
+<?php unset($__componentOriginal5863877a5171c196453bfa0bd807e410); ?>
+<?php endif; ?>
