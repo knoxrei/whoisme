@@ -47,40 +47,41 @@ $ogImage = $pastebin->cover_path && $pastebin->cover_path !== 'defaultCover.png'
     <x-slot:extraHead>
         <!-- JSON-LD Structured Data for Pastebin -->
         <script type="application/ld+json">
-            {
-                "@context": "https://schema.org",
-                "@type": "TextDigitalDocument",
-                "name": "{{ e($pastebin->title) }}",
-                "description": "{{ e($seoDescription) }}",
-                "url": "{{ request()->url() }}",
-                "dateCreated": "{{ $pastebin->created_at->toIso8601String() }}",
-                "datePublished": "{{ $pastebin->created_at->toIso8601String() }}",
-                "dateModified": "{{ $pastebin->updated_at->toIso8601String() }}",
-                "author": {
-                    "@type": "Person",
-                    "name": "{{ e($pastebin->author_name) }}",
-                    "url": "{{ $pastebin->user ? route('profile.show', $pastebin->user->username) : null }}"
+        {
+            "@context": "https://schema.org",
+            "@type": "TextDigitalDocument",
+            "name": "{{ e($pastebin->title) }}",
+            "description": "{{ e($seoDescription) }}",
+            "url": "{{ request()->url() }}",
+            "dateCreated": "{{ $pastebin->created_at->toIso8601String() }}",
+            "datePublished": "{{ $pastebin->created_at->toIso8601String() }}",
+            "dateModified": "{{ $pastebin->updated_at->toIso8601String() }}",
+            "author": {
+                "@type": "Person",
+                "name": "{{ e($pastebin->author_name) }}",
+                "url": "{{ $pastebin->user ? route('profile.show', $pastebin->user->username) : null }}"
+            },
+            "publisher": {
+                "@type": "Organization",
+                "name": "{{ config('app.name') }}",
+                "logo": {
+                    "@type": "ImageObject",
+                    "url": "{{ asset('favicon-32x32.png') }}"
+                }
+            },
+            "interactionStatistic": [
+                {
+                    "@type": "InteractionCounter",
+                    "interactionType": "https://schema.org/WatchAction",
+                    "userInteractionCount": {{ $pastebin->views_count }}
                 },
-                "publisher": {
-                    "@type": "Organization",
-                    "name": "{{ config('app.name') }}",
-                    "logo": {
-                        "@type": "ImageObject",
-                        "url": "{{ asset('favicon-32x32.png') }}"
-                    }
-                },
-                "interactionStatistic": [{
-                        "@type": "InteractionCounter",
-                        "interactionType": "https://schema.org/WatchAction",
-                        "userInteractionCount": {{ $pastebin->views_count }}
-                    },
-                    {
-                        "@type": "InteractionCounter",
-                        "interactionType": "https://schema.org/DownloadAction",
-                        "userInteractionCount": {{ $pastebin->download_count }}
-                    }
-                ]
-            }
+                {
+                    "@type": "InteractionCounter",
+                    "interactionType": "https://schema.org/DownloadAction",
+                    "userInteractionCount": {{ $pastebin->download_count }}
+                }
+            ]
+        }
         </script>
     </x-slot:extraHead>
     <div class="min-h-screen text-gray-300 font-sans">
