@@ -72,20 +72,12 @@ $ogImage = $pastebin->cover_path && $pastebin->cover_path !== 'defaultCover.png'
                 "interactionStatistic": [{
                         "@type": "InteractionCounter",
                         "interactionType": "https://schema.org/WatchAction",
-                        "userInteractionCount": {
-                            {
-                                $pastebin - > views_count
-                            }
-                        }
+                        "userInteractionCount": {{ $pastebin->views_count }}
                     },
                     {
                         "@type": "InteractionCounter",
                         "interactionType": "https://schema.org/DownloadAction",
-                        "userInteractionCount": {
-                            {
-                                $pastebin - > download_count
-                            }
-                        }
+                        "userInteractionCount": {{ $pastebin->download_count }}
                     }
                 ]
             }
@@ -1012,7 +1004,7 @@ $ogImage = $pastebin->cover_path && $pastebin->cover_path !== 'defaultCover.png'
         }
 
         // ── Live Visitor Polling ──────────────────────────────────────────
-        const PASTEBIN_SLUG = @json($pastebin - > slug);
+        const PASTEBIN_SLUG = @json($pastebin->slug);
         const VISIT_URL = '{{ route("pastebin.visit", ":slug") }}'.replace(':slug', PASTEBIN_SLUG);
         const CSRF_TOKEN = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') ?? '';
 
