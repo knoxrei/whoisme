@@ -387,12 +387,14 @@ class DashboardController extends Controller
         $this->authorize('update', $user);
 
         $request->validate([
-            'username' => 'required|string|max:255|unique:users,username,' . $user->id,
+            'username' => ['required', 'string', 'max:255', 'unique:users,username,' . $user->id, 'regex:/^\S+$/'],
             'email' => 'required|email|max:255|unique:users,email,' . $user->id,
             'role' => 'required|string',
             'color_username' => 'nullable|string|max:7',
             'bio' => 'nullable|string|max:500',
             'website' => 'nullable|string|max:255',
+        ], [
+            'username.regex' => 'The username must not contain any spaces.',
         ]);
 
         // Security check: Only Owner can assign OWNER or MODERATOR roles
@@ -486,11 +488,13 @@ class DashboardController extends Controller
         }
 
         $request->validate([
-            'username' => 'required|string|max:255|unique:users,username',
+            'username' => ['required', 'string', 'max:255', 'unique:users,username', 'regex:/^\S+$/'],
             'email' => 'required|email|max:255|unique:users,email',
             'password' => 'required|string|min:8',
             'company_name' => 'nullable|string|max:255',
             'balance' => 'nullable|numeric|min:0',
+        ], [
+            'username.regex' => 'The username must not contain any spaces.',
         ]);
 
         $user = User::create([

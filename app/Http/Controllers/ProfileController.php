@@ -143,11 +143,15 @@ class ProfileController extends Controller
                 'string',
                 'max:255',
                 Rule::unique('users')->ignore($user->id),
-                'alpha_dash',
+                'regex:/^\S+$/',
             ];
         }
 
-        $request->validate($rules);
+        $messages = [
+            'username.regex' => 'The username must not contain any spaces.',
+        ];
+
+        $request->validate($rules, $messages);
 
         // Update User table if username changed
         if ($canChangeUsername && $request->has('username') && $request->username !== $user->username) {

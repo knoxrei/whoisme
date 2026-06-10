@@ -23,7 +23,7 @@ class RegisterRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'username' => 'required|min:4|max:12|unique:users,username',
+            'username' => 'required|min:4|max:12|unique:users,username|regex:/^\S+$/',
             'email'    => 'nullable|email|unique:users,email',
             'password' => 'required|min:6',
             'ref'      => 'nullable|string|exists:users,username',
@@ -37,6 +37,7 @@ class RegisterRequest extends FormRequest
     {
         return [
             'ref.exists' => 'The entered referral code is invalid or does not exist.',
+            'username.regex' => 'The username must not contain any spaces.',
         ];
     }
 }
