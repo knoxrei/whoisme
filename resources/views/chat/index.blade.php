@@ -1,25 +1,46 @@
 <x-layouts.app :title="$title">
+    <style>
+        .chat-fullscreen-active {
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            right: 0 !important;
+            bottom: 0 !important;
+            width: 100vw !important;
+            height: 100vh !important;
+            max-width: none !important;
+            z-index: 9999 !important;
+            margin: 0 !important;
+            border-radius: 0 !important;
+            border: none !important;
+        }
+    </style>
+
     <div class="w-full max-w-5xl mx-auto py-8 px-4 sm:px-6 lg:px-8 font-mono text-gray-300">
         <!-- Chat Container -->
-        <div class="bg-[#0a0a0a] border border-red-900/40 rounded-sm overflow-hidden flex flex-col md:flex-row h-[70vh] shadow-2xl">
+        <div id="chat-container" class="bg-[#0a0a0a] border border-red-900/40 rounded-sm overflow-hidden flex flex-col md:flex-row h-[70vh] shadow-2xl transition-all duration-200">
             <!-- Main Chat Area -->
             <div class="flex-1 flex flex-col h-full border-r border-red-900/10">
                 <!-- Header -->
                 <div class="bg-[#111] px-4 py-3 border-b border-red-900/40 flex items-center justify-between">
                     <div class="flex items-center gap-2">
-                        <span class="w-2.5 h-2.5 rounded-full bg-red-600 animate-pulse"></span>
-                        <h1 class="text-xs font-black uppercase tracking-wider text-red-500">SYSTEM_CHAT_ROOM_v1.0</h1>
+                        <h1 class="text-xs font-black uppercase tracking-wider text-red-500">Global Chat Room</h1>
                     </div>
-                    <!-- Connection Status Badges -->
-                    <div class="text-[9px] font-bold flex items-center gap-1.5">
-                        <span class="text-gray-600">STATUS:</span>
-                        <span id="conn-status" class="px-2 py-0.5 border border-yellow-700/40 bg-yellow-950/20 text-yellow-500 rounded-sm uppercase">CONNECTING...</span>
+                    <!-- Connection Status & Fullscreen Actions -->
+                    <div class="flex items-center gap-4">
+                        <button id="fullscreen-btn" type="button" class="text-gray-500 hover:text-white transition-colors flex items-center justify-center p-1 hover:bg-red-950/10 rounded-sm" title="Toggle Fullscreen">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-maximize"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path></svg>
+                        </button>
+                        <div class="text-[9px] font-bold flex items-center gap-1.5">
+                            <span class="text-gray-600">STATUS:</span>
+                            <span id="conn-status" class="px-2 py-0.5 border border-yellow-700/40 bg-yellow-950/20 text-yellow-500 rounded-sm uppercase">CONNECTING...</span>
+                        </div>
                     </div>
                 </div>
 
                 <!-- Messages Container -->
                 <div id="chat-messages" class="flex-1 p-4 overflow-y-auto space-y-3 scrollbar-thin scrollbar-thumb-red-900">
-                    <div class="text-center py-10 text-xs text-gray-600 italic">Initializing console logs...</div>
+                    <div class="text-center py-10 text-xs text-gray-600 italic font-mono">Connecting to chat...</div>
                 </div>
 
                 <!-- Typing Indicator -->
@@ -29,15 +50,15 @@
                 <div class="bg-[#0c0c0c] p-3 border-t border-red-900/20">
                     @auth
                         <form id="chat-form" class="flex gap-2" autocomplete="off">
-                            <input type="text" id="chat-input" placeholder="Type a secure transmission message..." required
+                            <input type="text" id="chat-input" placeholder="Type a message..." required
                                    class="flex-1 bg-[#050505] border border-red-900/20 rounded-sm px-3 py-2 text-xs text-gray-300 focus:outline-none focus:border-red-600 placeholder-gray-650 font-mono">
                             <button type="submit" class="px-4 py-2 border border-red-600 bg-red-600/10 hover:bg-red-600/20 text-red-500 text-xs font-black uppercase tracking-widest transition-all rounded-sm">
-                                Transmit
+                                Send
                             </button>
                         </form>
                     @else
                         <div class="text-center py-2 text-xs text-gray-500 bg-[#050505] border border-red-900/10 rounded-sm">
-                            <span>You are viewing in read-only mode. Please <a href="{{ route('login') }}" class="text-red-500 hover:underline font-bold">log in</a> to transmit messages.</span>
+                            <span>You are viewing in read-only mode. Please <a href="{{ route('login') }}" class="text-red-500 hover:underline font-bold">log in</a> to send messages.</span>
                         </div>
                     @endauth
                 </div>
@@ -66,6 +87,8 @@
             const typingIndicator = document.getElementById("typing-indicator");
             const chatForm = document.getElementById("chat-form");
             const chatInput = document.getElementById("chat-input");
+            const fullscreenBtn = document.getElementById("fullscreen-btn");
+            const chatContainer = document.getElementById("chat-container");
 
             const currentUserId = {{ auth()->check() ? auth()->id() : 'null' }};
             const currentUsername = {!! auth()->check() ? json_encode(auth()->user()->username) : 'null' !!};
@@ -80,6 +103,25 @@
             // Simple HTML sanitizer
             function sanitize(str) {
                 return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+            }
+
+            // Fullscreen Toggler
+            if (fullscreenBtn && chatContainer) {
+                fullscreenBtn.addEventListener("click", function () {
+                    chatContainer.classList.toggle("chat-fullscreen-active");
+                    const isActive = chatContainer.classList.contains("chat-fullscreen-active");
+                    if (isActive) {
+                        fullscreenBtn.innerHTML = `
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14h6v6m10-6h-6v6M4 10h6V4m10 6h-6V4"></path></svg>
+                        `;
+                        document.body.style.overflow = "hidden";
+                    } else {
+                        fullscreenBtn.innerHTML = `
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-maximize"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path></svg>
+                        `;
+                        document.body.style.overflow = "";
+                    }
+                });
             }
 
             // Append a message to the UI
@@ -117,7 +159,7 @@
                 `;
 
                 // If no messages placeholder exists, clear it
-                if (messagesContainer.innerHTML.includes("Initializing console logs...")) {
+                if (messagesContainer.innerHTML.includes("Connecting to chat...") || messagesContainer.innerHTML.includes("Initializing console logs...")) {
                     messagesContainer.innerHTML = "";
                 }
 
@@ -134,7 +176,7 @@
                     if (res.ok) {
                         const data = await res.json();
                         if (data.length === 0) {
-                            messagesContainer.innerHTML = '<div class="text-center py-10 text-xs text-gray-600 italic">Transmission vault is empty. Be the first to broadcast.</div>';
+                            messagesContainer.innerHTML = '<div class="text-center py-10 text-xs text-gray-600 italic">No messages yet. Say hello!</div>';
                         } else {
                             data.forEach(msg => appendMessage(msg, false));
                             messagesContainer.scrollTop = messagesContainer.scrollHeight;
@@ -271,6 +313,7 @@
                 userListContainer.insertAdjacentHTML('beforeend', html);
             }
 
+            // Active user nodes removal
             function removeNodeFromList(user) {
                 const element = document.getElementById(`node-user-${user.id}`);
                 if (element) element.remove();
@@ -278,7 +321,7 @@
 
             // Typing whispers handler
             function showTyping(username) {
-                typingIndicator.textContent = `${sanitize(username)} is composing terminal log...`;
+                typingIndicator.textContent = `${sanitize(username)} is typing...`;
                 clearTimeout(typingTimeout);
                 typingTimeout = setTimeout(() => {
                     typingIndicator.textContent = "";

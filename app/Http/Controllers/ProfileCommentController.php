@@ -12,11 +12,13 @@ class ProfileCommentController extends Controller
     /**
      * Store a newly created comment on a user's profile.
      */
-    public function store(Request $request, User $user)
+    public function store(Request $request, $username)
     {
         $request->validate([
             'content' => 'required|string|max:1000',
         ]);
+
+        $user = User::where('username', $username)->firstOrFail();
 
         ProfileComment::create([
             'user_id' => Auth::id(),

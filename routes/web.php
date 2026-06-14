@@ -147,7 +147,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/user/{user}/unban', [ProfileController::class, 'unban'])->name('profile.unban');
 
     // Profile Comments
-    Route::post('/user-{user}/comments', [\App\Http\Controllers\ProfileCommentController::class, 'store'])->name('profile.comments.store');
+    Route::post('/user-{username}/comments', [\App\Http\Controllers\ProfileCommentController::class, 'store'])->name('profile.comments.store');
     Route::delete('/profile-comments/{comment}', [\App\Http\Controllers\ProfileCommentController::class, 'destroy'])->name('profile.comments.destroy');
 
     // Realtime Chat Room
