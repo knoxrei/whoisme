@@ -572,17 +572,24 @@
                     </div>
                     <div class="p-5 space-y-4">
                         @auth
-                            <form action="{{ route('profile.comments.store', $user->username) }}" method="POST" class="space-y-3">
-                                @csrf
-                                <textarea name="content" rows="3" placeholder="Leave a comment on {{ $user->username }}'s profile..." 
-                                          class="w-full bg-[#050505] border border-red-900/20 rounded-sm p-3 text-xs text-gray-300 focus:outline-none focus:border-red-600 transition-colors placeholder-gray-650" required></textarea>
-                                <div class="flex justify-end">
-                                    <button type="submit" class="px-4 py-2 bg-red-700 hover:bg-red-600 text-white text-[10px] font-black uppercase tracking-widest transition-colors rounded-sm">
-                                        Post Comment
-                                    </button>
+                            @if(auth()->id() !== $user->id)
+                                <form action="{{ route('profile.comments.store', $user->username) }}" method="POST" class="space-y-3">
+                                    @csrf
+                                    <textarea name="content" rows="3" placeholder="Leave a comment on {{ $user->username }}'s profile..." 
+                                              class="w-full bg-[#050505] border border-red-900/20 rounded-sm p-3 text-xs text-gray-300 focus:outline-none focus:border-red-600 transition-colors placeholder-gray-650" required></textarea>
+                                    <div class="flex justify-end">
+                                        <button type="submit" class="px-4 py-2 bg-red-700 hover:bg-red-600 text-white text-[10px] font-black uppercase tracking-widest transition-colors rounded-sm">
+                                            Post Comment
+                                        </button>
+                                    </div>
+                                </form>
+                                <div class="h-[1px] bg-red-900/10"></div>
+                            @else
+                                <div class="text-center py-2.5 text-xs text-gray-500 bg-[#050505] border border-red-900/10 rounded-sm">
+                                    <span>You cannot comment on your own profile.</span>
                                 </div>
-                            </form>
-                            <div class="h-[1px] bg-red-900/10"></div>
+                                <div class="h-[1px] bg-red-900/10"></div>
+                            @endif
                         @else
                             <div class="text-center py-4 bg-[#050505] border border-red-900/10 rounded-sm">
                                 <span class="text-xs text-gray-500">Please <a href="{{ route('login') }}" class="text-red-500 hover:underline">log in</a> to leave a comment.</span>

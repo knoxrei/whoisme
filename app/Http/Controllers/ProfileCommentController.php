@@ -20,6 +20,10 @@ class ProfileCommentController extends Controller
 
         $user = User::where('username', $username)->firstOrFail();
 
+        if ($user->id === Auth::id()) {
+            return back()->with('error', 'You cannot comment on your own profile.');
+        }
+
         ProfileComment::create([
             'user_id' => Auth::id(),
             'profile_user_id' => $user->id,
