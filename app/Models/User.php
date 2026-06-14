@@ -102,4 +102,19 @@ class User extends Authenticatable
     {
         return $this->hasMany(Comment::class);
     }
+
+    public function profileComments(): HasMany
+    {
+        return $this->hasMany(ProfileComment::class, 'profile_user_id');
+    }
+
+    public function writtenProfileComments(): HasMany
+    {
+        return $this->hasMany(ProfileComment::class, 'user_id');
+    }
+
+    public function chatMessages(): HasMany
+    {
+        return $this->hasMany(ChatMessage::class);
+    }
 }

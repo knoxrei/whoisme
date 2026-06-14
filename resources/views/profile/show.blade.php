@@ -38,6 +38,11 @@
                             <span class="text-gray-500 font-bold uppercase tracking-tighter">Following:</span>
                             <span class="text-white font-black">{{ $user->following_count }}</span>
                         </button>
+                        <div class="w-[1px] h-3 bg-red-900/40"></div>
+                        <div class="flex items-center gap-1.5">
+                            <span class="text-gray-500 font-bold uppercase tracking-tighter">Views:</span>
+                            <span class="text-white font-black">{{ $user->identification->views ?? 0 }}</span>
+                        </div>
                     </div>
                 </div>
 
@@ -559,7 +564,78 @@
                         </div>
                     
                     </div>
+                 </div>
+
+                <div class="bg-[#0a0a0a] border border-red-900/30 overflow-hidden rounded-sm">
+                    <div class="bg-[#111] px-4 py-2.5 border-b border-red-900/40 text-[11px] font-black text-red-500 uppercase tracking-wider">
+                        Profile Comments ({{ $profileComments->count() }})
+                    </div>
+                    <div class="p-5 space-y-4">
+                        @auth
+                            <form action="{{ route('profile.comments.store', $user->username) }}" method="POST" class="space-y-3">
+                                @csrf
+                                <textarea name="content" rows="3" placeholder="Leave a comment on {{ $user->username }}'s profile..." 
+                                          class="w-full bg-[#050505] border border-red-900/20 rounded-sm p-3 text-xs text-gray-300 focus:outline-none focus:border-red-600 transition-colors placeholder-gray-650" required></textarea>
+                                <div class="flex justify-end">
+                                    <button type="submit" class="px-4 py-2 bg-red-700 hover:bg-red-600 text-white text-[10px] font-black uppercase tracking-widest transition-colors rounded-sm">
+                                        Post Comment
+                                    </button>
+                                </div>
+                            </form>
+                            <div class="h-[1px] bg-red-900/10"></div>
+                        @else
+                            <div class="text-center py-4 bg-[#050505] border border-red-900/10 rounded-sm">
+                                <span class="text-xs text-gray-500">Please <a href="{{ route('login') }}" class="text-red-500 hover:underline">log in</a> to leave a comment.</span>
+                            </div>
+                        @endauth
+
+                        <div class="space-y-4 divide-y divide-red-900/10 max-h-[400px] overflow-y-auto pr-2">
+                            @forelse($profileComments as $comment)
+                                <div class="pt-4 first:pt-0 flex items-start gap-3">
+                                    <div class="w-8 h-8 rounded-sm overflow-hidden flex-shrink-0 border border-red-900/20 bg-[#111] flex items-center justify-center">
+                                        @if($comment->user->identification->avatar_path)
+                                            <img src="{{ Storage::url($comment->user->identification->avatar_path) }}" alt="{{ $comment->user->username }}" class="w-full h-full object-cover">
+                                        @else
+                                            <span class="text-sm font-bold text-white">{{ strtoupper(substr($comment->user->username, 0, 1)) }}</span>
+                                        @endif
+                                    </div>
+                                    <div class="flex-grow">
+                                        <div class="flex items-center justify-between gap-2">
+                                            <div class="flex items-center gap-1.5 flex-wrap">
+                                                <a href="{{ route('profile.show', $comment->user->username) }}" class="text-xs font-black text-white hover:text-red-500 transition-colors">
+                                                    {!! $comment->user->identification->role->userStyle($comment->user->username) !!}
+                                                </a>
+                                                <span class="text-[8px] text-red-500 font-bold uppercase tracking-wider bg-red-950/10 border border-red-900/20 px-1 py-0.5 rounded-sm">
+                                                    {{ $comment->user->identification->role->label() }}
+                                                </span>
+                                            </div>
+                                            <div class="flex items-center gap-2">
+                                                <span class="text-[9px] text-gray-600 font-mono">{{ $comment->created_at->diffForHumans() }}</span>
+                                                @auth
+                                                    @if($comment->user_id === auth()->id() || $user->id === auth()->id() || in_array(auth()->user()->identification->role->value, ['owner', 'moderator']))
+                                                        <form action="{{ route('profile.comments.destroy', $comment->id) }}" method="POST" class="inline">
+                                                            @csrf
+                                                            @method('DELETE')
+                                                            <button type="submit" class="text-gray-600 hover:text-red-500 text-[10px] font-black uppercase tracking-tight transition-colors">
+                                                                Delete
+                                                            </button>
+                                                        </form>
+                                                    @endif
+                                                @endauth
+                                            </div>
+                                        </div>
+                                        <div class="text-xs text-gray-300 mt-1.5 leading-relaxed font-mono whitespace-pre-line">
+                                            {{ $comment->content }}
+                                        </div>
+                                    </div>
+                                </div>
+                            @empty
+                                <div class="text-center py-6 text-xs text-gray-600 italic">No comments yet. Be the first to say hello!</div>
+                            @endforelse
+                        </div>
+                    </div>
                 </div>
+
                 <div class="bg-[#0a0a0a] border border-red-900/30 overflow-hidden rounded-sm">
                     <div class="bg-[#111] px-4 py-2.5 border-b border-red-900/40 text-[11px] font-black text-red-500 uppercase tracking-wider">
                         Forum Statistics

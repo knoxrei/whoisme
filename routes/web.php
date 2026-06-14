@@ -145,7 +145,18 @@ Route::middleware('auth')->group(function () {
     // Administrative Moderation
     Route::post('/user/{user}/ban', [ProfileController::class, 'ban'])->name('profile.ban');
     Route::post('/user/{user}/unban', [ProfileController::class, 'unban'])->name('profile.unban');
+
+    // Profile Comments
+    Route::post('/user-{user}/comments', [\App\Http\Controllers\ProfileCommentController::class, 'store'])->name('profile.comments.store');
+    Route::delete('/profile-comments/{comment}', [\App\Http\Controllers\ProfileCommentController::class, 'destroy'])->name('profile.comments.destroy');
+
+    // Realtime Chat Room
+    Route::post('/chat/messages', [\App\Http\Controllers\ChatController::class, 'sendMessage'])->name('chat.send');
 });
+
+// Public Chat Room routes (Read-Only for Guests)
+Route::get('/chat', [\App\Http\Controllers\ChatController::class, 'index'])->name('chat.index');
+Route::get('/chat/messages', [\App\Http\Controllers\ChatController::class, 'getMessages'])->name('chat.messages');
 
 // Public Ad Routes
 Route::get('/ads/{ad}/click', [App\Http\Controllers\AdController::class, 'trackClick'])->name('ads.click');

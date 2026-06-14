@@ -36,8 +36,8 @@ return [
     ],
 
     'gate' => [
-        'tor' => env('TOR_LINK', 'http://doxmeonion555.onion'),
-        'clearnet' => env('CLEARNET_LINK', 'https://doxme.com'),
+        'tor' => env('TOR_LINK', ''),
+        'clearnet' => env('CLEARNET_LINK', ''),
     ],
 
 ];

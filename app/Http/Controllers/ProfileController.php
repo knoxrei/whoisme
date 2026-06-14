@@ -22,6 +22,19 @@ class ProfileController extends Controller
             ->firstOrFail();
 
         $this->authorize('view', $user->identification);
+
+        // Increment profile view count
+        $sessionKey = 'profile_viewed_' . $user->id;
+        if (!session()->has($sessionKey)) {
+            $user->identification->increment('views');
+            session()->put($sessionKey, true);
+        }
+
+        $profileComments = $user->profileComments()
+            ->with('user.identification')
+            ->latest()
+            ->get();
+
         $recentContributions = $user->edits()
             ->where('status', 'approved')
             ->with('pastebin')
@@ -88,6 +101,7 @@ class ProfileController extends Controller
             'recentPosts'         => $recentPosts,
             'recentComments'      => $recentComments,
             'advertiserData'      => $advertiserData,
+            'profileComments'     => $profileComments,
         ]);
     }
 

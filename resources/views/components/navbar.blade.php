@@ -56,6 +56,7 @@
             <a href="{{ route('about') }}" class="hover:text-red-500 {{ request()->routeIs('about') ? 'text-red-500' : '' }}">About</a>
             <a href="{{ route('terms') }}" class="hover:text-red-500 {{ request()->routeIs('terms') ? 'text-red-500' : '' }}">Terms</a>
             <a href="{{ route('profile.users-list') }}" class="hover:text-red-500 {{ request()->routeIs('profile.users-list') ? 'text-red-500' : '' }}">Users</a>
+            <a href="{{ route('chat.index') }}" class="hover:text-red-500 {{ request()->routeIs('chat.index') ? 'text-red-500' : '' }}">Chat Room</a>
         </div>
     </div>
 </nav>
@@ -69,6 +70,7 @@
         <a href="{{ route('about') }}" class="px-4 py-3 border-r border-red-950/30 {{ request()->routeIs('about') ? 'text-red-500' : 'text-gray-500' }}">About</a>
         <a href="{{ route('terms') }}" class="px-4 py-3 {{ request()->routeIs('terms') ? 'text-red-500' : 'text-gray-500' }}">Terms</a>
         <a href="{{ route('profile.users-list') }}" class="col-span-2 px-4 py-3 border-t border-red-950/30 {{ request()->routeIs('profile.users-list') ? 'text-red-500' : 'text-gray-500' }}">Users</a>
+        <a href="{{ route('chat.index') }}" class="col-span-2 px-4 py-3 border-t border-red-950/30 {{ request()->routeIs('chat.index') ? 'text-red-500' : 'text-gray-500' }}">Chat Room</a>
     </div>
 </div>
 

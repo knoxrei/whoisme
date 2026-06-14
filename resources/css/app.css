@@ -10,40 +10,37 @@
 }
 
 .ownerUser {
-    color: #fe8f00 !important;
-    text-decoration: overline;
-    text-shadow: 0 0 3px #000;
+    color: #ff9f1c !important;
+    text-shadow: 0 0 8px rgba(255, 159, 28, 0.5);
+    font-weight: 950;
     display: inline-block;
-
-    background-image: url(/public/static/rain.gif);
-
 }
 
 .richUser {
     display: inline-block;
-    color: #FFD700;
-    font-weight: bold;
-    background-image: url(/public/static/gold.gif);
+    color: #ffd166 !important;
+    text-shadow: 0 0 8px rgba(253, 209, 102, 0.5);
+    font-weight: 900;
 }
 
 .vipUser {
     display: inline-block;
-    color: #0c0;
-    font-weight: bold;
-    background-image: url(/public/static/green.gif);
+    color: #06d6a0 !important;
+    text-shadow: 0 0 8px rgba(6, 214, 160, 0.5);
+    font-weight: 900;
 }
 
 .primeUser {
     display: inline-block;
-    color: #4B0082;
-    font-weight: bold;
-    background-image: url(/public/static/purple.gif);
+    color: #b5179e !important;
+    text-shadow: 0 0 8px rgba(181, 23, 158, 0.5);
+    font-weight: 900;
 }
 
 .bannedUser,
 .bannedUser span {
     display: inline-block;
-    color: #666666 !important;
+    color: #495057 !important;
     text-decoration: line-through !important;
-    opacity: 0.6;
+    opacity: 0.5;
 }
