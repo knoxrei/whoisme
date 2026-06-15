@@ -134,7 +134,9 @@
 
     @if($externalCount > 0)
     <script>
-        getBanners("http://admate3tczgp6digew7jpzcosq52rs7anru53imwqimron27emq7dbqd.onion/api/get-banner/vKB0LLEKzrqhxGoA/type/468-60/count/{{ $externalCount }}");
+        if (typeof getBanners === 'function') {
+            getBanners("http://admate3tczgp6digew7jpzcosq52rs7anru53imwqimron27emq7dbqd.onion/api/get-banner/vKB0LLEKzrqhxGoA/type/468-60/count/{{ $externalCount }}");
+        }
     </script>
     @endif
 

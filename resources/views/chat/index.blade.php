@@ -172,7 +172,7 @@
             // Fetch history from database initially
             async function fetchHistory() {
                 try {
-                    const res = await fetch("{{ route('chat.messages') }}");
+                    const res = await fetch("{{ route('chat.messages', [], false) }}");
                     if (res.ok) {
                         const data = await res.json();
                         if (data.length === 0) {
@@ -190,7 +190,7 @@
             // Fallback AJAX Polling implementation
             async function pollMessages() {
                 try {
-                    const res = await fetch("{{ route('chat.messages') }}");
+                    const res = await fetch("{{ route('chat.messages', [], false) }}");
                     if (res.ok) {
                         const data = await res.json();
                         data.forEach(msg => appendMessage(msg, true));
@@ -338,7 +338,7 @@
                     chatInput.value = "";
 
                     try {
-                        const res = await fetch("{{ route('chat.send') }}", {
+                        const res = await fetch("{{ route('chat.send', [], false) }}", {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json',
