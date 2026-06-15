@@ -157,6 +157,7 @@ Route::middleware('auth')->group(function () {
 // Public Chat Room routes (Read-Only for Guests)
 Route::get('/chat', [\App\Http\Controllers\ChatController::class, 'index'])->name('chat.index');
 Route::get('/chat/messages', [\App\Http\Controllers\ChatController::class, 'getMessages'])->name('chat.messages');
+Route::get('/chat/users', [\App\Http\Controllers\ChatController::class, 'getActiveUsers'])->name('chat.users');
 
 // Public Ad Routes
 Route::get('/ads/{ad}/click', [App\Http\Controllers\AdController::class, 'trackClick'])->name('ads.click');

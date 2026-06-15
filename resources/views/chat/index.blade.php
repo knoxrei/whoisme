@@ -17,6 +17,17 @@
     </style>
 
     <div class="w-full max-w-5xl mx-auto py-8 px-4 sm:px-6 lg:px-8 font-mono text-gray-300">
+        <!-- Non-JavaScript Legacy Fallback Notice -->
+        <noscript>
+            <meta http-equiv="refresh" content="15">
+            <div class="bg-red-950/20 border border-red-900/30 text-red-400 p-3 mb-4 rounded-sm text-xs font-mono flex items-center justify-between">
+                <div>
+                    <strong>System Message:</strong> JavaScript is disabled. Running in legacy HTML mode. Page auto-refreshes every 15 seconds. Maximize/Fullscreen is disabled.
+                </div>
+                <a href="{{ route('chat.index') }}" class="px-2 py-1 border border-red-600 bg-red-600/10 hover:bg-red-600/20 text-red-500 text-[10px] uppercase font-black tracking-wider rounded-sm">Manual Refresh</a>
+            </div>
+        </noscript>
+
         <!-- Chat Container -->
         <div id="chat-container" class="bg-[#0a0a0a] border border-red-900/40 rounded-sm overflow-hidden flex flex-col md:flex-row h-[70vh] shadow-2xl transition-all duration-200">
             <!-- Main Chat Area -->
@@ -28,29 +39,54 @@
                     </div>
                     <!-- Connection Status & Fullscreen Actions -->
                     <div class="flex items-center gap-4">
-                        <button id="fullscreen-btn" type="button" class="text-gray-500 hover:text-white transition-colors flex items-center justify-center p-1 hover:bg-red-950/10 rounded-sm" title="Toggle Fullscreen">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-maximize"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path></svg>
+                        <button id="fullscreen-btn" type="button" class="text-gray-500 hover:text-white transition-colors flex items-center gap-1.5 p-1 hover:bg-red-950/10 rounded-sm" title="Maximize Chat / Enlarge Window (Requires JavaScript)">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-maximize"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path></svg>
+                            <span class="text-[9px] font-bold uppercase tracking-wider hidden sm:inline">Maximize Window</span>
                         </button>
                         <div class="text-[9px] font-bold flex items-center gap-1.5">
                             <span class="text-gray-600">STATUS:</span>
-                            <span id="conn-status" class="px-2 py-0.5 border border-yellow-700/40 bg-yellow-950/20 text-yellow-500 rounded-sm uppercase">CONNECTING...</span>
+                            <span class="px-2 py-0.5 border border-green-700/40 bg-green-950/20 text-green-500 rounded-sm uppercase font-bold">ACTIVE</span>
                         </div>
                     </div>
                 </div>
 
                 <!-- Messages Container -->
                 <div id="chat-messages" class="flex-1 p-4 overflow-y-auto space-y-3 scrollbar-thin scrollbar-thumb-red-900">
-                    <div class="text-center py-10 text-xs text-gray-600 italic font-mono">Connecting to chat...</div>
+                    @if(isset($initialMessages) && count($initialMessages) > 0)
+                        @foreach($initialMessages as $msg)
+                            @php
+                                $isMe = auth()->check() && $msg['user']['id'] === auth()->id();
+                                $messageBg = $isMe ? 'bg-red-950/5 border border-red-900/10' : 'bg-[#0b0b0b]/60 border border-zinc-900';
+                                $avatarSrc = str_starts_with($msg['user']['avatar_path'], 'http') ? $msg['user']['avatar_path'] : '/storage/'.$msg['user']['avatar_path'];
+                                $timeStr = \Carbon\Carbon::parse($msg['created_at'])->timezone(config('app.timezone', 'UTC'))->format('H:i:s');
+                            @endphp
+                            <div class="p-2.5 rounded-sm flex items-start gap-2.5 {{ $messageBg }} transition-colors" data-id="{{ $msg['id'] }}">
+                                <div class="w-6 h-6 rounded-sm overflow-hidden flex-shrink-0 border border-red-900/20 bg-[#111] flex items-center justify-center">
+                                    <img src="{{ $avatarSrc }}" alt="" class="w-full h-full object-cover" onerror="this.src='/storage/avatars/default.png'; this.onerror=null;">
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <div class="flex items-center justify-between gap-2 flex-wrap">
+                                        <div class="flex items-center gap-1.5 text-[10px]">
+                                            <span style="color:{{ $msg['user']['role_color'] }}" class="font-bold">{{ $msg['user']['username'] }}</span>
+                                            <span class="text-[7px] text-red-500 uppercase tracking-widest border border-red-900/30 px-1 py-0.2 rounded-sm bg-red-950/10">{{ $msg['user']['role_label'] }}</span>
+                                        </div>
+                                        <span class="text-[8px] text-gray-600 font-mono">{{ $timeStr }}</span>
+                                    </div>
+                                    <div class="text-xs text-gray-300 mt-1 font-mono break-all leading-relaxed">{{ $msg['message'] }}</div>
+                                </div>
+                            </div>
+                        @endforeach
+                    @else
+                        <div class="text-center py-10 text-xs text-gray-600 italic font-mono">Connecting to chat...</div>
+                    @endif
                 </div>
-
-                <!-- Typing Indicator -->
-                <div id="typing-indicator" class="px-4 py-1.5 text-[10px] text-gray-500 italic h-6 bg-[#070707] border-t border-red-900/5"></div>
 
                 <!-- Input area -->
                 <div class="bg-[#0c0c0c] p-3 border-t border-red-900/20">
                     @auth
-                        <form id="chat-form" class="flex gap-2" autocomplete="off">
-                            <input type="text" id="chat-input" placeholder="Type a message..." required
+                        <form id="chat-form" action="{{ route('chat.send') }}" method="POST" class="flex gap-2" autocomplete="off">
+                            @csrf
+                            <input type="text" id="chat-input" name="message" placeholder="Type a message..." required
                                    class="flex-1 bg-[#050505] border border-red-900/20 rounded-sm px-3 py-2 text-xs text-gray-300 focus:outline-none focus:border-red-600 placeholder-gray-650 font-mono">
                             <button type="submit" class="px-4 py-2 border border-red-600 bg-red-600/10 hover:bg-red-600/20 text-red-500 text-xs font-black uppercase tracking-widest transition-all rounded-sm">
                                 Send
@@ -64,38 +100,60 @@
                 </div>
             </div>
 
-            <!-- Sidebar / Active Users -->
+            <!-- Sidebar / Active Members -->
             <div class="w-full md:w-56 bg-[#080808] flex flex-col h-1/3 md:h-full">
                 <div class="bg-[#111] px-4 py-3 border-b border-red-900/40 flex items-center justify-between">
-                    <span class="text-xs font-black uppercase tracking-wider text-red-500">Active Nodes</span>
-                    <span id="node-count" class="text-[10px] font-black text-gray-400 bg-red-950/20 border border-red-900/40 px-1.5 py-0.5 rounded-sm">0</span>
+                    <span class="text-xs font-black uppercase tracking-wider text-red-500">Active Members</span>
+                    <span id="member-count" class="text-[10px] font-black text-gray-400 bg-red-950/20 border border-red-900/40 px-1.5 py-0.5 rounded-sm">{{ count($initialActiveUsers ?? []) }}</span>
                 </div>
                 <div id="user-list" class="flex-1 p-3 overflow-y-auto space-y-2.5 text-xs">
-                    <div class="text-center py-6 text-[10px] text-gray-600 italic">No nodes detected.</div>
+                    @if(isset($initialActiveUsers) && count($initialActiveUsers) > 0)
+                        @foreach($initialActiveUsers as $u)
+                            @php
+                                $isMe = auth()->check() && $u['id'] === auth()->id();
+                            @endphp
+                            <div id="member-user-{{ $u['id'] }}" class="flex items-center gap-2 p-1.5 rounded-sm hover:bg-zinc-900/40 border border-transparent transition-colors font-mono">
+                                <span class="w-1.5 h-1.5 rounded-full bg-green-500"></span>
+                                <span style="color:{{ $u['role_color'] }}" class="font-bold">{{ $u['username'] }}</span>
+                                @if($isMe)
+                                    <span class="text-[7px] text-gray-500 uppercase tracking-tighter ml-auto font-mono">SELF</span>
+                                @endif
+                            </div>
+                        @endforeach
+                    @else
+                        <div class="text-center py-6 text-[10px] text-gray-600 italic font-mono">No members detected.</div>
+                    @endif
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Realtime WebSockets-Only Javascript Engine -->
+    <!-- Polling Javascript Engine -->
     <script>
         document.addEventListener("DOMContentLoaded", function () {
             const messagesContainer = document.getElementById("chat-messages");
             const userListContainer = document.getElementById("user-list");
-            const nodeCountEl = document.getElementById("node-count");
-            const connStatusEl = document.getElementById("conn-status");
-            const typingIndicator = document.getElementById("typing-indicator");
+            const memberCountEl = document.getElementById("member-count");
             const chatForm = document.getElementById("chat-form");
             const chatInput = document.getElementById("chat-input");
             const fullscreenBtn = document.getElementById("fullscreen-btn");
             const chatContainer = document.getElementById("chat-container");
 
             const currentUserId = {{ auth()->check() ? auth()->id() : 'null' }};
-            const currentUsername = {!! auth()->check() ? json_encode(auth()->user()->username) : 'null' !!};
             const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') ?? '';
 
             let messagesSet = new Set();
-            let typingTimeout = null;
+
+            // Populate messagesSet with existing elements to avoid duplicate fetches
+            document.querySelectorAll('#chat-messages [data-id]').forEach(el => {
+                const id = parseInt(el.getAttribute('data-id'));
+                if (id) messagesSet.add(id);
+            });
+
+            // Scroll to bottom initially if messages exist
+            if (messagesSet.size > 0) {
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            }
 
             // Simple HTML sanitizer
             function sanitize(str) {
@@ -109,12 +167,14 @@
                     const isActive = chatContainer.classList.contains("chat-fullscreen-active");
                     if (isActive) {
                         fullscreenBtn.innerHTML = `
-                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14h6v6m10-6h-6v6M4 10h6V4m10 6h-6V4"></path></svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14h6v6m10-6h-6v6M4 10h6V4m10 6h-6V4"></path></svg>
+                            <span class="text-[9px] font-bold uppercase tracking-wider hidden sm:inline">Maximize Window</span>
                         `;
                         document.body.style.overflow = "hidden";
                     } else {
                         fullscreenBtn.innerHTML = `
-                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-maximize"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path></svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-maximize"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path></svg>
+                            <span class="text-[9px] font-bold uppercase tracking-wider hidden sm:inline">Maximize Window</span>
                         `;
                         document.body.style.overflow = "";
                     }
@@ -172,7 +232,7 @@
                     const res = await fetch("{{ route('chat.messages', [], false) }}");
                     if (res.ok) {
                         const data = await res.json();
-                        if (data.length === 0) {
+                        if (data.length === 0 && messagesSet.size === 0) {
                             messagesContainer.innerHTML = '<div class="text-center py-10 text-xs text-gray-600 italic">No messages yet. Say hello!</div>';
                         } else {
                             data.forEach(msg => appendMessage(msg, false));
@@ -184,100 +244,48 @@
                 }
             }
 
-            // Broadcast websocket engine using Laravel Echo
-            function tryWebSocketConnection() {
-                // If Laravel Echo library is not loaded
-                if (typeof window.Echo === 'undefined') {
-                    connStatusEl.textContent = "WS ERROR";
-                    connStatusEl.className = "px-2 py-0.5 border border-red-700/40 bg-red-950/20 text-red-500 rounded-sm uppercase";
-                    return;
-                }
-
-                // Bind connection state changes dynamically
-                if (window.Echo.connector && window.Echo.connector.pusher) {
-                    window.Echo.connector.pusher.connection.bind('state_change', (states) => {
-                        const state = states.current;
-                        if (state === 'connected') {
-                            connStatusEl.textContent = "REALTIME (WS)";
-                            connStatusEl.className = "px-2 py-0.5 border border-green-700/40 bg-green-950/20 text-green-500 rounded-sm uppercase";
-                        } else if (state === 'connecting') {
-                            connStatusEl.textContent = "CONNECTING...";
-                            connStatusEl.className = "px-2 py-0.5 border border-yellow-700/40 bg-yellow-950/20 text-yellow-500 rounded-sm uppercase";
-                        } else {
-                            connStatusEl.textContent = "DISCONNECTED";
-                            connStatusEl.className = "px-2 py-0.5 border border-red-700/40 bg-red-950/20 text-red-500 rounded-sm uppercase";
-                        }
-                    });
-
-                    // Set initial state if already connected
-                    if (window.Echo.connector.pusher.connection.state === 'connected') {
-                        connStatusEl.textContent = "REALTIME (WS)";
-                        connStatusEl.className = "px-2 py-0.5 border border-green-700/40 bg-green-950/20 text-green-500 rounded-sm uppercase";
+            // Fallback AJAX Polling implementation for messages
+            async function pollMessages() {
+                try {
+                    const res = await fetch("{{ route('chat.messages', [], false) }}");
+                    if (res.ok) {
+                        const data = await res.json();
+                        data.forEach(msg => appendMessage(msg, true));
                     }
+                } catch (e) {
+                    console.error("Polling error:", e);
                 }
+            }
 
-                // Subscribe to public channel 'chat' to receive messages in realtime
-                window.Echo.channel('chat')
-                    .listen('MessageSent', (e) => {
-                        appendMessage(e, true);
-                    });
+            // Poll active users list
+            async function pollActiveUsers() {
+                try {
+                    const res = await fetch("{{ route('chat.users', [], false) }}");
+                    if (res.ok) {
+                        const data = await res.json();
+                        memberCountEl.textContent = data.length;
+                        if (data.length === 0) {
+                            userListContainer.innerHTML = '<div class="text-center py-6 text-[10px] text-gray-600 italic">No active members.</div>';
+                            return;
+                        }
 
-                // If authenticated, also join presence channel for active user list and typing indicators
-                if (currentUserId) {
-                    window.Echo.join('chat')
-                        .here((users) => {
-                            nodeCountEl.textContent = users.length;
-                            userListContainer.innerHTML = "";
-                            users.forEach(user => addNodeToList(user));
-                        })
-                        .joining((user) => {
-                            addNodeToList(user);
-                            nodeCountEl.textContent = parseInt(nodeCountEl.textContent) + 1;
-                        })
-                        .leaving((user) => {
-                            removeNodeFromList(user);
-                            nodeCountEl.textContent = Math.max(0, parseInt(nodeCountEl.textContent) - 1);
-                        })
-                        .listenForWhisper('typing', (e) => {
-                            showTyping(e.username);
+                        userListContainer.innerHTML = "";
+                        data.forEach(user => {
+                            const elementId = `member-user-${user.id}`;
+                            const tag = user.id === currentUserId ? '<span class="text-[7px] text-gray-500 uppercase tracking-tighter ml-auto font-mono">SELF</span>' : '';
+                            const html = `
+                                <div id="${elementId}" class="flex items-center gap-2 p-1.5 rounded-sm hover:bg-zinc-900/40 border border-transparent transition-colors font-mono">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-green-500"></span>
+                                    <span style="color:${user.role_color || '#ffffff'}" class="font-bold">${sanitize(user.username)}</span>
+                                    ${tag}
+                                </div>
+                            `;
+                            userListContainer.insertAdjacentHTML('beforeend', html);
                         });
-                } else {
-                    nodeCountEl.textContent = "0";
-                    userListContainer.innerHTML = `
-                        <div class="text-center text-[10px] text-gray-600 italic pt-6">Log in to view active nodes.</div>
-                    `;
+                    }
+                } catch (e) {
+                    console.error("Error fetching active users:", e);
                 }
-            }
-
-            // DOM active node list adjustments
-            function addNodeToList(user) {
-                const elementId = `node-user-${user.id}`;
-                if (document.getElementById(elementId)) return;
-
-                const tag = user.id === currentUserId ? '<span class="text-[7px] text-gray-500 uppercase tracking-tighter ml-auto">SELF</span>' : '';
-                const html = `
-                    <div id="${elementId}" class="flex items-center gap-2 p-1.5 rounded-sm hover:bg-zinc-900/40 border border-transparent transition-colors">
-                        <span class="w-1.5 h-1.5 rounded-full bg-green-500"></span>
-                        <span style="color:${user.role_color || '#ffffff'}" class="font-bold">${sanitize(user.username)}</span>
-                        ${tag}
-                    </div>
-                `;
-                userListContainer.insertAdjacentHTML('beforeend', html);
-            }
-
-            // Active user nodes removal
-            function removeNodeFromList(user) {
-                const element = document.getElementById(`node-user-${user.id}`);
-                if (element) element.remove();
-            }
-
-            // Typing whispers handler
-            function showTyping(username) {
-                typingIndicator.textContent = `${sanitize(username)} is typing...`;
-                clearTimeout(typingTimeout);
-                typingTimeout = setTimeout(() => {
-                    typingIndicator.textContent = "";
-                }, 3000);
             }
 
             // Sending message via AJAX
@@ -310,20 +318,16 @@
                         console.error("Message send failure:", err);
                     }
                 });
-
-                // Trigger typing whisper in WebSocket mode
-                chatInput.addEventListener("input", function () {
-                    if (window.Echo) {
-                        window.Echo.join('chat').whisper('typing', {
-                            username: currentUsername
-                        });
-                    }
-                });
             }
 
-            // Initialize chat
+            // Initialize chat history and begin polling loops
             fetchHistory().then(() => {
-                tryWebSocketConnection();
+                // Poll new messages every 3 seconds
+                setInterval(pollMessages, 3000);
+
+                // Poll online users every 15 seconds
+                pollActiveUsers();
+                setInterval(pollActiveUsers, 15000);
             });
         });
     </script>
