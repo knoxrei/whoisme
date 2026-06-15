@@ -1,4 +1,115 @@
 <x-layouts.app :title="$title">
+    <x-slot:extraHead>
+        <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+        <style>
+            .markdown-body {
+                font-size: 13px;
+                line-height: 1.7;
+                word-break: break-word;
+                overflow-wrap: anywhere;
+            }
+            .markdown-body p,
+            .markdown-body li {
+                margin-bottom: 0.6rem;
+            }
+            .markdown-body h1 {
+                font-size: 16px;
+                font-weight: 700;
+                color: #e5e5e5;
+                margin-bottom: 0.5rem;
+                margin-top: 1.25rem;
+                padding-bottom: 0.4rem;
+                border-bottom: 1px solid #1e1e1e;
+            }
+            .markdown-body h2 {
+                font-size: 14px;
+                font-weight: 700;
+                color: #e5e5e5;
+                margin-bottom: 0.4rem;
+                margin-top: 1rem;
+            }
+            .markdown-body h3 {
+                font-size: 13px;
+                font-weight: 600;
+                color: #d1d1d1;
+                margin-bottom: 0.3rem;
+                margin-top: 0.75rem;
+            }
+            .markdown-body a {
+                color: #ef4444;
+                text-decoration: underline;
+                word-break: break-all;
+            }
+            .markdown-body a:hover { color: #dc2626; }
+            .markdown-body ul {
+                list-style-type: disc;
+                padding-left: 1.5rem;
+                margin-bottom: 0.75rem;
+            }
+            .markdown-body ol {
+                list-style-type: decimal;
+                padding-left: 1.5rem;
+                margin-bottom: 0.75rem;
+            }
+            .markdown-body li { margin-bottom: 0.2rem; }
+            .markdown-body blockquote {
+                border-left: 3px solid #3a1a1a;
+                padding: 0.5rem 1rem;
+                color: #9ca3af;
+                font-style: italic;
+                background-color: #0d0d0d;
+                margin-bottom: 1rem;
+            }
+            .markdown-body code {
+                font-family: 'Courier New', Courier, monospace;
+                background-color: #111;
+                padding: 0.1rem 0.3rem;
+                font-size: 12px;
+                word-break: break-all;
+                color: #e5e5e5;
+                border: 1px solid #222;
+            }
+            .markdown-body pre {
+                background-color: #050505;
+                padding: 1rem 1.25rem;
+                overflow-x: auto;
+                border: 1px solid #1a1a1a;
+                margin-bottom: 1rem;
+                font-size: 12px;
+                white-space: pre-wrap;
+                word-wrap: break-word;
+            }
+            .markdown-body pre code {
+                background-color: transparent;
+                border: none;
+                padding: 0;
+                font-size: 12px;
+                word-break: normal;
+            }
+            .markdown-body hr {
+                border-color: #1e1e1e;
+                margin: 1.5rem 0;
+            }
+            .markdown-body table {
+                width: 100%;
+                border-collapse: collapse;
+                margin-bottom: 1rem;
+                font-size: 12px;
+            }
+            .markdown-body th,
+            .markdown-body td {
+                border: 1px solid #222;
+                padding: 0.4rem 0.75rem;
+                text-align: left;
+                overflow-wrap: anywhere;
+            }
+            .markdown-body th {
+                background-color: #0d0d0d;
+                font-weight: 600;
+                color: #ccc;
+            }
+        </style>
+    </x-slot:extraHead>
     <div class="min-h-screen text-white overflow-hidden">
         <form action="{{ route('pastebin.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
@@ -14,7 +125,7 @@
                         </svg>
                     </button>
 
-                    <div class="mb-6 flex items-center justify-between">
+                    <div class="mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                         <div>
                             <h1 class="text-2xl font-bold tracking-tight">Create New Paste</h1>
                             <p class="text-gray-500 text-sm">Write or paste your content below.
@@ -22,8 +133,20 @@
                                     class="text-xs font-semibold text-gray-500 border border-gray-800 rounded-md px-2 py-1">Markdown
                                     Supported</span>
                             </p>
-
                         </div>
+                        
+                        <!-- Tabs for Write and Preview -->
+                        <div class="flex items-center gap-2 bg-[#0a0a0a] border border-gray-800 p-1 rounded-lg">
+                            <button type="button" id="tab-write" onclick="switchTab('write')"
+                                class="px-4 py-1.5 text-xs font-semibold rounded-md bg-red-600 text-white transition-all">
+                                Write
+                            </button>
+                            <button type="button" id="tab-preview" onclick="switchTab('preview')"
+                                class="px-4 py-1.5 text-xs font-semibold rounded-md text-gray-400 hover:text-white transition-all">
+                                Preview
+                            </button>
+                        </div>
+
                         <div class="lg:hidden">
                             <button type="submit"
                                 class="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-md font-bold transition-all text-sm">
@@ -32,11 +155,19 @@
                         </div>
                     </div>
 
-                    <div class="flex-1 flex flex-col">
-                        <label for="content" class="sr-only">Content</label>
-                        <textarea name="content" id="content" placeholder="Paste your content here..." required
-                            class="flex-1 w-full bg-[#0a0a0a] border border-gray-800 rounded-lg p-6 font-mono text-sm focus:outline-none focus:border-red-600 transition-colors resize-none shadow-inner"
-                            style="min-height: 70vh;">{{ old('content') }}</textarea>
+                    <div class="flex-1 flex flex-col relative">
+                        <!-- Write Area -->
+                        <div id="write-container" class="flex-1 flex flex-col">
+                            <label for="content" class="sr-only">Content</label>
+                            <textarea name="content" id="content" placeholder="Paste your content here..." required
+                                class="flex-1 w-full bg-[#0a0a0a] border border-gray-800 rounded-lg p-6 font-mono text-sm focus:outline-none focus:border-red-600 transition-colors resize-none shadow-inner"
+                                style="min-height: 70vh;">{{ old('content') }}</textarea>
+                        </div>
+                        
+                        <!-- Preview Area -->
+                        <div id="preview-container" class="hidden flex-1 w-full bg-[#050505] border border-gray-800 rounded-lg p-6 overflow-y-auto markdown-body text-gray-300 leading-relaxed font-mono text-[13px]"
+                            style="min-height: 70vh;">
+                        </div>
                     </div>
                 </div>
 
@@ -172,6 +303,45 @@
                 this.value = '';
             }
         });
+
+        function switchTab(tab) {
+            const tabWrite = document.getElementById('tab-write');
+            const tabPreview = document.getElementById('tab-preview');
+            const writeContainer = document.getElementById('write-container');
+            const previewContainer = document.getElementById('preview-container');
+            const textarea = document.getElementById('content');
+
+            if (tab === 'write') {
+                tabWrite.classList.add('bg-red-600', 'text-white');
+                tabWrite.classList.remove('text-gray-400');
+                tabPreview.classList.remove('bg-red-600', 'text-white');
+                tabPreview.classList.add('text-gray-400');
+                
+                writeContainer.classList.remove('hidden');
+                previewContainer.classList.add('hidden');
+                textarea.focus();
+            } else {
+                tabPreview.classList.add('bg-red-600', 'text-white');
+                tabPreview.classList.remove('text-gray-400');
+                tabWrite.classList.remove('bg-red-600', 'text-white');
+                tabWrite.classList.add('text-gray-400');
+                
+                writeContainer.classList.add('hidden');
+                previewContainer.classList.remove('hidden');
+
+                // Render markdown
+                const rawMarkdown = textarea.value;
+                if (rawMarkdown.trim() === '') {
+                    previewContainer.innerHTML = '<p class="text-gray-600 italic font-mono text-xs">No content to preview.</p>';
+                } else {
+                    if (typeof marked !== 'undefined') {
+                        previewContainer.innerHTML = marked.parse(rawMarkdown);
+                    } else {
+                        previewContainer.innerHTML = '<p class="text-red-500">Markdown library load error.</p>';
+                    }
+                }
+            }
+        }
 
         const toggleBtn = document.getElementById('toggle-sidebar');
         const sidebar = document.getElementById('sidebar');

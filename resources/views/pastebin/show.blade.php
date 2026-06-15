@@ -48,6 +48,7 @@ $ogImage = $pastebin->cover_path && $pastebin->cover_path !== 'defaultCover.png'
     :twitterLabel2="'Views'"
     :twitterData2="number_format($pastebin->views_count)">
     <x-slot:extraHead>
+        <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
         <!-- JSON-LD Structured Data for Pastebin -->
         <script type="application/ld+json">
         {
@@ -708,9 +709,33 @@ $ogImage = $pastebin->cover_path && $pastebin->cover_path !== 'defaultCover.png'
                 <input type="hidden" name="title" value="{{ $pastebin->title }}">
                 <input type="hidden" name="description" value="{{ $pastebin->description }}">
                 @endcan
-                <div class="space-y-2">
-                    <label class="text-[10px] font-black text-gray-600 uppercase tracking-widest">Content</label>
-                    <textarea name="content" rows="12" class="w-full bg-[#050505] border border-red-900/20 px-4 py-3 text-xs font-mono text-gray-300 focus:outline-none focus:border-red-600 resize-none rounded-sm">{{ $pastebin->content }}</textarea>
+                <div class="space-y-2 flex flex-col">
+                    <div class="flex items-center justify-between">
+                        <label class="text-[10px] font-black text-gray-600 uppercase tracking-widest">Content</label>
+                        <!-- Tabs for Edit Modal Write and Preview -->
+                        <div class="flex items-center gap-1 bg-black border border-red-900/20 p-0.5 rounded-sm">
+                            <button type="button" id="edit-tab-write" onclick="switchEditTab('write')"
+                                class="px-3 py-1 text-[9px] font-bold uppercase tracking-wider rounded-sm bg-red-600 text-white transition-all">
+                                Write
+                            </button>
+                            <button type="button" id="edit-tab-preview" onclick="switchEditTab('preview')"
+                                class="px-3 py-1 text-[9px] font-bold uppercase tracking-wider rounded-sm text-gray-500 hover:text-white transition-all">
+                                Preview
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="relative w-full">
+                        <!-- Write Area -->
+                        <div id="edit-write-container" class="w-full">
+                            <textarea id="edit-content-textarea" name="content" rows="12" class="w-full bg-[#050505] border border-red-900/20 px-4 py-3 text-xs font-mono text-gray-300 focus:outline-none focus:border-red-600 resize-none rounded-sm">{{ $pastebin->content }}</textarea>
+                        </div>
+                        
+                        <!-- Preview Area -->
+                        <div id="edit-preview-container" class="hidden w-full bg-[#050505] border border-red-900/20 px-4 py-3 text-xs overflow-y-auto markdown-body text-gray-300 leading-relaxed font-mono rounded-sm"
+                            style="min-height: 246px; max-height: 400px;">
+                        </div>
+                    </div>
                 </div>
                 <div class="flex justify-end gap-6 pt-6 border-t border-red-900/10">
                     <button type="button" onclick="document.getElementById('edit-modal').classList.add('hidden')" class="text-[10px] font-black uppercase tracking-widest text-gray-600 hover:text-white">Dismiss</button>
@@ -1001,6 +1026,45 @@ $ogImage = $pastebin->cover_path && $pastebin->cover_path !== 'defaultCover.png'
             heartbeat();
             setInterval(heartbeat, 30000);
         });
+
+        function switchEditTab(tab) {
+            const tabWrite = document.getElementById('edit-tab-write');
+            const tabPreview = document.getElementById('edit-tab-preview');
+            const writeContainer = document.getElementById('edit-write-container');
+            const previewContainer = document.getElementById('edit-preview-container');
+            const textarea = document.getElementById('edit-content-textarea');
+
+            if (tab === 'write') {
+                tabWrite.classList.add('bg-red-600', 'text-white');
+                tabWrite.classList.remove('text-gray-500');
+                tabPreview.classList.remove('bg-red-600', 'text-white');
+                tabPreview.classList.add('text-gray-500');
+                
+                writeContainer.classList.remove('hidden');
+                previewContainer.classList.add('hidden');
+                textarea.focus();
+            } else {
+                tabPreview.classList.add('bg-red-600', 'text-white');
+                tabPreview.classList.remove('text-gray-500');
+                tabWrite.classList.remove('bg-red-600', 'text-white');
+                tabWrite.classList.add('text-gray-500');
+                
+                writeContainer.classList.add('hidden');
+                previewContainer.classList.remove('hidden');
+
+                // Render markdown
+                const rawMarkdown = textarea.value;
+                if (rawMarkdown.trim() === '') {
+                    previewContainer.innerHTML = '<p class="text-gray-600 italic font-mono text-xs">No content to preview.</p>';
+                } else {
+                    if (typeof marked !== 'undefined') {
+                        previewContainer.innerHTML = marked.parse(rawMarkdown);
+                    } else {
+                        previewContainer.innerHTML = '<p class="text-red-500">Markdown library load error.</p>';
+                    }
+                }
+            }
+        }
     </script>
 
 </x-layouts.app>
