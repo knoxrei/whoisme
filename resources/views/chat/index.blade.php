@@ -77,7 +77,7 @@
         </div>
     </div>
 
-    <!-- Hybrid Realtime / Polling Javascript Engine -->
+    <!-- Realtime WebSockets-Only Javascript Engine -->
     <script>
         document.addEventListener("DOMContentLoaded", function () {
             const messagesContainer = document.getElementById("chat-messages");
@@ -95,9 +95,6 @@
             const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') ?? '';
 
             let messagesSet = new Set();
-            let isPolling = false;
-            let pollingTimer = null;
-            let wsConnectionTimeout = null;
             let typingTimeout = null;
 
             // Simple HTML sanitizer
@@ -187,91 +184,48 @@
                 }
             }
 
-            // Fallback AJAX Polling implementation
-            async function pollMessages() {
-                try {
-                    const res = await fetch("{{ route('chat.messages', [], false) }}");
-                    if (res.ok) {
-                        const data = await res.json();
-                        data.forEach(msg => appendMessage(msg, true));
-                    }
-                } catch (e) {
-                    console.error("Polling error:", e);
-                }
-            }
-
-            function startPollingFallback() {
-                if (isPolling) return;
-                isPolling = true;
-                if (!currentUserId) {
-                    connStatusEl.textContent = "POLLING (GUEST)";
-                    connStatusEl.className = "px-2 py-0.5 border border-zinc-800 bg-zinc-950/20 text-zinc-550 rounded-sm uppercase";
-                } else {
-                    connStatusEl.textContent = "POLLING FALLBACK (TOR SAFE)";
-                    connStatusEl.className = "px-2 py-0.5 border border-zinc-700 bg-zinc-950/20 text-zinc-500 rounded-sm uppercase";
-                }
-                
-                // Clear any Echo instances or sockets if they exist
-                if (window.Echo) {
-                    try {
-                        window.Echo.disconnect();
-                    } catch (e) {}
-                }
-
-                // Poll immediately, then every 3 seconds
-                pollMessages();
-                pollingTimer = setInterval(pollMessages, 3000);
-
-                // Setup local placeholder for online users in polling mode (just show self)
-                updatePollingNodeList();
-            }
-
-            function updatePollingNodeList() {
-                if (currentUserId) {
-                    nodeCountEl.textContent = "1";
-                    userListContainer.innerHTML = `
-                        <div class="flex items-center gap-2 p-1.5 rounded-sm bg-red-950/5 border border-red-900/10">
-                            <span class="w-1.5 h-1.5 rounded-full bg-green-500"></span>
-                            <span class="font-bold text-white">${sanitize(currentUsername)}</span>
-                            <span class="text-[8px] text-gray-500 uppercase tracking-tighter ml-auto">SELF</span>
-                        </div>
-                        <div class="text-center text-[8px] text-gray-600 italic pt-2">Tor mode: hidden nodes not visible.</div>
-                    `;
-                } else {
-                    nodeCountEl.textContent = "0";
-                    userListContainer.innerHTML = `
-                        <div class="text-center text-[8px] text-gray-600 italic pt-2">Log in to view active nodes.</div>
-                    `;
-                }
-            }
-
             // Broadcast websocket engine using Laravel Echo
             function tryWebSocketConnection() {
-                // If Laravel Echo library is not loaded or user is a guest, fail fast to polling
-                if (typeof window.Echo === 'undefined' || !currentUserId) {
-                    startPollingFallback();
+                // If Laravel Echo library is not loaded
+                if (typeof window.Echo === 'undefined') {
+                    connStatusEl.textContent = "WS ERROR";
+                    connStatusEl.className = "px-2 py-0.5 border border-red-700/40 bg-red-950/20 text-red-500 rounded-sm uppercase";
                     return;
                 }
 
-                // Setup connection timeout: if Echo doesn't connect in 5 seconds, drop to polling
-                wsConnectionTimeout = setTimeout(() => {
-                    if (connStatusEl.textContent === "CONNECTING...") {
-                        console.warn("WebSocket connection timed out. Falling back to AJAX polling.");
-                        startPollingFallback();
-                    }
-                }, 5000);
-
-                try {
-                    // Reverb presence channel join
-                    window.Echo.join('chat')
-                        .here((users) => {
-                            clearTimeout(wsConnectionTimeout);
+                // Bind connection state changes dynamically
+                if (window.Echo.connector && window.Echo.connector.pusher) {
+                    window.Echo.connector.pusher.connection.bind('state_change', (states) => {
+                        const state = states.current;
+                        if (state === 'connected') {
                             connStatusEl.textContent = "REALTIME (WS)";
                             connStatusEl.className = "px-2 py-0.5 border border-green-700/40 bg-green-950/20 text-green-500 rounded-sm uppercase";
-                            isPolling = false;
-                            if (pollingTimer) clearInterval(pollingTimer);
+                        } else if (state === 'connecting') {
+                            connStatusEl.textContent = "CONNECTING...";
+                            connStatusEl.className = "px-2 py-0.5 border border-yellow-700/40 bg-yellow-950/20 text-yellow-500 rounded-sm uppercase";
+                        } else {
+                            connStatusEl.textContent = "DISCONNECTED";
+                            connStatusEl.className = "px-2 py-0.5 border border-red-700/40 bg-red-950/20 text-red-500 rounded-sm uppercase";
+                        }
+                    });
 
-                            // Populate node list
+                    // Set initial state if already connected
+                    if (window.Echo.connector.pusher.connection.state === 'connected') {
+                        connStatusEl.textContent = "REALTIME (WS)";
+                        connStatusEl.className = "px-2 py-0.5 border border-green-700/40 bg-green-950/20 text-green-500 rounded-sm uppercase";
+                    }
+                }
+
+                // Subscribe to public channel 'chat' to receive messages in realtime
+                window.Echo.channel('chat')
+                    .listen('MessageSent', (e) => {
+                        appendMessage(e, true);
+                    });
+
+                // If authenticated, also join presence channel for active user list and typing indicators
+                if (currentUserId) {
+                    window.Echo.join('chat')
+                        .here((users) => {
                             nodeCountEl.textContent = users.length;
                             userListContainer.innerHTML = "";
                             users.forEach(user => addNodeToList(user));
@@ -284,16 +238,14 @@
                             removeNodeFromList(user);
                             nodeCountEl.textContent = Math.max(0, parseInt(nodeCountEl.textContent) - 1);
                         })
-                        .listen('MessageSent', (e) => {
-                            appendMessage(e, true);
-                        })
                         .listenForWhisper('typing', (e) => {
                             showTyping(e.username);
                         });
-                } catch (e) {
-                    console.error("Echo connection error. Falling back to polling:", e);
-                    clearTimeout(wsConnectionTimeout);
-                    startPollingFallback();
+                } else {
+                    nodeCountEl.textContent = "0";
+                    userListContainer.innerHTML = `
+                        <div class="text-center text-[10px] text-gray-600 italic pt-6">Log in to view active nodes.</div>
+                    `;
                 }
             }
 
@@ -361,7 +313,7 @@
 
                 // Trigger typing whisper in WebSocket mode
                 chatInput.addEventListener("input", function () {
-                    if (window.Echo && !isPolling) {
+                    if (window.Echo) {
                         window.Echo.join('chat').whisper('typing', {
                             username: currentUsername
                         });

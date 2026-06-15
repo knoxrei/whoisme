@@ -35,7 +35,7 @@ class MessageSent implements ShouldBroadcast
     public function broadcastOn(): array
     {
         return [
-            new PresenceChannel('chat'),
+            new Channel('chat'),
         ];
     }
 
