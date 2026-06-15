@@ -31,7 +31,10 @@ $robots = ($pastebin->visibility === \App\Enum\Visibility::PRIVATE || $pastebin-
 
 // Determine OG Image
 $ogImage = $pastebin->cover_path && $pastebin->cover_path !== 'defaultCover.png'
-? asset('storage/' . $pastebin->cover_path): ($pastebin->images->count() > 0 ? asset('storage/' . $pastebin->images->first()->image_path) : null);
+? asset('storage/' . $pastebin->cover_path): ($pastebin->images->count() > 0 ? asset('storage/' . ($pastebin->images->first(function($img) {
+    $ext = pathinfo($img->image_path, PATHINFO_EXTENSION);
+    return !in_array(strtolower($ext), ['mp4', 'webm', 'ogg', 'mov', 'avi', 'mkv', 'flv', 'wmv']);
+})?->image_path ?? $pastebin->images->first()->image_path)) : null);
 @endphp
 
 <x-layouts.app
@@ -465,9 +468,22 @@ $ogImage = $pastebin->cover_path && $pastebin->cover_path !== 'defaultCover.png'
                         </div>
                         <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-2">
                             @foreach($pastebin->images as $image)
-                            <a href="{{ asset('storage/' . $image->image_path) }}" target="_blank" class="aspect-square border border-red-900/20 overflow-hidden block">
-                                <img src="{{ asset('storage/' . $image->image_path) }}" class="w-full h-full object-cover" alt="evidence">
-                            </a>
+                            @php
+                                $extension = pathinfo($image->image_path, PATHINFO_EXTENSION);
+                                $isVideo = in_array(strtolower($extension), ['mp4', 'webm', 'ogg', 'mov', 'avi', 'mkv', 'flv', 'wmv']);
+                            @endphp
+                            @if($isVideo)
+                                <a href="{{ asset('storage/' . $image->image_path) }}" target="_blank" class="aspect-square border border-red-900/20 overflow-hidden block relative group/vid">
+                                    <video src="{{ asset('storage/' . $image->image_path) }}" class="w-full h-full object-cover" autoplay loop muted playsinline></video>
+                                    <div class="absolute top-2 right-2 bg-black/75 px-1.5 py-0.5 rounded text-[8px] font-bold text-red-500 uppercase tracking-widest pointer-events-none">
+                                        Video
+                                    </div>
+                                </a>
+                            @else
+                                <a href="{{ asset('storage/' . $image->image_path) }}" target="_blank" class="aspect-square border border-red-900/20 overflow-hidden block">
+                                    <img src="{{ asset('storage/' . $image->image_path) }}" class="w-full h-full object-cover" alt="evidence">
+                                </a>
+                            @endif
                             @endforeach
                         </div>
                     </div>
@@ -665,8 +681,16 @@ $ogImage = $pastebin->cover_path && $pastebin->cover_path !== 'defaultCover.png'
                     <label class="text-[10px] font-black text-gray-600 uppercase tracking-widest">Manage Existing Gallery Images</label>
                     <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 p-4 border border-red-900/20 bg-[#050505] rounded-sm">
                         @foreach($pastebin->images as $image)
+                        @php
+                            $extension = pathinfo($image->image_path, PATHINFO_EXTENSION);
+                            $isVideo = in_array(strtolower($extension), ['mp4', 'webm', 'ogg', 'mov', 'avi', 'mkv', 'flv', 'wmv']);
+                        @endphp
                         <div class="relative aspect-square border border-red-900/20 p-1 group transition-all duration-150 image-to-delete-container">
-                            <img src="{{ asset('storage/' . $image->image_path) }}" class="w-full h-full object-cover rounded-sm image-preview" alt="existing evidence">
+                            @if($isVideo)
+                                <video src="{{ asset('storage/' . $image->image_path) }}" class="w-full h-full object-cover rounded-sm image-preview" autoplay loop muted playsinline></video>
+                            @else
+                                <img src="{{ asset('storage/' . $image->image_path) }}" class="w-full h-full object-cover rounded-sm image-preview" alt="existing evidence">
+                            @endif
                             <!-- Overlay with checkbox -->
                             <div class="absolute inset-0 bg-black/40 group-hover:bg-black/70 flex items-center justify-center transition-all duration-150 overlay-delete opacity-0 group-hover:opacity-100">
                                 <label class="flex flex-col items-center justify-center cursor-pointer text-gray-400 hover:text-red-500 text-[9px] font-black uppercase tracking-wider gap-2 select-none w-full h-full">
